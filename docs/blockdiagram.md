@@ -1,7 +1,7 @@
-Spark Use case
+# Spark Use case
 ---
 
-Initial Block Diagram
+## Initial Block Diagram
 ---
 ```mermaid
 graph LR
