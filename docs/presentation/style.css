@@ -1,0 +1,53 @@
+body {
+background-color: rgba(65, 105, 225, 0.05);
+}
+.reveal .slides {
+  overflow: scroll !important;
+  pointer-events: auto !important;
+  border-left: 5px solid royalblue;
+}
+::-webkit-scrollbar {
+  width: 0px;  /* Remove scrollbar space */
+  background: transparent;  /* Optional: just make scrollbar invisible */
+}
+
+.reveal .slides section {
+    padding:10px;
+}
+
+.reveal .slides:before {
+    content: "Sankir Technologies";
+    //background-color: royalblue;
+    color: royalblue;
+    display: inline-block;
+    padding: 17px;
+    font-size: 50px;
+    font-weight: 400;
+    opacity: 0.3;
+    //border-radius: 50%;
+}
+
+.reveal p img {
+    display: block;
+      margin-left: auto;
+      margin-right: auto;
+      //width: 50%;
+}
+
+li {
+    font-size : 30px;
+}
+
+.reveal p {
+    text-align: left;
+    font-size : 25px;
+}
+h2, h3, h4, h5, h6 {
+    text-align: left;
+}
+.reveal ul {
+    display: block;
+}
+.reveal ol {
+    display: block;
+}

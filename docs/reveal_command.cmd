@@ -1,0 +1,1 @@
+reveal-md %1 -w --theme presentation\theme\puzzle.css --css presentation\style.css --scripts "presentation\mermaid.min.js,presentation\reveal-mermaid.js" --title %1
