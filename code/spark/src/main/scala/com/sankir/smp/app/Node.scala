@@ -1,0 +1,139 @@
+package com.sankir.smp.app
+
+import java.io.InputStream
+import java.time.ZonedDateTime
+
+import com.fasterxml.jackson.databind.node.ArrayNode
+import com.fasterxml.jackson.databind.{DeserializationFeature, JsonNode, ObjectMapper}
+import com.fasterxml.jackson.module.scala.{DefaultScalaModule, ScalaObjectMapper}
+import com.sankir.smp.common.converters.Options
+import org.codehaus.jackson.node.ObjectNode
+
+import scala.util.Try
+
+
+object Node {
+
+  private val MAPPER = (new ObjectMapper() with ScalaObjectMapper)
+    .registerModule(DefaultScalaModule)
+    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+
+  def serialize(jsonNode: JsonNode): String = MAPPER.writeValueAsString(jsonNode)
+
+  def serializeValue(value: Any): String = MAPPER.writeValueAsString(value)
+
+  def serializedBytes(value: Any): Array[Byte] = MAPPER.writeValueAsBytes(value)
+
+  def deserialize(bytes: Array[Byte]): JsonNode = MAPPER.readTree(bytes)
+
+  def deserializeToObject(is: InputStream): JsonNode = MAPPER.readTree(is)
+
+  def deserializeObjectNodeOptional(string: String): Option[ObjectNode] =
+    deserializeOptional(string).flatMap(node => if (node.isObject) Option(node.asInstanceOf[ObjectNode]) else Option.empty)
+
+  def deserializeOptional(string: String): Option[JsonNode] = Option(deserialize(string))
+
+  def deserialize(jsonString: String): JsonNode = MAPPER.readTree(jsonString)
+
+  def deserialize[T](string: String, objectType: Class[T]): T = MAPPER.readValue(string, objectType)
+
+  def getObjectProperty(node: JsonNode, propertyName: String): ObjectNode =
+    getObjectPropertyOptional(node, propertyName).getOrElse(throw throw requiredPropertyError(propertyName).apply())
+
+  def getObjectPropertyOptional(node: JsonNode, property: String): Option[ObjectNode] = {
+    val nodeProperty = node.get(property)
+    if (nodeProperty != null && nodeProperty.isObject) {
+      Option(nodeProperty.asInstanceOf[ObjectNode])
+    } else Option.empty
+  }
+
+  def getArrayProperty(node: JsonNode, propertyName: String): ArrayNode =
+    getArrayPropertyOptional(node, propertyName).getOrElse(throw requiredPropertyError(propertyName).apply)
+
+  def getArrayPropertyOptional(node: JsonNode, property: String): Option[ArrayNode] = {
+    val nodeProperty = node.get(property)
+    if (nodeProperty != null && nodeProperty.isArray) {
+      Option(nodeProperty.asInstanceOf[ArrayNode])
+    } else Option.empty
+  }
+
+  def getBooleanProperty(node: JsonNode, propertyName: String): Boolean =
+    getBooleanPropertyOptional(node, propertyName).getOrElse(throw requiredPropertyError(propertyName).apply)
+
+  def getBooleanPropertyOptional(node: JsonNode, property: String): Option[Boolean] = {
+    val nodeProperty = node.get(property)
+    if (nodeProperty != null && nodeProperty.isBoolean) {
+      Option(nodeProperty.booleanValue())
+    } else Option.empty
+  }
+
+  def getStringPropertyOptional(node: JsonNode, property: String): Option[String] = {
+    val nodeProperty = node.get(property)
+    if (nodeProperty != null && nodeProperty.isTextual) {
+      Option(nodeProperty.textValue())
+    } else Option.empty
+  }
+
+  def getStringProperty(node: JsonNode, propertyName: String): String =
+    getStringPropertyOptional(node, propertyName).getOrElse(throw requiredPropertyError(propertyName).apply)
+
+  def getNotEmptyStringProperty(node: JsonNode, propertyName: String): String =
+    getNotEmptyStringPropertyOptional(node, propertyName).getOrElse(throw requiredPropertyError(propertyName).apply)
+
+  def requiredPropertyError(propertyName: String) =
+    () => new IllegalArgumentException(s"$propertyName is required")
+
+  def getNotEmptyStringPropertyOptional(node: JsonNode, propertyName: String): Option[String] =
+    getStringPropertyOptional(node, propertyName).filter(!_.trim.isEmpty)
+
+
+  def asStringPropertyOptional(node: JsonNode, property: String): Option[String] = {
+    val nodeProperty = node.get(property)
+    if (nodeProperty != null) {
+      Option(nodeProperty.asText())
+    } else Option.empty
+  }
+
+  def asStringProperty(node: JsonNode, propertyName: String): String =
+    asStringPropertyOptional(node, propertyName).getOrElse(throw requiredPropertyError(propertyName).apply)
+
+  def getPropertyAsTextOptional(node: JsonNode, property: String): Option[String] = {
+    val nodeProperty = node.get(property)
+    if (nodeProperty != null) {
+      Option(nodeProperty.toString)
+    } else Option.empty
+  }
+
+  def getPropertyAsText(node: JsonNode, propertyName: String): String =
+    getPropertyAsTextOptional(node, propertyName).getOrElse(throw requiredPropertyError(propertyName).apply)
+
+
+  def getTimestampPropertyOptional(node: JsonNode, property: String): Option[ZonedDateTime] =
+    getStringPropertyOptional(node,property).map(ZonedDateTime.parse(_))
+
+  def getTimestampProperty(node: JsonNode, propertyName: String): ZonedDateTime =
+    getTimestampPropertyOptional(node, propertyName).getOrElse(throw requiredPropertyError(propertyName).apply)
+
+
+  def getLongProperty(node: JsonNode, propertyName: String): Long =
+    getLongPropertyOptional(node, propertyName).getOrElse(throw requiredPropertyError(propertyName).apply)
+
+  def getLongPropertyOptional(node: JsonNode, property: String): Option[Long] = {
+    val nodeProperty = node.get(property)
+    if (nodeProperty != null && (nodeProperty.isIntegralNumber || nodeProperty.isFloatingPointNumber)) {
+      Option(nodeProperty.longValue())
+    } else Option.empty
+  }
+
+  def asLongPropertyOptional(node: JsonNode, propertyName: String): Option[Long] =
+    Options.or(getLongPropertyOptional(node,propertyName), getStringPropertyOptional(node,propertyName))
+    .flatMap(x => Try(x.toString.toLong).toOption)
+
+
+
+
+
+
+
+
+}
