@@ -3,18 +3,17 @@ package com.sankir.smp.app
 import java.io.InputStream
 import java.time.ZonedDateTime
 
-import com.fasterxml.jackson.databind.node.ArrayNode
+import com.fasterxml.jackson.databind.node.{ArrayNode, ObjectNode}
 import com.fasterxml.jackson.databind.{DeserializationFeature, JsonNode, ObjectMapper}
 import com.fasterxml.jackson.module.scala.{DefaultScalaModule, ScalaObjectMapper}
 import com.sankir.smp.common.converters.Options
-import org.codehaus.jackson.node.ObjectNode
 
 import scala.util.Try
 
+// Utility that will help us to work with Json Strings
+object JsonUtils {
 
-object Node {
-
-  private val MAPPER = (new ObjectMapper() with ScalaObjectMapper)
+  val MAPPER = (new ObjectMapper() with ScalaObjectMapper)
     .registerModule(DefaultScalaModule)
     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
@@ -128,6 +127,11 @@ object Node {
   def asLongPropertyOptional(node: JsonNode, propertyName: String): Option[Long] =
     Options.or(getLongPropertyOptional(node,propertyName), getStringPropertyOptional(node,propertyName))
     .flatMap(x => Try(x.toString.toLong).toOption)
+
+
+  def emptyArray(): ArrayNode = MAPPER.createArrayNode()
+
+  def emptyObject(): ObjectNode = MAPPER.createObjectNode()
 
 
 

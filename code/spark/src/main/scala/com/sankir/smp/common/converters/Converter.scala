@@ -1,19 +1,13 @@
 package com.sankir.smp.common.converters
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.sankir.smp.app.JsonUtils
+
 import scala.util.Try
-
-class Converter[A, B] extends Serializable {
-
-//  def of(func: A => Try[B]) = new Converter[A, B](func)
-//
-//  def get[A, B](in: A): Try[B] = Try(this.func(in).map(x => x))
-
-}
 
 object Converter {
 
-//  def apply[A, B](func: A => Try[B])
-//
-//  ):
+  def convertToJsonNode(jsonString: String): Tuple2[String, Try[JsonNode]] =
+    (jsonString, Try(JsonUtils.deserialize(jsonString)))
 
 }
