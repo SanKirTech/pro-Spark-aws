@@ -1,0 +1,52 @@
+[
+  {
+    "description" : "Invoice Number ",
+    "mode" : "NULLABLE",
+    "name" : "InvoiceNo",
+    "type" : "STRING"
+  },
+
+  {
+    "description" : "Stock Code ",
+    "mode" : "NULLABLE",
+    "name" : "StockCode",
+    "type" : "STRING"
+  }
+  ,
+  {
+    "description" : "Description",
+    "mode" : "NULLABLE",
+    "name" : "Description",
+    "type" : "STRING"
+  },
+  {
+    "description" : "Number of items",
+    "mode" : "NULLABLE",
+    "name" : "Quantity",
+    "type" : "STRING"
+  },
+  {
+    "description" : "InvoiceDate",
+    "mode" : "NULLABLE",
+    "name" : "InvoiceDate",
+    "type" : "DATETIME"
+  },
+  {
+    "description" : "UnitPrice",
+    "mode" : "NULLABLE",
+    "name" : "UnitPrice",
+    "type" : "STRING"
+  },
+  {
+    "description" : "CustomerID",
+    "mode" : "NULLABLE",
+    "name" : "CustomerID",
+    "type" : "STRING"
+  },
+  {
+    "description" : "Country",
+    "mode" : "NULLABLE",
+    "name" : "Country",
+    "type" : "STRING"
+  }
+]
