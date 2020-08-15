@@ -1,28 +1,44 @@
 [
   {
-    "description" : "Invoice Number ",
-    "mode" : "NULLABLE",
-    "name" : "InvoiceNo",
-    "type" : "STRING"
-  },
-
-  {
-    "description" : "Stock Code ",
-    "mode" : "NULLABLE",
-    "name" : "StockCode",
-    "type" : "STRING"
-  }
-  ,
-  {
-    "description" : "Description",
-    "mode" : "NULLABLE",
-    "name" : "Description",
-    "type" : "STRING"
+    "description": "Received Time",
+    "mode": "NULLABLE",
+    "name": "_rt",
+    "type": "TIMESTAMP"
   },
   {
-    "description" : "Number of items",
-    "mode" : "NULLABLE",
-    "name" : "Quantity",
+    "description": "Source",
+    "mode": "NULLABLE",
+    "name": "_src",
+    "type": "STRING"
+  },
+  {
+    "description": "Owner",
+    "mode": "NULLABLE",
+    "name": "_o",
+    "type": "STRING"
+  },
+  {
+    "description": "Invoice Number ",
+    "mode": "NULLABLE",
+    "name": "InvoiceNo",
+    "type": "STRING"
+  },
+  {
+    "description": "Stock Code ",
+    "mode": "NULLABLE",
+    "name": "StockCode",
+    "type": "STRING"
+  },
+  {
+    "description": "Description",
+    "mode": "NULLABLE",
+    "name": "Description",
+    "type": "STRING"
+  },
+  {
+    "description": "Number of items",
+    "mode": "NULLABLE",
+    "name": "Quantity",
     "type" : "STRING"
   },
   {

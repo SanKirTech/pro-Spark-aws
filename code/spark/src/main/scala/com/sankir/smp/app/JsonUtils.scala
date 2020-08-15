@@ -13,7 +13,7 @@ import scala.util.Try
 // Utility that will help us to work with Json Strings
 object JsonUtils {
 
-  val MAPPER = (new ObjectMapper() with ScalaObjectMapper)
+  val MAPPER = new ObjectMapper()
     .registerModule(DefaultScalaModule)
     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 

@@ -1,10 +1,16 @@
 package com.sankir.smp.pipelines
 
-import java.io.{BufferedReader, ByteArrayInputStream, FileInputStream, InputStream}
+import java.io.{BufferedReader, ByteArrayInputStream, File, FileInputStream, InputStream}
 import java.util.stream.Collectors
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.node.ObjectNode
+import com.google.api.services.bigquery.model.TableRow
+import com.google.auth.oauth2.{GoogleCredentials, ServiceAccountCredentials}
+import com.google.cloud.bigquery.{BigQueryOptions, InsertAllRequest, TableId}
 import com.sankir.smp.app.JsonUtils
+import com.sankir.smp.app.JsonUtils.getObjectProperty
+import com.sankir.smp.connectors.BigQueryIO
 import com.sankir.smp.utils.JsonSchema
 import org.apache.spark.sql.internal.SQLConf.HiveCaseSensitiveInferenceMode
 import org.everit.json.schema.ValidationException
@@ -35,6 +41,46 @@ object Test {
         |  }""".stripMargin
 
     val testData: JsonNode = JsonUtils.deserialize(jsonString)
+
+
+    val jsonString2 = "{\"_m\": {\"_rt\": \"2020-07-03 20:19:07\", \"_src\": \"gcs\", \"_o\": \"\", \"src_dtls\": \"https://storage.googleapis.com/sankir-1705/retail/input/2010-12-01.csv\"}, \"_p\": {\"data\": {\"InvoiceNo\": \"536365-Kiran\", \"StockCode\": \"85123A\", \"Description\": \"WHITE HANGING HEART T-LIGHT HOLDER\", \"Quantity\": \"6\", \"InvoiceDate\": \"2010-12-01 08:26:00\", \"UnitPrice\": \"2.55\", \"CustomerID\": \"17850.0\", \"Country\": \"United Kingdom\"}}}"
+
+    val data = JsonUtils.deserialize(jsonString2)
+    println(data)
+    val newNode = JsonUtils.emptyObject()
+    val metadata = JsonUtils.getObjectProperty(data,"_m")
+    metadata.remove("src_dtls")
+    newNode.setAll(metadata)
+    val payload = JsonUtils.getObjectProperty(data,"_p")
+    newNode.setAll(JsonUtils.getObjectProperty(payload,"data"))
+    println(newNode)
+
+    val row = JsonUtils.MAPPER.convertValue(newNode, classOf[TableRow])
+    val bigQueryIO = BigQueryIO(projectId = "sankir-1705")
+    bigQueryIO.insertRow("retail_bq", "t_transaction", row)
+
+
+
+
+
+
+
+
+//    val tableId = TableId.of("sankir-1705","retail_bq", "t_transaction")
+//
+    val credentialsPath = new File("F:\\extra-work\\lockdown_usecases\\SparkUsecase\\key.json")
+    val googleCredentials = ServiceAccountCredentials.fromStream(new FileInputStream(credentialsPath))
+//    val BigQuery = BigQueryOptions.newBuilder()
+//      .setCredentials(googleCredentials)
+//      .setProjectId("sankir-1705")
+//      .build()
+//      .getService
+//    val response = BigQuery.insertAll(InsertAllRequest.newBuilder(tableId).addRow(row).build())
+//    println(row)
+//    println(response)
+
+//    val bigQueryIO = BigQueryIO(googleCredentials= googleCredentials,projectId = "sankir-1705")
+
 
     schema
 

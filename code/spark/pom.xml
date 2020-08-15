@@ -45,6 +45,16 @@
         </dependency>
 
         <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-bigquery</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-storage</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.google.cloud.spark</groupId>
             <artifactId>spark-bigquery_2.11</artifactId>
             <version>0.17.0</version>
