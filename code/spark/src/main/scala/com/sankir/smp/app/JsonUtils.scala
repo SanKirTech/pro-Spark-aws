@@ -6,7 +6,7 @@ import java.time.ZonedDateTime
 import com.fasterxml.jackson.databind.node.{ArrayNode, ObjectNode}
 import com.fasterxml.jackson.databind.{DeserializationFeature, JsonNode, ObjectMapper}
 import com.fasterxml.jackson.module.scala.{DefaultScalaModule, ScalaObjectMapper}
-import com.sankir.smp.common.converters.Options
+import com.sankir.smp.common.Options
 
 import scala.util.Try
 
@@ -117,7 +117,7 @@ object JsonUtils {
   def getLongProperty(node: JsonNode, propertyName: String): Long =
     getLongPropertyOptional(node, propertyName).getOrElse(throw requiredPropertyError(propertyName).apply)
 
-  def getLongPropertyOptional(node: JsonNode, property: String): Option[Long] = {
+    def getLongPropertyOptional(node: JsonNode, property: String): Option[Long] = {
     val nodeProperty = node.get(property)
     if (nodeProperty != null && (nodeProperty.isIntegralNumber || nodeProperty.isFloatingPointNumber)) {
       Option(nodeProperty.longValue())
@@ -128,16 +128,8 @@ object JsonUtils {
     Options.or(getLongPropertyOptional(node,propertyName), getStringPropertyOptional(node,propertyName))
     .flatMap(x => Try(x.toString.toLong).toOption)
 
-
   def emptyArray(): ArrayNode = MAPPER.createArrayNode()
 
   def emptyObject(): ObjectNode = MAPPER.createObjectNode()
-
-
-
-
-
-
-
 
 }

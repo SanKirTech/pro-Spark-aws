@@ -1,4 +1,4 @@
-package com.sankir.smp.common.converters
+package com.sankir.smp.common
 
 object Options {
   def or[A](first: Option[A], second: Option[A]): Option[A] = {

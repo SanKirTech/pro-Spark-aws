@@ -7,11 +7,18 @@ object ArgParser {
   private val parser = {
     import builder._
     OParser.sequence(
-      opt[String]("schemaValidationPath")
+      opt[String]("projectId")
+        .action((x, c) => c.copy(inputLocation = x))
+        .required()
+        .text("ProjectId"),
+      opt[String]("schemaPath")
         .action((x, c) => c.copy(schemaLocation = x))
-        .text("Schema Validation Path"),
+        .required()
+        .text("Schema Path"),
       opt[String]("inputLocation")
         .action((x, c) => c.copy(inputLocation = x))
+        .required()
+        .text("Input location of Standard Files")
     )
   }
 
@@ -29,5 +36,6 @@ object ArgParser {
 case class
 Config(
         schemaLocation: String = "",
-        inputLocation:String = ""
+        inputLocation:String = "",
+        projectId:String = ""
       )

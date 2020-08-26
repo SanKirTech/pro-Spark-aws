@@ -7,7 +7,8 @@ import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider
 import com.jayway.jsonpath.{Configuration, JsonPath}
 import com.sankir.smp.app.JsonUtils
 import com.sankir.smp.common.converters.Converter._
-import com.sankir.smp.utils.ArgParser
+import com.sankir.smp.connectors.{GcsIO, PubSubIO}
+import com.sankir.smp.utils.{ArgParser, JsonSchema}
 import org.apache.spark.sql.{Encoders, SparkSession}
 
 import scala.util.Try
@@ -17,13 +18,16 @@ object ApplicationMain {
 
   def main(args: Array[String]): Unit = {
 
-    val config = ArgParser.parse(args);
+
+    val CONFIG = ArgParser.parse(args);
+
+    val gcsIO = GcsIO(projectId = CONFIG.projectId)
+    val schema = JsonSchema.fromJson(gcsIO.getData(CONFIG.schemaLocation))
+
     val sparkSession = SparkSession.builder().appName("Pro-Spark-Batch").master("local[*]").getOrCreate();
-
-    val rawData = sparkSession.read.textFile(config.inputLocation)
-
-    implicit val jsonNodeEncoder = Encoders.kryo[Tuple2[String, Try[JsonNode]]]
-    val jsonRecords = rawData.map(convertToJsonNode(_))
+    val rawData = sparkSession.read.textFile(CONFIG.inputLocation)
+    implicit val jsonNodeEncoder = Encoders.kryo[(String, Try[JsonNode])]
+    val jsonRecords = rawData.map(convertToJsonNodeTuple(_))
     jsonRecords.cache()
     val validJsonRecords = jsonRecords.filter(_._2.isSuccess)
     val inValidJsonRecords = jsonRecords.filter(_._2.isFailure)
@@ -55,8 +59,8 @@ object ApplicationMain {
     //    wordCounts.saveAsTextFile(outputPath)
 
     //    publisherExample("sankir-1705", "projects/sankir-1705/topics/sample")
-    //    val pubSubIO = PubSubIO("sankir-1705","sample")
-    //    pubSubIO.publishMessage("hello world")
+//        val pubSubIO = PubSubIO("sankir-1705","sample")
+//        pubSubIO.publishMessage("hello world")
 
 //    val jsonString = "{\"error\": \"schema-validation-error\", \"message\": \"not a valid string\"}"
 //

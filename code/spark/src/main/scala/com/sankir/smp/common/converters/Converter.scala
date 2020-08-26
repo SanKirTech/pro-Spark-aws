@@ -7,7 +7,7 @@ import scala.util.Try
 
 object Converter {
 
-  def convertToJsonNode(jsonString: String): Tuple2[String, Try[JsonNode]] =
+  def convertToJsonNodeTuple(jsonString: String): (String, Try[JsonNode]) =
     (jsonString, Try(JsonUtils.deserialize(jsonString)))
 
 }

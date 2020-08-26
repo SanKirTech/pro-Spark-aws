@@ -13,10 +13,6 @@ object JsonSchema {
   def fromJson(jsonString: String) =
     loadSchema(new JSONTokener(jsonString))
 
-  def fromGcs(path: String) = {
-
-  }
-
   private def loadSchema(jsonTokener: JSONTokener): Schema = {
     val loader: SchemaLoader = SchemaLoader.builder()
       .useDefaults(true)
