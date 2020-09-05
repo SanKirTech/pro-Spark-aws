@@ -5,6 +5,7 @@ import com.google.auth.oauth2.ServiceAccountCredentials
 import com.google.cloud.bigquery.{BigQueryOptions, InsertAllRequest, TableId}
 import org.slf4j.LoggerFactory
 
+import scala.collection.JavaConversions.mapAsScalaMap
 import scala.collection.JavaConverters._
 
 case class BigQueryIO(var googleCredentials: ServiceAccountCredentials = null, projectId: String) {
@@ -28,7 +29,9 @@ case class BigQueryIO(var googleCredentials: ServiceAccountCredentials = null, p
         .setRows(rows.map(InsertAllRequest.RowToInsert.of(_)).asJava)
         .build())
     if (response.hasErrors)
-      LOG.error(s"Error inserting data to ${tableId.getProject}.${tableId.getDataset}.${tableId.getTable}")
+      LOG.error(s"""
+           |Error inserting data to ${tableId.getProject}.${tableId.getDataset}.${tableId.getTable}
+           |${response.getInsertErrors.mkString("\n")}""".stripMargin)
     else
       LOG.info(s"Data inserted in ${tableId.getProject}.${tableId.getDataset}.${tableId.getTable}")
   }

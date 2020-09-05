@@ -19,7 +19,6 @@ case class GcsIO(var googleCredentials: ServiceAccountCredentials = null, projec
   def getData(path: String): String = {
     val BUFFER_SIZE = 64 * 1024;
     val gcsObject = getBucketAndPath(path).getOrElse(GCSObject(bucketName = "", path = ""))
-    println(gcsObject)
     val blobId = BlobId.of(gcsObject.bucketName, gcsObject.path)
     try {
       if (storageClient.get(blobId) ne null)

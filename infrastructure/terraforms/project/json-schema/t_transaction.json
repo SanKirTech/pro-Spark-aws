@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "title": "The root schema",
+  "description": "The root schema comprises the entire JSON document.",
+  "default": {},
+  "examples": [
+    {
+      "InvoiceNo": "536365",
+      "StockCode": "85123A",
+      "Description": "WHITE HANGING HEART T-LIGHT HOLDER",
+      "Quantity": "6",
+      "InvoiceDate": "2010-12-01 08:26:00",
+      "UnitPrice": "2.55",
+      "CustomerID": "17850.0",
+      "Country": "United Kingdom"
+    }
+  ],
+  "required": [
+    "InvoiceNo",
+    "StockCode",
+    "Description",
+    "Quantity",
+    "InvoiceDate",
+    "UnitPrice",
+    "CustomerID",
+    "Country"
+  ],
+  "properties": {
+    "InvoiceNo": {
+      "$id": "#/properties/InvoiceNo",
+      "type": "string",
+      "title": "The InvoiceNo schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "536365"
+      ]
+    },
+    "StockCode": {
+      "$id": "#/properties/StockCode",
+      "type": "string",
+      "title": "The StockCode schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "85123A"
+      ]
+    },
+    "Description": {
+      "$id": "#/properties/Description",
+      "type": "string",
+      "title": "The Description schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "WHITE HANGING HEART T-LIGHT HOLDER"
+      ]
+    },
+    "Quantity": {
+      "$id": "#/properties/Quantity",
+      "type": "string",
+      "title": "The Quantity schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "6"
+      ]
+    },
+    "InvoiceDate": {
+      "$id": "#/properties/InvoiceDate",
+      "type": "string",
+      "title": "The InvoiceDate schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "2010-12-01 08:26:00"
+      ]
+    },
+    "UnitPrice": {
+      "$id": "#/properties/UnitPrice",
+      "type": "string",
+      "title": "The UnitPrice schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "2.55"
+      ]
+    },
+    "CustomerID": {
+      "$id": "#/properties/CustomerID",
+      "type": "string",
+      "title": "The CustomerID schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "17850.0"
+      ]
+    },
+    "Country": {
+      "$id": "#/properties/Country",
+      "type": "string",
+      "title": "The Country schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "United Kingdom"
+      ]
+    }
+  },
+  "additionalProperties": true
+}

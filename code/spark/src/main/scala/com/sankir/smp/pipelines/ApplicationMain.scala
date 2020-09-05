@@ -1,16 +1,16 @@
 package com.sankir.smp.pipelines
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.node.ArrayNode
 import com.google.api.services.bigquery.model.TableRow
-import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider
-import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider
-import com.jayway.jsonpath.{Configuration, JsonPath}
 import com.sankir.smp.app.JsonUtils
 import com.sankir.smp.common.converters.Converter._
-import com.sankir.smp.connectors.{BigQueryIO, GcsIO, PubSubIO}
-import com.sankir.smp.utils.{ArgParser, JsonSchema}
+import com.sankir.smp.common.validators.SchemaValidator
+import com.sankir.smp.connectors.{BigQueryIO, GcsIO}
+import com.sankir.smp.utils.Resources.readAsString
+import com.sankir.smp.utils.enums.ErrorEnums
+import com.sankir.smp.utils.{Config, JsonSchema}
 import org.apache.spark.sql.{Encoders, SparkSession}
+import org.everit.json.schema.Schema
 
 import scala.util.Try
 
@@ -20,29 +20,42 @@ object ApplicationMain {
   def main(args: Array[String]): Unit = {
 
 
-    val CONFIG = ArgParser.parse(args);
+    //    val CONFIG = ArgParser.parse(args);
+    val CONFIG = Config(
+      projectId = "sankir-1705",
+      inputLocation = "F:\\extra-work\\lockdown_usecases\\SparkUsecase\\code\\spark\\input.json",
+//      schemaLocation = "F:\\extra-work\\lockdown_usecases\\SparkUsecase\\infrastructure\\terraforms\\project\\json-schema\\t_transaction.json"
+      schemaLocation = "./t_transaction.json"
+    )
 
     val gcsIO = GcsIO(projectId = CONFIG.projectId)
-    val schema = JsonSchema.fromJson(gcsIO.getData(CONFIG.schemaLocation))
+//    val schema = JsonSchema.fromJson(gcsIO.getData(CONFIG.schemaLocation))
+    val schemaString = readAsString(CONFIG.schemaLocation)
+
 
     val sparkSession = SparkSession.builder().appName("Pro-Spark-Batch").master("local[*]").getOrCreate();
+    val jobName = s"${sparkSession.sparkContext.appName}-${sparkSession.sparkContext.applicationId}"
     val rawData = sparkSession.read.textFile(CONFIG.inputLocation)
     implicit val jsonNodeEncoder = Encoders.kryo[(String, Try[JsonNode])]
     implicit val tableRowEncoder = Encoders.kryo[TableRow]
-    val jsonRecords = rawData.map(convertToJsonNodeTuple(_))
+    val jsonRecords = rawData.map(rec => convertAToTryTuple[String, JsonNode](rec, JsonUtils.deserialize(_)))
     jsonRecords.cache()
     val validJsonRecords = jsonRecords.filter(_._2.isSuccess)
     val inValidJsonRecords = jsonRecords.filter(_._2.isFailure)
 
-    inValidJsonRecords.map(errMsg =>
-      convertToErrorTableRows[JsonNode](errMsg, sparkSession.sparkContext.applicationId))
-      .foreachPartition( tableRows => {
-        val bigQueryIO = BigQueryIO(projectId = "sankir-1705")
-        bigQueryIO.insertIterableRows("retail_bq", "t_transaction", tableRows.toIterable)
-      })
+//    inValidJsonRecords.map(errMsg =>
+//      convertToErrorTableRows[JsonNode](errMsg, ErrorEnums.INVALID_JSON_ERROR, jobName))
+//      .foreachPartition(tableRows => {
+//        val bigQueryIO = BigQueryIO(projectId = CONFIG.projectId)
+//        bigQueryIO.insertIterableRows("retail_bq", "t_error", tableRows.toIterable)
+//      })
+
+    validJsonRecords.map(vr => convertABToTryTuple[String, JsonNode, String](schemaString, vr._2.get.get("_p").get("data"), SchemaValidator.validateJson(_, _), vr._1))
+      .filter(_._2.isFailure)
+      .collect().foreach(println)
 
 
-    validJsonRecords.collect().foreach(println)
+
 
 
 

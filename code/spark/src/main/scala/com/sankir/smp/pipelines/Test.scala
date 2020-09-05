@@ -102,7 +102,7 @@ object Test {
 //    println(testData)
 
 //    try {
-////      val example = new JSONObject(testData.toString)
+//      val example = new JSONObject(testData.toString)
 //      schema.validate(example)
 //      println("ZZZZZZZZZZZZZZZZZ")
 //      println(example)

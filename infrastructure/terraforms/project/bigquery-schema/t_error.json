@@ -1,9 +1,21 @@
 [
   {
+    "description": "Error Replay",
+    "mode": "NULLABLE",
+    "name": "errorReplay",
+    "type": "STRING"
+  },
+  {
     "description": "Process Time",
     "mode": "NULLABLE",
     "name": "timestamp",
     "type": "TIMESTAMP"
+  },
+  {
+    "description": "Error Type",
+    "mode": "NULLABLE",
+    "name": "errorType",
+    "type": "STRING"
   },
   {
     "description": "Payload String",
