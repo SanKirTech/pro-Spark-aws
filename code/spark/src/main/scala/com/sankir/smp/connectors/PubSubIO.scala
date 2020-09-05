@@ -6,7 +6,7 @@ import java.util.concurrent.{ExecutionException, TimeUnit}
 
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.google.api.core.{ApiFutureCallback, ApiFutures}
-import com.google.api.gax.core.CredentialsProvider
+import com.google.api.gax.core.{CredentialsProvider, FixedCredentialsProvider}
 import com.google.auth.Credentials
 import com.google.auth.oauth2.{GoogleCredentials, ServiceAccountCredentials}
 import com.google.cloud.pubsub.v1.Publisher
@@ -22,33 +22,28 @@ case class PubSubIO(projectId: String, topicId: String, var googleCredentials: S
   val publisher =
     Publisher
       .newBuilder(TopicName.of(projectId, topicId))
-      .setCredentialsProvider(new CredentialsProvider {
-        override def getCredentials: Credentials = if (googleCredentials ne null) googleCredentials else GoogleCredentials.getApplicationDefault
-      })
+      .setCredentialsProvider(
+        if (googleCredentials ne null) FixedCredentialsProvider.create(googleCredentials)
+        else FixedCredentialsProvider.create(GoogleCredentials.getApplicationDefault())
+      )
       .build()
 
   @throws[IOException]
   @throws[ExecutionException]
   @throws[InterruptedException]
-  def publishMessage(message: String): Unit = {
+  def publishMessage(message: String): String = {
     val data = ByteString.copyFromUtf8(message)
     val pubsubMessage = PubsubMessage.newBuilder.setData(data).build
     val future = publisher.publish(pubsubMessage)
+    try {
+      future.get()
+    } catch {
+      case exception: Exception => {
+        LOG.error(s"Unable to send the data to pub sub ${exception.getMessage}")
+        throw exception
+      }
+    }
 
-    ApiFutures.addCallback(
-      future,
-      new ApiFutureCallback[String] {
-        override def onFailure(throwable: Throwable): Unit = {
-          println("failed")
-          LOG.error(s"$throwable")
-        }
-        override def onSuccess(messageId: String): Unit = {
-          println("Message published")
-          LOG.info(s"Messge published: $messageId")
-        }
-      },
-      MoreExecutors.directExecutor()
-    )
   }
 
   def publishMessage(message: ObjectNode): Unit = {

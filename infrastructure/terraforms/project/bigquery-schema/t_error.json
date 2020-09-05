@@ -1,0 +1,32 @@
+[
+  {
+    "description": "Process Time",
+    "mode": "NULLABLE",
+    "name": "timestamp",
+    "type": "TIMESTAMP"
+  },
+  {
+    "description": "Payload String",
+    "mode": "NULLABLE",
+    "name": "payload",
+    "type": "STRING"
+  },
+  {
+    "description": "Stacktrace",
+    "mode": "NULLABLE",
+    "name": "stackTrace",
+    "type": "STRING"
+  },
+  {
+    "description": "JobName",
+    "mode": "NULLABLE",
+    "name": "jobName",
+    "type": "STRING"
+  },
+  {
+    "description": "Error Message",
+    "mode": "NULLABLE",
+    "name": "errorMessage",
+    "type": "STRING"
+  }
+]

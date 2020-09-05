@@ -1,5 +1,8 @@
 package com.sankir.smp.connectors
 
+import java.io.{File, FileInputStream}
+
+import com.google.auth.oauth2.ServiceAccountCredentials
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.funsuite.AnyFunSuite
@@ -7,15 +10,26 @@ import org.scalatest.funsuite.AnyFunSuite
 
 class PubSubIOTest extends AnyFlatSpec with BeforeAndAfterAll {
 
+  var pubSubIO: PubSubIO = null;
+
   override def beforeAll(): Unit = {
     super.beforeAll()
-    val pubsubIO = PubSubIO("sankir-1705","sample")
-    println("Before All")
+    val credentialsPath = new File("F:\\extra-work\\lockdown_usecases\\SparkUsecase\\key.json")
+    val googleCredentials = ServiceAccountCredentials.fromStream(new FileInputStream(credentialsPath))
+    pubSubIO = PubSubIO("sankir-1705","sample")
   }
 
   override protected def afterAll(): Unit =  {
     super.afterAll()
-    println("after all")
+    pubSubIO.close()
+  }
+
+  behavior of "pubsubio"
+
+  it should "send message to pubsub" in {
+      assert(pubSubIO.publishMessage("message") != null)
+
+
   }
 
 //  test("pubsubIO test") {

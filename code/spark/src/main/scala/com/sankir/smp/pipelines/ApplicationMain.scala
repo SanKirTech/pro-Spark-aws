@@ -2,12 +2,13 @@ package com.sankir.smp.pipelines
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ArrayNode
+import com.google.api.services.bigquery.model.TableRow
 import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider
 import com.jayway.jsonpath.{Configuration, JsonPath}
 import com.sankir.smp.app.JsonUtils
 import com.sankir.smp.common.converters.Converter._
-import com.sankir.smp.connectors.{GcsIO, PubSubIO}
+import com.sankir.smp.connectors.{BigQueryIO, GcsIO, PubSubIO}
 import com.sankir.smp.utils.{ArgParser, JsonSchema}
 import org.apache.spark.sql.{Encoders, SparkSession}
 
@@ -27,10 +28,18 @@ object ApplicationMain {
     val sparkSession = SparkSession.builder().appName("Pro-Spark-Batch").master("local[*]").getOrCreate();
     val rawData = sparkSession.read.textFile(CONFIG.inputLocation)
     implicit val jsonNodeEncoder = Encoders.kryo[(String, Try[JsonNode])]
+    implicit val tableRowEncoder = Encoders.kryo[TableRow]
     val jsonRecords = rawData.map(convertToJsonNodeTuple(_))
     jsonRecords.cache()
     val validJsonRecords = jsonRecords.filter(_._2.isSuccess)
     val inValidJsonRecords = jsonRecords.filter(_._2.isFailure)
+
+    inValidJsonRecords.map(errMsg =>
+      convertToErrorTableRows[JsonNode](errMsg, sparkSession.sparkContext.applicationId))
+      .foreachPartition( tableRows => {
+        val bigQueryIO = BigQueryIO(projectId = "sankir-1705")
+        bigQueryIO.insertIterableRows("retail_bq", "t_transaction", tableRows.toIterable)
+      })
 
 
     validJsonRecords.collect().foreach(println)

@@ -29,3 +29,13 @@ resource "google_bigquery_table" "retail_transaction" {
 
 }
 
+resource "google_bigquery_table" "error" {
+  dataset_id = google_bigquery_dataset.retail.dataset_id
+  table_id   = "t_error"
+
+  labels = {
+    env = "default"
+  }
+
+  schema = file("bigquery-schema/t_error.json")
+}

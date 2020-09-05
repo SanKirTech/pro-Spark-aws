@@ -5,6 +5,8 @@ import com.google.auth.oauth2.ServiceAccountCredentials
 import com.google.cloud.bigquery.{BigQueryOptions, InsertAllRequest, TableId}
 import org.slf4j.LoggerFactory
 
+import scala.collection.JavaConverters._
+
 case class BigQueryIO(var googleCredentials: ServiceAccountCredentials = null, projectId: String) {
   val LOG = LoggerFactory.getLogger(BigQueryIO.getClass)
 
@@ -18,8 +20,22 @@ case class BigQueryIO(var googleCredentials: ServiceAccountCredentials = null, p
         .getService
     else BigQueryOptions.getDefaultInstance.getService
 
-  def insertRow( dataset: String, table: String, rows: TableRow) = {
-    val tableId = TableId.of(dataset,table)
+  def insertIterableRows(dataset: String, table: String, rows: Iterable[TableRow]) = {
+    val tableId = TableId.of(dataset, table)
+    val response = bigQueryIO.insertAll(
+      InsertAllRequest
+        .newBuilder(tableId)
+        .setRows(rows.map(InsertAllRequest.RowToInsert.of(_)).asJava)
+        .build())
+    if (response.hasErrors)
+      LOG.error(s"Error inserting data to ${tableId.getProject}.${tableId.getDataset}.${tableId.getTable}")
+    else
+      LOG.info(s"Data inserted in ${tableId.getProject}.${tableId.getDataset}.${tableId.getTable}")
+  }
+
+  def insertRow(dataset: String, table: String, rows: TableRow) = {
+
+    val tableId = TableId.of(dataset, table)
     val response = bigQueryIO.insertAll(
       InsertAllRequest
         .newBuilder(tableId)
