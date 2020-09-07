@@ -2,7 +2,7 @@ package com.sankir.smp.pipelines
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.google.api.services.bigquery.model.TableRow
-import com.sankir.smp.utils.Config
+import com.sankir.smp.utils.CmdLineOptions
 import org.apache.spark.sql.{Encoders, SparkSession}
 import org.apache.spark.{SparkConf, SparkContext}
 import org.scalatest.flatspec.AnyFlatSpec
@@ -15,7 +15,7 @@ class ApplicationMainTest extends AnyFlatSpec  with SharedSparkContext {
   behavior of "ApplicationMain"
 
   it should "able to process invalid jsons" in {
-    val CONFIG = Config(
+    val CONFIG = CmdLineOptions(
       projectId = "sankir-1705",
       inputLocation = "F:\\extra-work\\lockdown_usecases\\SparkUsecase\\code\\spark\\input.json",
       //      schemaLocation = "F:\\extra-work\\lockdown_usecases\\SparkUsecase\\infrastructure\\terraforms\\project\\json-schema\\t_transaction.json"

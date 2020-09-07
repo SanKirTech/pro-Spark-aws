@@ -3,7 +3,7 @@ package com.sankir.smp.utils
 import scopt.OParser
 
 object ArgParser {
-  private val builder = OParser.builder[Config]
+  private val builder = OParser.builder[CmdLineOptions]
   private val parser = {
     import builder._
     OParser.sequence(
@@ -34,19 +34,20 @@ object ArgParser {
     )
   }
 
-  def parse(args: Array[String]): Config = {
-    OParser.parse(parser, args, Config()) match {
+  def parse(args: Array[String]): CmdLineOptions = {
+    OParser.parse(parser, args, CmdLineOptions()) match {
       case Some(value) => value
       case None => System.exit(1)
-        Config()
+        CmdLineOptions()
     }
   }
 
 
 }
 
+//  All these are populated from command line arguments
 case class
-Config(
+CmdLineOptions(
         schemaLocation: String = "",
         inputLocation: String = "",
         projectId: String = "",
