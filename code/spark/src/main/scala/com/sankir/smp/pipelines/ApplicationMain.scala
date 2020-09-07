@@ -5,12 +5,10 @@ import com.google.api.services.bigquery.model.TableRow
 import com.sankir.smp.app.JsonUtils
 import com.sankir.smp.common.converters.Converter._
 import com.sankir.smp.common.validators.SchemaValidator
-import com.sankir.smp.connectors.{BigQueryIO, GcsIO}
+import com.sankir.smp.connectors.GcsIO
+import com.sankir.smp.utils.Config
 import com.sankir.smp.utils.Resources.readAsString
-import com.sankir.smp.utils.enums.ErrorEnums
-import com.sankir.smp.utils.{Config, JsonSchema}
 import org.apache.spark.sql.{Encoders, SparkSession}
-import org.everit.json.schema.Schema
 
 import scala.util.Try
 
@@ -23,7 +21,8 @@ object ApplicationMain {
     //    val CONFIG = ArgParser.parse(args);
     val CONFIG = Config(
       projectId = "sankir-1705",
-      inputLocation = "F:\\extra-work\\lockdown_usecases\\SparkUsecase\\code\\spark\\input.json",
+      //inputLocation = "F:\\extra-work\\lockdown_usecases\\SparkUsecase\\code\\spark\\input.json",
+      inputLocation = "D:\\input.json",
 //      schemaLocation = "F:\\extra-work\\lockdown_usecases\\SparkUsecase\\infrastructure\\terraforms\\project\\json-schema\\t_transaction.json"
       schemaLocation = "./t_transaction.json"
     )
@@ -50,8 +49,10 @@ object ApplicationMain {
 //        bigQueryIO.insertIterableRows("retail_bq", "t_error", tableRows.toIterable)
 //      })
 
-    validJsonRecords.map(vr => convertABToTryTuple[String, JsonNode, String](schemaString, vr._2.get.get("_p").get("data"), SchemaValidator.validateJson(_, _), vr._1))
-      .filter(_._2.isFailure)
+    validJsonRecords.map(vr =>
+      convertABToTryTuple[String, JsonNode, String](schemaString, vr._2.get.get("_p").get("data"),
+        SchemaValidator.validateJson(_, _), vr._1))
+      .filter(_._2.isSuccess)
       .collect().foreach(println)
 
 
