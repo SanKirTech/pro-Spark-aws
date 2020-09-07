@@ -16,7 +16,7 @@ object ErrorTransformations {
       convertToErrorTableRows[JsonNode](errMsg, errorEnums, jobName))
       .foreachPartition(tableRows => {
         val bigQueryIO = BigQueryIO(projectId = configs.projectId)
-        bigQueryIO.insertIterableRows(configs., configs.bqErrorTable, tableRows.toIterable)
+        bigQueryIO.insertIterableRows(configs.bqDataset, configs.bqErrorTable, tableRows.toIterable)
       })
   }
 }
