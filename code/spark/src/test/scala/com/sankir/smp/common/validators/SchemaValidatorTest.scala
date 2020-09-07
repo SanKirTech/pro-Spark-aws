@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.google.gson.JsonObject
 import com.sankir.smp.app.JsonUtils
 import com.sankir.smp.utils.Resources.readAsString
+import com.sankir.smp.utils.exceptions.SchemaValidationFailedException
 import com.sankir.smp.utils.{JsonSchema, Resources}
 import org.everit.json.schema.ValidationException
 import org.json.JSONObject
@@ -18,15 +19,17 @@ class SchemaValidatorTest extends AnyFlatSpec {
   behavior of "SchemaValidator"
 
   it should "return Failure for invalid Json" in  {
-    val schema = Resources.readAsString("./validators/schema.json")
-    val jsonNode: JsonNode = JsonUtils.deserialize(readAsString("./validators/invalid_json_schema_file.json"))
-    assert(SchemaValidator.validateJson(schema, jsonNode).isFailure)
+    intercept[SchemaValidationFailedException] {
+      val schema = Resources.readAsString("./validators/schema.json")
+      val jsonNode: JsonNode = JsonUtils.deserialize(readAsString("./validators/invalid_json_schema_file.json"))
+      SchemaValidator.validateSchema(schema, jsonNode)
+    }
   }
 
   it should "return Success for valid Json" in  {
     val schema = Resources.readAsString("./validators/schema.json")
     val jsonNode: JsonNode = JsonUtils.deserialize(readAsString("./validators/valid_json_schema_file.json"))
-    val result = SchemaValidator.validateJson(schema, jsonNode)
-    assert(SchemaValidator.validateJson(schema, jsonNode).isSuccess)
+    val result = SchemaValidator.validateSchema(schema, jsonNode)
+    assert(SchemaValidator.validateSchema(schema, jsonNode) == jsonNode)
   }
 }

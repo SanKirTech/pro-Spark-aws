@@ -18,7 +18,19 @@ object ArgParser {
       opt[String]("inputLocation")
         .action((x, c) => c.copy(inputLocation = x))
         .required()
-        .text("Input location of Standard Files")
+        .text("Input location of Standard Files"),
+      opt[String]("bqDataset")
+        .action((x, c) => c.copy(inputLocation = x))
+        .required()
+        .text("BigQuery Dataset"),
+      opt[String]("bqTableName")
+        .action((x, c) => c.copy(inputLocation = x))
+        .required()
+        .text("BigQuery Table name"),
+      opt[String]("bqErrorTable")
+        .action((x, c) => c.copy(inputLocation = x))
+        .required()
+        .text("BigQuery Error Table Name")
     )
   }
 
@@ -36,6 +48,9 @@ object ArgParser {
 case class
 Config(
         schemaLocation: String = "",
-        inputLocation:String = "",
-        projectId:String = ""
+        inputLocation: String = "",
+        projectId: String = "",
+        bqDataset: String = "",
+        bqTableName: String = "",
+        bqErrorTable: String = ""
       )

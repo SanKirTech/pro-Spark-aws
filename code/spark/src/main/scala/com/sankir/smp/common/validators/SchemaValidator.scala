@@ -11,14 +11,14 @@ import scala.util.{Failure, Success, Try}
 ;
 
 object SchemaValidator {
-    def validateJson(schemaString: String, jsonNode:JsonNode) : Try[JsonNode] = {
+    def validateSchema(schemaString: String, jsonNode:JsonNode) : JsonNode = {
       try {
         val schema = JsonSchema.fromJson(schemaString)
         schema.validate(new JSONObject(jsonNode.toString))
-        Success(jsonNode)
+        jsonNode
       } catch {
         case validationException: ValidationException => {
-          Failure(SchemaValidationFailedException(validationException.getAllMessages.mkString("\n")))
+          throw SchemaValidationFailedException(validationException.getAllMessages.mkString("\n"))
         }
       }
     }

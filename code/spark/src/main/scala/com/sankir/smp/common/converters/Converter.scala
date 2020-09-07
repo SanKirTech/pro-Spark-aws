@@ -12,14 +12,11 @@ import scala.util.Try
 
 object Converter {
 
-  def convertToJsonNodeTuple(jsonString: String): (String, Try[JsonNode]) =
-    (jsonString, Try(JsonUtils.deserialize(jsonString)))
+  def convertAToTryB[A,B](a: A, fun: (A) => B) : Try[B] =
+    Try(fun(a))
 
-  def convertAToTryTuple[A,B](a: A, fun: (A) => B) : (A, Try[B]) =
-    (a, Try(fun(a)))
-
-  def convertABToTryTuple[A, B, C](a: A, b: B, fun: (A,B)=> Try[B], c: C) : (C, Try[B]) =
-    (c, fun(a,b))
+  def convertABToTryB[A, B](a: A, b: B, fun: (A,B)=> B) : Try[B] =
+    Try(fun(a,b))
 
 //  def convertToValidatedJsonNodeTuple()
 

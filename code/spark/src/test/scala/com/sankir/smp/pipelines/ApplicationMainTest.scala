@@ -1,16 +1,29 @@
 package com.sankir.smp.pipelines
 
-import org.apache.spark.sql.SparkSession
+import com.fasterxml.jackson.databind.JsonNode
+import com.google.api.services.bigquery.model.TableRow
+import com.sankir.smp.utils.Config
+import org.apache.spark.sql.{Encoders, SparkSession}
 import org.apache.spark.{SparkConf, SparkContext}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.{BeforeAndAfterAll, Suite}
+
+import scala.util.Try
 
 class ApplicationMainTest extends AnyFlatSpec  with SharedSparkContext {
 
   behavior of "ApplicationMain"
 
-  it should "process normal file" in {
+  it should "able to process invalid jsons" in {
+    val CONFIG = Config(
+      projectId = "sankir-1705",
+      inputLocation = "F:\\extra-work\\lockdown_usecases\\SparkUsecase\\code\\spark\\input.json",
+      //      schemaLocation = "F:\\extra-work\\lockdown_usecases\\SparkUsecase\\infrastructure\\terraforms\\project\\json-schema\\t_transaction.json"
+      schemaLocation = "./t_transaction.json"
+    )
     val inputRdd = sparkSession.sparkContext.parallelize(Array("hello", "world"))
+    implicit val jsonNodeEncoder = Encoders.kryo[(String, Try[JsonNode])]
+    implicit val tableRowEncoder = Encoders.kryo[TableRow]
     val wordCount = inputRdd.map((_,1)).reduceByKey( _ + _)
     assert(wordCount.count() == 2)
   }
