@@ -1,67 +1,45 @@
 package com.sankir.smp.pipelines
 
-import com.fasterxml.jackson.databind.JsonNode
-import com.google.api.services.bigquery.model.TableRow
-import com.sankir.smp.app.JsonUtils
-import com.sankir.smp.common.converters.Converter._
-import com.sankir.smp.common.validators.SchemaValidator
-import com.sankir.smp.connectors.GcsIO
-import com.sankir.smp.utils.Config
-import com.sankir.smp.utils.Resources.readAsString
-import org.apache.spark.sql.{Encoders, SparkSession}
 
-import scala.util.Try
+
+import com.sankir.smp.pipelines.transformations.ErrorTransformations.writeToBigQuery
+import com.sankir.smp.pipelines.validators.Validator.{jsonSchemaValidator, jsonStringValidator}
+import com.sankir.smp.utils.ArgParser
+import com.sankir.smp.utils.Resources.readAsStringFromGCS
+import com.sankir.smp.utils.enums.ErrorEnums.{INVALID_JSON_ERROR, SCHEMA_VALIDATION_ERROR}
+import org.apache.spark.sql.SparkSession
 
 
 object ApplicationMain {
 
   def main(args: Array[String]): Unit = {
 
+    //    Parsing the Arguments and updating the config object that will help us in providing necessary inputs
+    val CONFIG = ArgParser.parse(args)
 
-    //    val CONFIG = ArgParser.parse(args);
-    val CONFIG = Config(
-      projectId = "sankir-1705",
-      //inputLocation = "F:\\extra-work\\lockdown_usecases\\SparkUsecase\\code\\spark\\input.json",
-      inputLocation = "D:\\input.json",
-//      schemaLocation = "F:\\extra-work\\lockdown_usecases\\SparkUsecase\\infrastructure\\terraforms\\project\\json-schema\\t_transaction.json"
-      schemaLocation = "./t_transaction.json"
-    )
-
-    val gcsIO = GcsIO(projectId = CONFIG.projectId)
-//    val schema = JsonSchema.fromJson(gcsIO.getData(CONFIG.schemaLocation))
-    val schemaString = readAsString(CONFIG.schemaLocation)
+    //Reading the schemaString
+    val schema = readAsStringFromGCS(CONFIG.projectId, CONFIG.schemaLocation)
 
 
-    val sparkSession = SparkSession.builder().appName("Pro-Spark-Batch").master("local[*]").getOrCreate();
-    val jobName = s"${sparkSession.sparkContext.appName}-${sparkSession.sparkContext.applicationId}"
+    // Creating SparkSession
+    val sparkSession = SparkSession.builder().appName("Pro-Spark-Batch").getOrCreate()
+
+    val JOBNAME = s"${sparkSession.sparkContext.appName}-${sparkSession.sparkContext.applicationId}"
+
+    // Reading data from the input location
+    import com.sankir.smp.utils.encoders.CustomEncoders._
     val rawData = sparkSession.read.textFile(CONFIG.inputLocation)
-    implicit val jsonNodeEncoder = Encoders.kryo[(String, Try[JsonNode])]
-    implicit val tableRowEncoder = Encoders.kryo[TableRow]
-    val jsonRecords = rawData.map(rec => convertAToTryTuple[String, JsonNode](rec, JsonUtils.deserialize(_)))
-    jsonRecords.cache()
-    val validJsonRecords = jsonRecords.filter(_._2.isSuccess)
-    val inValidJsonRecords = jsonRecords.filter(_._2.isFailure)
-
-//    inValidJsonRecords.map(errMsg =>
-//      convertToErrorTableRows[JsonNode](errMsg, ErrorEnums.INVALID_JSON_ERROR, jobName))
-//      .foreachPartition(tableRows => {
-//        val bigQueryIO = BigQueryIO(projectId = CONFIG.projectId)
-//        bigQueryIO.insertIterableRows("retail_bq", "t_error", tableRows.toIterable)
-//      })
-
-    validJsonRecords.map(vr =>
-      convertABToTryTuple[String, JsonNode, String](schemaString, vr._2.get.get("_p").get("data"),
-        SchemaValidator.validateJson(_, _), vr._1))
-      .filter(_._2.isSuccess)
-      .collect().foreach(println)
 
 
+    val jsonValidatedRecords = jsonStringValidator(rawData)
+    val jsonRecords = jsonValidatedRecords.filter(_._2.isSuccess).map(rec => (rec._1, rec._2.get))
+    val inValidJsonRecords = jsonValidatedRecords.filter(_._2.isFailure)
+    writeToBigQuery(inValidJsonRecords, CONFIG, JOBNAME, INVALID_JSON_ERROR)
 
-
-
-
-
-
+    val schemaValidatedRecords = jsonSchemaValidator(jsonRecords, schema)
+    val jsonRecordsWithProperSchema = schemaValidatedRecords.filter(_._2.isSuccess).map(rec => (rec._1, rec._2))
+    val invalidSchemaRecords = schemaValidatedRecords.filter(_._2.isFailure)
+    writeToBigQuery(invalidSchemaRecords, CONFIG, JOBNAME, SCHEMA_VALIDATION_ERROR)
 
 
     //TODO: Read data from GCS Location into a Dataset
