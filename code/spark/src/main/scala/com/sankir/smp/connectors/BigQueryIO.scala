@@ -9,8 +9,7 @@ import scala.collection.JavaConversions.mapAsScalaMap
 import scala.collection.JavaConverters._
 
 case class BigQueryIO(var googleCredentials: ServiceAccountCredentials = null, projectId: String) {
-  val LOG = LoggerFactory.getLogger(BigQueryIO.getClass)
-
+  private val LOG = LoggerFactory.getLogger(BigQueryIO.getClass)
 
   val bigQueryIO =
     if (googleCredentials ne null)

@@ -19,7 +19,7 @@ object JsonSchema {
       .schemaJson(new JSONObject(jsonTokener))
       .draftV7Support()
       .build()
-    val schema: Schema = loader.load().build()
+    val schema: Schema = loader.load().build().asInstanceOf
     schema
   }
 

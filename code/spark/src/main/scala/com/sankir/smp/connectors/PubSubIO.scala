@@ -5,19 +5,16 @@ import java.io.IOException
 import java.util.concurrent.{ExecutionException, TimeUnit}
 
 import com.fasterxml.jackson.databind.node.ObjectNode
-import com.google.api.core.{ApiFutureCallback, ApiFutures}
-import com.google.api.gax.core.{CredentialsProvider, FixedCredentialsProvider}
-import com.google.auth.Credentials
+import com.google.api.gax.core.FixedCredentialsProvider
 import com.google.auth.oauth2.{GoogleCredentials, ServiceAccountCredentials}
 import com.google.cloud.pubsub.v1.Publisher
-import com.google.common.util.concurrent.MoreExecutors
 import com.google.protobuf.ByteString
 import com.google.pubsub.v1.{PubsubMessage, TopicName}
 import org.slf4j.LoggerFactory
 
 case class PubSubIO(projectId: String, topicId: String, var googleCredentials: ServiceAccountCredentials = null) {
 
-  val LOG = LoggerFactory.getLogger(PubSubIO.getClass)
+  private val LOG = LoggerFactory.getLogger(PubSubIO.getClass)
 
   val publisher =
     Publisher
@@ -38,10 +35,9 @@ case class PubSubIO(projectId: String, topicId: String, var googleCredentials: S
     try {
       future.get()
     } catch {
-      case exception: Exception => {
+      case exception: Exception =>
         LOG.error(s"Unable to send the data to pub sub ${exception.getMessage}")
         throw exception
-      }
     }
 
   }

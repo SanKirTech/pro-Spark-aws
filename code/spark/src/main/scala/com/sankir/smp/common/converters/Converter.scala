@@ -2,7 +2,6 @@ package com.sankir.smp.common.converters
 
 import java.time.Instant
 
-import com.fasterxml.jackson.databind.JsonNode
 import com.google.api.services.bigquery.model.TableRow
 import com.sankir.smp.app.JsonUtils
 import com.sankir.smp.utils.enums.ErrorEnums.ErrorEnums
@@ -12,7 +11,7 @@ import scala.util.Try
 
 object Converter {
 
-  def convertAToTryB[A,B](a: A, fun: (A) => B) : Try[B] =
+  def convertAToTryB[A,B](a: A, fun: A => B) : Try[B] =
     Try(fun(a))
 
   def convertABToTryB[A, B](a: A, b: B, fun: (A,B)=> B) : Try[B] =
