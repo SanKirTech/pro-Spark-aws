@@ -6,8 +6,12 @@ import com.sankir.smp.connectors.GcsIO
 
 
 object Resources {
+  def readAsStringIterator(path: String): Iterator[String] = {
+    scala.io.Source.fromInputStream(read(path)).getLines()
+  }
+
   def readAsString(path: String): String = {
-    scala.io.Source.fromInputStream(read(path)).getLines().mkString("\n")
+    readAsStringIterator(path).mkString("\n")
   }
 
   def read(path: String): InputStream =
