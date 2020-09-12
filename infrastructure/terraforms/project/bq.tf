@@ -12,6 +12,13 @@ resource "google_bigquery_dataset" "retail_analytics" {
   location                    = "US"
 }
 
+resource "google_bigquery_dataset" "retail_kpi" {
+  dataset_id                  = "retail_kpi"
+  friendly_name               = "retail_kpi"
+  description                 = "This is retail_kpi Dataset"
+  location                    = "US"
+}
+
 resource "google_bigquery_table" "retail_transaction" {
   dataset_id = google_bigquery_dataset.retail.dataset_id
   table_id   = "t_transaction"
@@ -39,3 +46,15 @@ resource "google_bigquery_table" "error" {
 
   schema = file("bigquery-schema/t_error.json")
 }
+
+resource "google_bigquery_table" "sku_dow_daily1" {
+  dataset_id = google_bigquery_dataset.retail_kpi.dataset_id
+  table_id   = "t_sku_dow_daily1"
+
+  labels = {
+    env = "default"
+  }
+
+  schema = file("bigquery-schema/t_kpi1.json")
+}
+

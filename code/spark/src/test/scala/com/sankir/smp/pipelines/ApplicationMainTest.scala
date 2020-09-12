@@ -44,6 +44,42 @@ class ApplicationMainTest extends AnyFlatSpec with SharedSparkContext {
     assert(schemaValidatedRecords.filter(_._2.isSuccess).count() == 2)
   }
 
+  it should "Actual Data" in {
+    import com.sankir.smp.utils.encoders.CustomEncoders._
+    val sdfData = sparkSession.createDataset(readAsStringIterator("pipelines/SixRecs.json").toSeq)
+
+    println("\n--------  sdfData ------------")
+    sdfData.show(20,false)
+
+    val schema = readAsString("pipelines/t_transaction_trimmed.json")
+
+    val jsonValidatedRecords = jsonStringValidator(sdfData)
+    val jsonRecords = jsonValidatedRecords.filter(_._2.isSuccess).map(rec => (rec._1, rec._2.get))
+    val inValidJsonRecords = jsonValidatedRecords.filter(_._2.isFailure)
+   // writeToBigQuery(inValidJsonRecords, CMDLINEOPTIONS, JOBNAME, INVALID_JSON_ERROR)
+    println("\n--------------- invalid JSON records -------------")
+    inValidJsonRecords.collect().foreach(println)
+
+    println("\n--------------- valid JSON records ---------------")
+    jsonRecords.collect().foreach(println)
+
+    val schemaValidatedRecords = jsonSchemaValidator(jsonRecords, schema)
+    val jsonRecordsWithProperSchema = schemaValidatedRecords.filter(_._2.isSuccess).map(rec => (rec._1, rec._2))
+    val invalidSchemaRecords = schemaValidatedRecords.filter(_._2.isFailure)
+    //writeToBigQuery(invalidSchemaRecords, CMDLINEOPTIONS, JOBNAME, SCHEMA_VALIDATION_ERROR)
+
+    println("\n---------------- invalid Schema records ------")
+    invalidSchemaRecords.collect().foreach(println)
+
+    println("\n---------------- valid Schema records ------")
+    jsonRecordsWithProperSchema.collect().foreach(println)
+
+
+
+
+  }
+
+
 }
 
 trait SharedSparkContext extends BeforeAndAfterAll { self: Suite =>
