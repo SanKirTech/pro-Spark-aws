@@ -1,0 +1,26 @@
+[
+  {
+    "description": "Stock Code ",
+    "mode": "REQUIRED",
+    "name": "StockCode",
+    "type": "STRING"
+  },
+  {
+    "description": "Country",
+    "mode": "REQUIRED",
+    "name": "country",
+    "type": "STRING"
+  },
+  {
+    "description": "Revenue",
+    "mode": "NULLABLE",
+    "name": "revenue",
+    "type": "FLOAT"
+  },
+  {
+    "description": "Rank",
+    "mode": "NULLABLE",
+    "name": "rank",
+    "type": "INTEGER"
+  }
+]

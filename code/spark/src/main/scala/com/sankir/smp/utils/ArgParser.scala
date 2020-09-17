@@ -14,11 +14,11 @@ object ArgParser {
       opt[String]("schemaLocation")
         .action((x, c) => c.copy(schemaLocation = x))
         .required()
-        .text("schemaLocation"),
+        .text("Schema Path"),
       opt[String]("inputLocation")
         .action((x, c) => c.copy(inputLocation = x))
         .required()
-        .text("inputLocation"),
+        .text("Input location of Standard Files"),
       opt[String]("bqDataset")
         .action((x, c) => c.copy(bqDataset = x))
         .required()
@@ -30,7 +30,11 @@ object ArgParser {
       opt[String]("bqErrorTable")
         .action((x, c) => c.copy(bqErrorTable = x))
         .required()
-        .text("BigQuery Error Table Name")
+        .text("BigQuery Error Table Name"),
+        opt[String]("kpiLocation")
+        .action((x, c) => c.copy(kpiLocation = x))
+        .required()
+        .text("kpi json Path")
     )
   }
 
@@ -53,5 +57,6 @@ CmdLineOptions(
         projectId: String = "",
         bqDataset: String = "",
         bqTableName: String = "",
-        bqErrorTable: String = ""
+        bqErrorTable: String = "",
+        kpiLocation: String = ""
       )

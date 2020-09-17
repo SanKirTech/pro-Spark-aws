@@ -8,7 +8,9 @@ import scala.util.Try
 
 object CustomEncoders {
   implicit val stringEncoder: Encoder[String] = Encoders.STRING
+  //implicit val jsonNodeEncoder: Encoder[JsonNode] = Encoders.kryo[JsonNode]
   implicit val stringJsonNodeEncoder: Encoder[(String,JsonNode)] = Encoders.kryo[(String,JsonNode)]
   implicit val jsonNodeTupleEncoder: Encoder[(String, Try[JsonNode])] = Encoders.kryo[(String, Try[JsonNode])]
   implicit val tableRowEncoder: Encoder[TableRow] = Encoders.kryo[TableRow]
+ // implicit val kpiEncoder: Encoder[(String, JsonNode)] = Encoders.kryo[(String, JsonNode)]
 }

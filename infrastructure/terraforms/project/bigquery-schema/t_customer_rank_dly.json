@@ -1,0 +1,20 @@
+[
+  {
+    "description": "Customer ID ",
+    "mode": "REQUIRED",
+    "name": "customerid",
+    "type": "STRING"
+  },
+  {
+    "description": "Revenue",
+    "mode": "NULLABLE",
+    "name": "revenue",
+    "type": "FLOAT"
+  },
+  {
+    "description": "Rank",
+    "mode": "NULLABLE",
+    "name": "rank",
+    "type": "INTEGER"
+  }
+]

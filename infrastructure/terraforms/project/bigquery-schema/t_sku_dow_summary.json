@@ -1,0 +1,26 @@
+[
+  {
+    "description": "Stock Code ",
+    "mode": "REQUIRED",
+    "name": "StockCode",
+    "type": "STRING"
+  },
+  {
+    "description": "Revenue",
+    "mode": "NULLABLE",
+    "name": "revenue",
+    "type": "FLOAT"
+  },
+  {
+    "description": "Day of the Week",
+    "mode": "REQUIRED",
+    "name": "day_of_week",
+    "type": "INTEGER"
+  },
+  {
+    "description" : "Country",
+    "mode" : "REQUIRED",
+    "name" : "Country",
+    "type" : "STRING"
+  }
+]
