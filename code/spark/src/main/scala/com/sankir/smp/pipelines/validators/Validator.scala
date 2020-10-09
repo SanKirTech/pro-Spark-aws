@@ -10,12 +10,14 @@ import scala.util.Try
 
 object Validator {
 
-  def jsonStringValidator(rawRecords: Dataset[String]): Dataset[(String, Try[JsonNode])] = {
+  // Try returns success or failure of JSON format
+  // JsonNode is Json file - read line by line
+  def jsonValidator(rawRecords: Dataset[String]): Dataset[(String, Try[JsonNode])] = {
     import com.sankir.smp.utils.encoders.CustomEncoders._
     rawRecords.map(rec => (rec, convertAToTryB[String, JsonNode](rec, JsonUtils.deserialize)))
   }
 
-  def jsonSchemaValidator(rawRecords: Dataset[(String, JsonNode)], schema: String): Dataset[(String, Try[JsonNode])] = {
+  def schemaValidator(rawRecords: Dataset[(String, JsonNode)], schema: String): Dataset[(String, Try[JsonNode])] = {
     import com.sankir.smp.utils.encoders.CustomEncoders._
     rawRecords.map(vr => (vr._1, convertABToTryB[String, JsonNode](schema, vr._2.get("_p").get("data"), validateSchema)))
   }

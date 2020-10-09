@@ -1,0 +1,26 @@
+[
+  {
+    "description": "Stock Code ",
+    "mode": "REQUIRED",
+    "name": "StockCode",
+    "type": "STRING"
+  },
+  {
+    "description": "Year",
+    "mode": "REQUIRED",
+    "name": "year1",
+    "type": "INTEGER"
+  },
+  {
+    "description": "Month",
+    "mode": "REQUIRED",
+    "name": "month1",
+    "type": "INTEGER"
+  },
+  {
+    "description": "Revenue",
+    "mode": "NULLABLE",
+    "name": "revenue",
+    "type": "FLOAT"
+  }
+]

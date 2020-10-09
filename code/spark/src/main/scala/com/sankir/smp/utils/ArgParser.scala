@@ -8,10 +8,10 @@ object ArgParser {
     import builder._
     OParser.sequence(
       opt[String]("projectId")
-        .action((x, c) => c.copy(inputLocation = x))
+        .action((x, c) => c.copy(projectId = x))
         .required()
         .text("ProjectId"),
-      opt[String]("schemaPath")
+      opt[String]("schemaLocation")
         .action((x, c) => c.copy(schemaLocation = x))
         .required()
         .text("Schema Path"),
@@ -20,17 +20,21 @@ object ArgParser {
         .required()
         .text("Input location of Standard Files"),
       opt[String]("bqDataset")
-        .action((x, c) => c.copy(inputLocation = x))
+        .action((x, c) => c.copy(bqDataset = x))
         .required()
         .text("BigQuery Dataset"),
       opt[String]("bqTableName")
-        .action((x, c) => c.copy(inputLocation = x))
+        .action((x, c) => c.copy(bqTableName = x))
         .required()
         .text("BigQuery Table name"),
       opt[String]("bqErrorTable")
-        .action((x, c) => c.copy(inputLocation = x))
+        .action((x, c) => c.copy(bqErrorTable = x))
         .required()
-        .text("BigQuery Error Table Name")
+        .text("BigQuery Error Table Name"),
+        opt[String]("kpiLocation")
+        .action((x, c) => c.copy(kpiLocation = x))
+        .required()
+        .text("kpi json Path")
     )
   }
 
@@ -53,5 +57,6 @@ CmdLineOptions(
         projectId: String = "",
         bqDataset: String = "",
         bqTableName: String = "",
-        bqErrorTable: String = ""
+        bqErrorTable: String = "",
+        kpiLocation: String = ""
       )

@@ -1,5 +1,5 @@
 provider "google" {
-  project     = "sankir-1705"
+  project     = "pro-spark"
   region      = "us-central1"
   zone        = "us-central1-c"
 }
