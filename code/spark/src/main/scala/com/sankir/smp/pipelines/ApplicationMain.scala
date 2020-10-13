@@ -1,3 +1,16 @@
+/*
+ * SanKir Technologies
+ * (c) Copyright 2020.  All rights reserved.
+ * No part of pro-Spark course contents - code, video or documentation - may be reproduced, distributed or transmitted
+ *  in any form or by any means including photocopying, recording or other electronic or mechanical methods,
+ *  without the prior written permission from Sankir Technologies.
+ *
+ * The course contents can be accessed by subscribing to pro-Spark course.
+ *
+ * Please visit www.sankir.com for details.
+ *
+ */
+
 package com.sankir.smp.pipelines
 
 //import com.sankir.smp.pipelines.transformations.ErrorTransformations.writeToBigQuery
@@ -32,55 +45,62 @@ object ApplicationMain {
     // sdfRecords is the dataset crated from the processedJSON with metadata
     val sdfRecords = sparkSession.read.textFile(CMDLINEOPTIONS.inputLocation)
     println("\n--------  sdf Records ------------")
-    sdfRecords.show(false)
+    sdfRecords.show(2, false)
 
     // jsonValidator validates whether the input data is valid or not
     val jsonValidatedRecords = jsonValidator(sdfRecords)
     println("\n--------------- JSON Validated Records -------------")
-    jsonValidatedRecords.collect().foreach(println)
+    jsonValidatedRecords.take(2).foreach(println)
+    //jsonValidatedRecords.collect().foreach(println)
 
     // get the content wrapped in Success  rec_._2.get does this
     val validJsonRecords = jsonValidatedRecords.filter(_._2.isSuccess).map(rec => (rec._1, rec._2.get))
+    //val validJsonRecords = jsonValidatedRecords.filter(_._2.isSuccess).map(rec => (rec._1, rec._2.get.get("_p").get("data")))
     println("\n--------------- valid JSON Records ---------------")
-    validJsonRecords.collect().foreach(println)
+    validJsonRecords.take(2).foreach(println)
+   // validJsonRecords.collect().foreach(println)
 
     val invalidJsonRecords = jsonValidatedRecords.filter(_._2.isFailure)
     //writeToBigQuery(invalidJsonRecords, CMDLINEOPTIONS, JOBNAME, INVALID_JSON_ERROR)
     println("\n--------------- invalid JSON Records -------------")
-    invalidJsonRecords.collect().foreach(println)
+    invalidJsonRecords.take(2).foreach(println)
+   // invalidJsonRecords.collect().foreach(println)
 
     val schemaValidatedRecords = schemaValidator(validJsonRecords, schema)
     println("\n---------------- Schema Validated Records ------")
-    schemaValidatedRecords.collect.foreach(println)
+    schemaValidatedRecords.take(2).foreach(println)
+  //  schemaValidatedRecords.collect.foreach(println)
 
     val validSchemaRecords = schemaValidatedRecords.filter(_._2.isSuccess).map(rec => (rec._1, rec._2.get))
     println("\n---------------- valid Schema Records ------")
-    validSchemaRecords.collect.foreach(println)
+    validSchemaRecords.take(2).foreach(println)
+  //  validSchemaRecords.collect.foreach(println)
 
     val invalidSchemaRecords = schemaValidatedRecords.filter(_._2.isFailure)
     //writeToBigQuery(invalidSchemaRecords, CMDLINEOPTIONS, JOBNAME, INVALID_SCHEMA_ERROR)
     println("\n---------------- invalid Schema Records ------")
-    invalidSchemaRecords.collect.foreach(println)
+    invalidSchemaRecords.take(2).foreach(println)
+//    invalidSchemaRecords.collect.foreach(println)
 
     println("\n---------------- retailDF with retailaSchema field types matched------")
     val retailDF = sparkSession.read.schema(Insight.retailSchema).json(validSchemaRecords.map(_._2.toString))
 
     retailDF.printSchema()
-    retailDF.show(false)
+    retailDF.show(2,false)
 
     // Now view Datframe data through spark.sql
     println("\n----------------Spark sql table retail_tbl------")
     retailDF.createOrReplaceGlobalTempView("retail_tbl")
     val sparkTable  = "global_temp.retail_tbl"
-    sparkSession.sql("SELECT * from global_temp.retail_tbl").show(false)
+    sparkSession.sql("SELECT * from global_temp.retail_tbl").show(2,false)
 
     println("\n----------------Revenue per stockcode------")
     sparkSession.sql("SELECT distinct stockcode,  quantity*unitprice as Revenue from global_temp.retail_tbl")
-      .show(false)
+      .show(2,false)
 
-    println("KPI1: Highest selling SKUs on a daily basis (M,T,W,Th,F,S,Su) per country")
-    println("----------------------------------------------------")
-    Insight.runKPIQuery(sparkSession, sparkTable, CMDLINEOPTIONS.kpiLocation)
+//    println("KPI1: Highest selling SKUs on a daily basis (M,T,W,Th,F,S,Su) per country")
+//    println("----------------------------------------------------")
+//    Insight.runKPIQuery(sparkSession, sparkTable, CMDLINEOPTIONS.kpiLocation)
 
 
 

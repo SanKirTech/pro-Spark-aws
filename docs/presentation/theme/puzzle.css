@@ -16,9 +16,9 @@ body {
 
 .reveal {
   font-family: "Roboto", sans-serif;
-  font-size: 3rem;
-  font-weight: 300;
-  color: #444; }
+  font-size: 4rem;
+  font-weight: 500;
+  color: #000; }
 
 .reveal.has-dark-background {
   color: #fff; }

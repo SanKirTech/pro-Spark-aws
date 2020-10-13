@@ -1,3 +1,16 @@
+/*
+ * SanKir Technologies
+ * (c) Copyright 2020.  All rights reserved.
+ * No part of pro-Spark course contents - code, video or documentation - may be reproduced, distributed or transmitted
+ *  in any form or by any means including photocopying, recording or other electronic or mechanical methods,
+ *  without the prior written permission from Sankir Technologies.
+ *
+ * The course contents can be accessed by subscribing to pro-Spark course.
+ *
+ * Please visit www.sankir.com for details.
+ *
+ */
+
 package com.sankir.smp.pipelines
 
 import com.sankir.smp.app.JsonUtils
@@ -30,7 +43,7 @@ class ApplicationMainTest extends AnyFlatSpec with SharedSparkContext {
     import com.sankir.smp.utils.encoders.CustomEncoders._
     val sdfData = sparkSession.createDataset(readAsStringIterator("pipelines/schema_json_data.txt").toSeq)
     val schema = readAsString("pipelines/schema.json")
-    val jsonValidatedRecords = sdfData.map(rec => (rec, JsonUtils.deserialize(rec)))
+    val jsonValidatedRecords = sdfData.map(rec => (rec, JsonUtils.toJsonNode(rec)))
     val schemaValidatedRecords = schemaValidator(jsonValidatedRecords, schema)
     assert(schemaValidatedRecords.filter(_._2.isFailure).count() == 1)
   }
@@ -39,7 +52,7 @@ class ApplicationMainTest extends AnyFlatSpec with SharedSparkContext {
     import com.sankir.smp.utils.encoders.CustomEncoders._
     val sdfData = sparkSession.createDataset(readAsStringIterator("pipelines/schema_json_data.txt").toSeq)
     val schema = readAsString("pipelines/schema.json")
-    val jsonValidatedRecords = sdfData.map(rec => (rec, JsonUtils.deserialize(rec)))
+    val jsonValidatedRecords = sdfData.map(rec => (rec, JsonUtils.toJsonNode(rec)))
     val schemaValidatedRecords = schemaValidator(jsonValidatedRecords, schema)
     assert(schemaValidatedRecords.filter(_._2.isSuccess).count() == 2)
   }

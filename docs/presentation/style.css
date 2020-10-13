@@ -16,7 +16,7 @@ background-color: rgba(65, 105, 225, 0.05);
 }
 
 .reveal .slides:before {
-    content: "Sankir Technologies";
+    //content: "Sankir Technologies";
     //background-color: royalblue;
     color: royalblue;
     display: inline-block;

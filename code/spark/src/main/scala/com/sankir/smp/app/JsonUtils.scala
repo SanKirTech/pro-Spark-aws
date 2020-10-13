@@ -1,3 +1,16 @@
+/*
+ * SanKir Technologies
+ * (c) Copyright 2020.  All rights reserved.
+ * No part of pro-Spark course contents - code, video or documentation - may be reproduced, distributed or transmitted
+ *  in any form or by any means including photocopying, recording or other electronic or mechanical methods,
+ *  without the prior written permission from Sankir Technologies.
+ *
+ * The course contents can be accessed by subscribing to pro-Spark course.
+ *
+ * Please visit www.sankir.com for details.
+ *
+ */
+
 package com.sankir.smp.app
 
 import java.io.InputStream
@@ -5,7 +18,7 @@ import java.time.ZonedDateTime
 
 import com.fasterxml.jackson.databind.node.{ArrayNode, ObjectNode}
 import com.fasterxml.jackson.databind.{DeserializationFeature, JsonNode, ObjectMapper}
-import com.fasterxml.jackson.module.scala.{DefaultScalaModule, ScalaObjectMapper}
+import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.sankir.smp.common.Options
 
 import scala.util.Try
@@ -17,24 +30,24 @@ object JsonUtils {
     .registerModule(DefaultScalaModule)
     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
-  def serialize(jsonNode: JsonNode): String = MAPPER.writeValueAsString(jsonNode)
+  def jsonNodetoString(jsonNode: JsonNode): String = MAPPER.writeValueAsString(jsonNode)
 
-  def serializeValue(value: Any): String = MAPPER.writeValueAsString(value)
+  def jsonNodetoStringValue(value: Any): String = MAPPER.writeValueAsString(value)
 
-  def serializedBytes(value: Any): Array[Byte] = MAPPER.writeValueAsBytes(value)
+  def jsonNodetoBytes(value: Any): Array[Byte] = MAPPER.writeValueAsBytes(value)
 
-  def deserialize(bytes: Array[Byte]): JsonNode = MAPPER.readTree(bytes)
+  def toJsonNode(bytes: Array[Byte]): JsonNode = MAPPER.readTree(bytes)
 
-  def deserializeToObject(is: InputStream): JsonNode = MAPPER.readTree(is)
+  def toJsonNode(is: InputStream): JsonNode = MAPPER.readTree(is)
 
-  def deserializeObjectNodeOptional(string: String): Option[ObjectNode] =
-    deserializeOptional(string).flatMap(node => if (node.isObject) Option(node.asInstanceOf[ObjectNode]) else Option.empty)
+  def toObjectNodeOptional(string: String): Option[ObjectNode] =
+    toJsonNodeOptional(string).flatMap(node => if (node.isObject) Option(node.asInstanceOf[ObjectNode]) else Option.empty)
 
-  def deserializeOptional(string: String): Option[JsonNode] = Option(deserialize(string))
+  def toJsonNodeOptional(string: String): Option[JsonNode] = Option(toJsonNode(string))
 
-  def deserialize(jsonString: String): JsonNode = MAPPER.readTree(jsonString)
+  def toJsonNode(jsonString: String): JsonNode = MAPPER.readTree(jsonString)
 
-  def deserialize[T](string: String, objectType: Class[T]): T = MAPPER.readValue(string, objectType)
+  def toCustomClass[T](string: String, objectType: Class[T]): T = MAPPER.readValue(string, objectType)
 
   def getObjectProperty(node: JsonNode, propertyName: String): ObjectNode =
     getObjectPropertyOptional(node, propertyName).getOrElse(throw throw requiredPropertyError(propertyName).apply())
