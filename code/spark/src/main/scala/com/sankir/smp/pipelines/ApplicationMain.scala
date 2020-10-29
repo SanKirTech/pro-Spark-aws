@@ -14,6 +14,7 @@
 package com.sankir.smp.pipelines
 
 //import com.sankir.smp.pipelines.transformations.ErrorTransformations.writeToBigQuery
+
 import com.sankir.smp.pipelines.transformations.Insight
 import com.sankir.smp.pipelines.validators.Validator.{jsonValidator, schemaValidator}
 import com.sankir.smp.utils.ArgParser
@@ -35,7 +36,11 @@ object ApplicationMain {
 
     // Creating SparkSession
     //val sparkSession = SparkSession.builder().appName("Pro-Spark-Batch").getOrCreate()
-    val sparkSession = SparkSession.builder().appName("Pro-Spark-Batch").master("local[*]").getOrCreate()
+    val sparkSession = SparkSession
+      .builder()
+      .appName("Pro-Spark-Batch")
+      .master("local[*]")
+      .getOrCreate()
 
     val JOBNAME = s"${sparkSession.sparkContext.appName}-${sparkSession.sparkContext.applicationId}"
 
@@ -58,50 +63,49 @@ object ApplicationMain {
     //val validJsonRecords = jsonValidatedRecords.filter(_._2.isSuccess).map(rec => (rec._1, rec._2.get.get("_p").get("data")))
     println("\n--------------- valid JSON Records ---------------")
     validJsonRecords.take(2).foreach(println)
-   // validJsonRecords.collect().foreach(println)
+    // validJsonRecords.collect().foreach(println)
 
     val invalidJsonRecords = jsonValidatedRecords.filter(_._2.isFailure)
     //writeToBigQuery(invalidJsonRecords, CMDLINEOPTIONS, JOBNAME, INVALID_JSON_ERROR)
     println("\n--------------- invalid JSON Records -------------")
     invalidJsonRecords.take(2).foreach(println)
-   // invalidJsonRecords.collect().foreach(println)
+    // invalidJsonRecords.collect().foreach(println)
 
     val schemaValidatedRecords = schemaValidator(validJsonRecords, schema)
     println("\n---------------- Schema Validated Records ------")
     schemaValidatedRecords.take(2).foreach(println)
-  //  schemaValidatedRecords.collect.foreach(println)
+    //  schemaValidatedRecords.collect.foreach(println)
 
     val validSchemaRecords = schemaValidatedRecords.filter(_._2.isSuccess).map(rec => (rec._1, rec._2.get))
     println("\n---------------- valid Schema Records ------")
     validSchemaRecords.take(2).foreach(println)
-  //  validSchemaRecords.collect.foreach(println)
+    //  validSchemaRecords.collect.foreach(println)
 
     val invalidSchemaRecords = schemaValidatedRecords.filter(_._2.isFailure)
     //writeToBigQuery(invalidSchemaRecords, CMDLINEOPTIONS, JOBNAME, INVALID_SCHEMA_ERROR)
     println("\n---------------- invalid Schema Records ------")
     invalidSchemaRecords.take(2).foreach(println)
-//    invalidSchemaRecords.collect.foreach(println)
+    //    invalidSchemaRecords.collect.foreach(println)
 
     println("\n---------------- retailDF with retailaSchema field types matched------")
     val retailDF = sparkSession.read.schema(Insight.retailSchema).json(validSchemaRecords.map(_._2.toString))
 
     retailDF.printSchema()
-    retailDF.show(2,false)
+    retailDF.show(2, false)
 
     // Now view Datframe data through spark.sql
     println("\n----------------Spark sql table retail_tbl------")
     retailDF.createOrReplaceGlobalTempView("retail_tbl")
-    val sparkTable  = "global_temp.retail_tbl"
-    sparkSession.sql("SELECT * from global_temp.retail_tbl").show(2,false)
+    val sparkTable = "global_temp.retail_tbl"
+    sparkSession.sql("SELECT * from global_temp.retail_tbl").show(2, false)
 
     println("\n----------------Revenue per stockcode------")
     sparkSession.sql("SELECT distinct stockcode,  quantity*unitprice as Revenue from global_temp.retail_tbl")
-      .show(2,false)
+      .show(2, false)
 
-//    println("KPI1: Highest selling SKUs on a daily basis (M,T,W,Th,F,S,Su) per country")
-//    println("----------------------------------------------------")
-//    Insight.runKPIQuery(sparkSession, sparkTable, CMDLINEOPTIONS.kpiLocation)
-
+        println("KPI1: Highest selling SKUs on a daily basis (M,T,W,Th,F,S,Su) per country")
+        println("----------------------------------------------------")
+        Insight.runKPIQuery(sparkSession, sparkTable, CMDLINEOPTIONS.kpiLocation)
 
 
     //  BELOW code ONLY for REFERENCE

@@ -14,7 +14,7 @@
 package com.sankir.smp.pipelines.transformations
 
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.types.{DateType, StringType, StructField, StructType}
+import org.apache.spark.sql.types.{DateType, DoubleType, IntegerType, StringType, StructField, StructType}
 
 object Insight {
 
@@ -22,10 +22,10 @@ object Insight {
     StructField("InvoiceNo", StringType, nullable = false),
     StructField("StockCode", StringType, nullable = false),
     StructField("Description",StringType, nullable = false),
-    StructField("Quantity", StringType, nullable = false),
+    StructField("Quantity", IntegerType, nullable = false),
     StructField("InvoiceDate", DateType, nullable = false),
-    StructField("UnitPrice", StringType, nullable = false),
-    StructField("CustomerID",StringType, nullable = false),
+    StructField("UnitPrice", DoubleType, nullable = false),
+    StructField("CustomerID", DoubleType, nullable = false),
     StructField("Country",StringType, nullable = false)))
 
   def writekpiToBigQ(sparkSession: SparkSession, kq: String, bqtbl: String): Option[String] = {
@@ -35,9 +35,10 @@ object Insight {
     kpiDF.printSchema()
 
     kpiDF.show(100,false)
-//    kpiDF.write.format("bigquery")
-//      .mode("overwrite")
-//      .save(bqtbl)
+   // kpiDF.write.format("bigquery")
+    kpiDF.coalesce(5).write.format("bigquery")
+      .mode("overwrite")
+      .save(bqtbl)
     Some("Success")
   }
 
