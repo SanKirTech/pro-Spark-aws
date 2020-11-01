@@ -1,10 +1,10 @@
-{
-  "InvoiceNo": "536365",
-  "StockCode": "85123A",
-  "Description": "WHITE HANGING HEART T-LIGHT HOLDER",
-  "Quantity": "6",
-  "InvoiceDate": "2010-12-01 08:26:00",
-  "UnitPrice": "2.55",
-  "CustomerID": "17850.0",
-  "Country": "United Kingdom"
-}
+  {
+    "InvoiceNo": "536365",
+    "StockCode": "85123A",
+    "Description": "WHITE HANGING HEART T-LIGHT HOLDER",
+    "Quantity": "6",
+    "InvoiceDate": "2010-12-01 08:26:00",
+    "UnitPrice": "2.55",
+    "CustomerID": "17850.0",
+    "Country": "United Kingdom"
+  }

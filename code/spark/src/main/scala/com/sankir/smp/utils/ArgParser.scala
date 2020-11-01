@@ -28,6 +28,12 @@ object ArgParser {
         .action((x, c) => c.copy(schemaLocation = x))
         .required()
         .text("Schema Path"),
+      opt[String]("businessRules")
+        .action((x, c) => {
+          c.copy(businessRulesPath = x)
+        })
+        .required()
+        .text("Business Rules Path"),
       opt[String]("inputLocation")
         .action((x, c) => c.copy(inputLocation = x))
         .required()
@@ -44,7 +50,7 @@ object ArgParser {
         .action((x, c) => c.copy(bqErrorTable = x))
         .required()
         .text("BigQuery Error Table Name"),
-        opt[String]("kpiLocation")
+      opt[String]("kpiLocation")
         .action((x, c) => c.copy(kpiLocation = x))
         .required()
         .text("kpi json Path")
@@ -66,6 +72,7 @@ object ArgParser {
 case class
 CmdLineOptions(
         schemaLocation: String = "",
+        businessRulesPath: String = "",
         inputLocation: String = "",
         projectId: String = "",
         bqDataset: String = "",

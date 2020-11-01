@@ -16,7 +16,7 @@ package com.sankir.smp.pipelines
 //import com.sankir.smp.pipelines.transformations.ErrorTransformations.writeToBigQuery
 
 import com.sankir.smp.pipelines.transformations.Insight
-import com.sankir.smp.pipelines.validators.Validator.{jsonValidator, schemaValidator}
+import com.sankir.smp.pipelines.validators.Validator.{businessRuleValidator, jsonValidator, schemaValidator}
 import com.sankir.smp.utils.ArgParser
 import com.sankir.smp.utils.Resources.readAsStringFromGCS
 //import com.sankir.smp.utils.enums.ErrorEnums.{INVALID_JSON_ERROR, SCHEMA_VALIDATION_ERROR}
@@ -33,6 +33,9 @@ object ApplicationMain {
 
     //Reading the schemaString
     val schema = readAsStringFromGCS(CMDLINEOPTIONS.projectId, CMDLINEOPTIONS.schemaLocation)
+
+    //Reading the business Rules
+    val bussinessRules = readAsStringFromGCS(CMDLINEOPTIONS.projectId, CMDLINEOPTIONS.businessRulesPath).split(",").toList
 
     // Creating SparkSession
     //val sparkSession = SparkSession.builder().appName("Pro-Spark-Batch").getOrCreate()
@@ -88,7 +91,10 @@ object ApplicationMain {
     //    invalidSchemaRecords.collect.foreach(println)
 
     println("\n---------------- retailDF with retailaSchema field types matched------")
-    val retailDF = sparkSession.read.schema(Insight.retailSchema).json(validSchemaRecords.map(_._2.toString))
+    val validRecordsDF = sparkSession.read.schema(Insight.retailSchema).json(validSchemaRecords.map(_._2.toString))
+
+    val retailDF = businessRuleValidator(validRecordsDF, bussinessRules)
+
 
     retailDF.printSchema()
     retailDF.show(2, false)

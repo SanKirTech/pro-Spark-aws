@@ -16,10 +16,7 @@ package com.sankir.smp.pipelines
 import com.sankir.smp.app.JsonUtils
 import com.sankir.smp.pipelines.validators.Validator.{schemaValidator, jsonValidator}
 import com.sankir.smp.utils.Resources.{readAsString, readAsStringIterator}
-import org.apache.spark.SparkConf
-import org.apache.spark.sql.SparkSession
 import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.{BeforeAndAfterAll, Suite}
 
 class ApplicationMainTest extends AnyFlatSpec with SharedSparkContext {
 
@@ -95,21 +92,4 @@ class ApplicationMainTest extends AnyFlatSpec with SharedSparkContext {
 
 }
 
-trait SharedSparkContext extends BeforeAndAfterAll { self: Suite =>
-  @transient private var _spark: SparkSession = _
 
-  def sparkSession: SparkSession = _spark
-
-  var conf = new SparkConf(false)
-
-  override protected def beforeAll(): Unit = {
-    _spark = SparkSession.builder().appName("Test").master("local[2]").getOrCreate()
-    super.beforeAll()
-  }
-
-  override protected def afterAll(): Unit = {
-    _spark.stop()
-    _spark = null
-    super.afterAll()
-  }
-}
