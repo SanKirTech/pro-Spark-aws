@@ -15,10 +15,13 @@ package com.sankir.smp.pipelines
 
 //import com.sankir.smp.pipelines.transformations.ErrorTransformations.writeToBigQuery
 
+import com.sankir.smp.pipelines.retail.RetailBusinessValidator
+import com.sankir.smp.pipelines.transformations.ErrorTransformations.writeToBigQuery
 import com.sankir.smp.pipelines.transformations.Insight
-import com.sankir.smp.pipelines.validators.Validator.{businessRuleValidator, jsonValidator, schemaValidator}
+import com.sankir.smp.pipelines.validators.Validator.{businessRuleValidator, businessValidator, jsonValidator, schemaValidator}
 import com.sankir.smp.utils.ArgParser
 import com.sankir.smp.utils.Resources.readAsStringFromGCS
+import com.sankir.smp.utils.enums.ErrorEnums.INVALID_JSON
 //import com.sankir.smp.utils.enums.ErrorEnums.{INVALID_JSON_ERROR, SCHEMA_VALIDATION_ERROR}
 import org.apache.spark.sql.SparkSession
 
@@ -90,11 +93,15 @@ object ApplicationMain {
     invalidSchemaRecords.take(2).foreach(println)
     //    invalidSchemaRecords.collect.foreach(println)
 
+    val businessValidatedRecords = businessValidator(validSchemaRecords, RetailBusinessValidator.validate)
+
+    val validBusinessRecords = businessValidatedRecords.filter(_._2.isSuccess).map(rec => (rec._1, rec._2.get))
+
+    val invalidBusinessRecords = businessValidatedRecords.filter(_._2.isFailure)
+//    writeToBigQuery(invalidSchemaRecords, CMDLINEOPTIONS, JOBNAME, INVALID_BIZ_DATA)
+
     println("\n---------------- retailDF with retailaSchema field types matched------")
-    val validRecordsDF = sparkSession.read.schema(Insight.retailSchema).json(validSchemaRecords.map(_._2.toString))
-
-    val retailDF = businessRuleValidator(validRecordsDF, bussinessRules)
-
+    val retailDF = sparkSession.read.schema(Insight.retailSchema).json(validBusinessRecords.map(_._2.toString))
 
     retailDF.printSchema()
     retailDF.show(2, false)

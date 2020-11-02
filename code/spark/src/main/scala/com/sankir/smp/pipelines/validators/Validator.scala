@@ -39,6 +39,13 @@ object Validator {
 
   }
 
+  def businessValidator(rawRecords: Dataset[(String, JsonNode)], fun: JsonNode => Try[JsonNode]): Dataset[(String, Try[JsonNode])] = {
+    import com.sankir.smp.utils.encoders.CustomEncoders._
+    rawRecords.map(rec => (rec._1, fun.apply(rec._2)))
+    //rawRecords.map(vr => (vr._1, convertABToTryB[String, JsonNode](schema, vr._2.get("_p").get("data"), validateSchema)))  (Encoders.kryo[(String, Try[JsonNode])]) // if you remove implicit statement
+
+  }
+
   def businessRuleValidator(rawRecords:DataFrame, filterConditions: List[String]): DataFrame = {
     var validatedRecords = rawRecords
     filterConditions.foreach(condition => {
