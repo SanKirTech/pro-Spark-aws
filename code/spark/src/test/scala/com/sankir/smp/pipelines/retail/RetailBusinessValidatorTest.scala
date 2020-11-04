@@ -32,36 +32,36 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
     assert(RetailBusinessValidator.validate(jsonNode).isFailure)
   }
 
-  behavior of  "validStockCode"
-  it should "return false when Empty Json are passed" in {
-    assert(!validStockCode().test(JsonUtils.emptyObject().asInstanceOf[JsonNode]))
-  }
-  it should "return false when StockCode Key is not present in json" in {
-    assert(!validStockCode().test(JsonUtils.emptyObject().put("Quantity", "abc").asInstanceOf[JsonNode]))
-  }
-  it should "return false when StockCode not present in validjsonList" in {
-    assert(!validStockCode().test(JsonUtils.emptyObject().put("StockCode", "not-present").asInstanceOf[JsonNode]))
-  }
-  it should "return true when Success StockCode present in validjsonList" in {
-    assert(validStockCode().test(JsonUtils.emptyObject().put("StockCode", "abc").asInstanceOf[JsonNode]))
-  }
+//  behavior of  "validStockCode"
+//  it should "return false when Empty Json are passed" in {
+//    assert(!validStockCode().test(JsonUtils.emptyObject().asInstanceOf[JsonNode]))
+//  }
+//  it should "return false when StockCode Key is not present in json" in {
+//    assert(!validStockCode().test(JsonUtils.emptyObject().put("Quantity", "abc").asInstanceOf[JsonNode]))
+//  }
+//  it should "return false when StockCode not present in validjsonList" in {
+//    assert(!validStockCode().test(JsonUtils.emptyObject().put("StockCode", "not-present").asInstanceOf[JsonNode]))
+//  }
+//  it should "return true when Success StockCode present in validjsonList" in {
+//    assert(validStockCode().test(JsonUtils.emptyObject().put("StockCode", "abc").asInstanceOf[JsonNode]))
+//  }
 
   behavior of  "validCountry"
   it should "return false when Empty Json are passed" in {
     assert(!validCountry().test(JsonUtils.emptyObject().asInstanceOf[JsonNode]))
   }
   it should "return false when Country Key is not present in json" in {
-    assert(!validCountry().test(JsonUtils.emptyObject().put("Quantity", "abc").asInstanceOf[JsonNode]))
+    assert(!validCountry().test(JsonUtils.emptyObject().put("XYZ", "abc").asInstanceOf[JsonNode]))
   }
   it should "return false when Country is empty" in {
     assert(!validCountry().test(JsonUtils.emptyObject().put("Country", "").asInstanceOf[JsonNode]))
   }
   it should "return false when Country not present in CountryList" in {
-    assert(!validCountry().test(JsonUtils.emptyObject().put("Country", "not-present").asInstanceOf[JsonNode]))
+    assert(!validCountry().test(JsonUtils.emptyObject().put("Country", "Venezula").asInstanceOf[JsonNode]))
   }
   it should "return true when Country present in CountryList" in {
     // Country present in json
-    assert(validCountry().test(JsonUtils.emptyObject().put("Country", "INDIA").asInstanceOf[JsonNode]))
+    assert(validCountry().test(JsonUtils.emptyObject().put("Country", "France").asInstanceOf[JsonNode]))
   }
 
   behavior of  "validInvoices"
@@ -69,16 +69,16 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
     assert(!validInvoices().test(JsonUtils.emptyObject().asInstanceOf[JsonNode]))
   }
   it should "return false when InvoiceNo Key is not present in json" in {
-    assert(!validInvoices().test(JsonUtils.emptyObject().put("Quantity", "abc").asInstanceOf[JsonNode]))
+    assert(!validInvoices().test(JsonUtils.emptyObject().put("XYZ", "abc").asInstanceOf[JsonNode]))
   }
   it should "return false when InvoiceNo is Empty" in {
-    assert(!validInvoices().test(JsonUtils.emptyObject().put("InvoiceNo", "").asInstanceOf[JsonNode]))
+    assert(!validInvoices().test(JsonUtils.emptyObject().put("InvoiceNo", " ").asInstanceOf[JsonNode]))
   }
-  it should "return false when InvoiceNo doesnot starts with C" in {
-    assert(!validInvoices().test(JsonUtils.emptyObject().put("InvoiceNo", "not-present").asInstanceOf[JsonNode]))
+  it should "return false when InvoiceNo starts with C" in {
+    assert(!validInvoices().test(JsonUtils.emptyObject().put("InvoiceNo", "C12345").asInstanceOf[JsonNode]))
   }
   it should "return true when InvoiceNo starts with C" in {
-    assert(validInvoices().test(JsonUtils.emptyObject().put("InvoiceNo", "Crocs123").asInstanceOf[JsonNode]))
+    assert(validInvoices().test(JsonUtils.emptyObject().put("InvoiceNo", "541267").asInstanceOf[JsonNode]))
   }
 
   behavior of  "validQuantity"
@@ -86,19 +86,19 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
     assert(!validQuantity().test(JsonUtils.emptyObject().asInstanceOf[JsonNode]))
   }
   it should "return false when Quantity Key is not present in json" in {
-    assert(!validQuantity().test(JsonUtils.emptyObject().put("abc", "abc").asInstanceOf[JsonNode]))
+    assert(!validQuantity().test(JsonUtils.emptyObject().put("XYZ", "abc").asInstanceOf[JsonNode]))
   }
   it should "return false when Quantity is Empty" in {
     assert(!validQuantity().test(JsonUtils.emptyObject().put("Quantity", "").asInstanceOf[JsonNode]))
   }
   it should "return false when Quantity is -ve" in {
-    assert(!validQuantity().test(JsonUtils.emptyObject().put("Quantity", "-1").asInstanceOf[JsonNode]))
+    assert(!validQuantity().test(JsonUtils.emptyObject().put("Quantity", -1).asInstanceOf[JsonNode]))
   }
   it should "return false when Quantity is 0" in {
-    assert(!validQuantity().test(JsonUtils.emptyObject().put("Quantity", "0").asInstanceOf[JsonNode]))
+    assert(!validQuantity().test(JsonUtils.emptyObject().put("Quantity", 0).asInstanceOf[JsonNode]))
   }
   it should "return true when Quantity is positive" in {
-    assert(validQuantity().test(JsonUtils.emptyObject().put("Quantity", "100").asInstanceOf[JsonNode]))
+    assert(validQuantity().test(JsonUtils.emptyObject().put("Quantity", 10).asInstanceOf[JsonNode]))
   }
 
   behavior of  "validUnitPrice"
@@ -106,16 +106,16 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
     assert(!validUnitPrice().test(JsonUtils.emptyObject().asInstanceOf[JsonNode]))
   }
   it should "return false when UnitPrice Key is not present in json" in {
-    assert(!validUnitPrice().test(JsonUtils.emptyObject().put("abc", "abc").asInstanceOf[JsonNode]))
+    assert(!validUnitPrice().test(JsonUtils.emptyObject().put("XYZ", "abc").asInstanceOf[JsonNode]))
   }
   it should "return false when UnitPrice is Empty" in {
     assert(!validUnitPrice().test(JsonUtils.emptyObject().put("UnitPrice", "").asInstanceOf[JsonNode]))
   }
   it should "return false when UnitPrice is -ve" in {
-    assert(!validUnitPrice().test(JsonUtils.emptyObject().put("UnitPrice", "-1").asInstanceOf[JsonNode]))
+    assert(!validUnitPrice().test(JsonUtils.emptyObject().put("UnitPrice", "-1.0").asInstanceOf[JsonNode]))
   }
   it should "return false when UnitPrice is 0" in {
-    assert(!validUnitPrice().test(JsonUtils.emptyObject().put("UnitPrice", "0").asInstanceOf[JsonNode]))
+    assert(!validUnitPrice().test(JsonUtils.emptyObject().put("UnitPrice", "0.0").asInstanceOf[JsonNode]))
   }
   it should "return true when UnitPrice is positive" in {
     assert(validUnitPrice().test(JsonUtils.emptyObject().put("UnitPrice", "10.50").asInstanceOf[JsonNode]))
@@ -126,13 +126,13 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
     assert(!validCustomerId().test(JsonUtils.emptyObject().asInstanceOf[JsonNode]))
   }
   it should "return false when CustomerID Key is not present in json" in {
-    assert(!validCustomerId().test(JsonUtils.emptyObject().put("abc", "abc").asInstanceOf[JsonNode]))
+    assert(!validCustomerId().test(JsonUtils.emptyObject().put("XYZ", "abc").asInstanceOf[JsonNode]))
   }
   it should "return false when CustomerID is Empty" in {
     assert(!validCustomerId().test(JsonUtils.emptyObject().put("CustomerID", "").asInstanceOf[JsonNode]))
   }
   it should "return true when CustomerID is correct" in {
-    assert(validCustomerId().test(JsonUtils.emptyObject().put("CustomerID", "Crocs123").asInstanceOf[JsonNode]))
+    assert(validCustomerId().test(JsonUtils.emptyObject().put("CustomerID", 12779.0).asInstanceOf[JsonNode]))
   }
 
   behavior of  "validDate"
@@ -140,7 +140,7 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
     assert(!validDate().test(JsonUtils.emptyObject().asInstanceOf[JsonNode]))
   }
   it should "return false when InvoiceDate is not present in json" in {
-    assert(!validDate().test(JsonUtils.emptyObject().put("Quantity", "abc").asInstanceOf[JsonNode]))
+    assert(!validDate().test(JsonUtils.emptyObject().put("XYZ", "abc").asInstanceOf[JsonNode]))
   }
   it should "return false when InvoiceDate is Empty" in {
     assert(!validDate().test(JsonUtils.emptyObject().put("InvoiceDate", "").asInstanceOf[JsonNode]))
@@ -151,5 +151,22 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
   it should "return true when InvoiceDate is proper" in {
     assert(validDate().test(JsonUtils.emptyObject().put("InvoiceDate", "2010-12-01 08:26:00").asInstanceOf[JsonNode]))
   }
-
+  it should "return false when InvoiceDate is having wrong day " in {
+    assert(!validDate().test(JsonUtils.emptyObject().put("InvoiceDate", "2011-01-51 08:26:00").asInstanceOf[JsonNode]))
+  }
+  it should "return false when InvoiceDate is having wrong month " in {
+    assert(!validDate().test(JsonUtils.emptyObject().put("InvoiceDate", "2011-41-01 08:26:00").asInstanceOf[JsonNode]))
+  }
+  it should "return false when InvoiceDate is having date > today date  " in {
+    assert(!validDate().test(JsonUtils.emptyObject().put("InvoiceDate", "2019-01-17 08:26:00").asInstanceOf[JsonNode]))
+  }
+  it should "return false when InvoiceDate is wrong sec" in {
+    assert(!validDate().test(JsonUtils.emptyObject().put("InvoiceDate", "2010-12-01 08:26:70").asInstanceOf[JsonNode]))
+  }
+  it should "return false when InvoiceDate is wrong min" in {
+    assert(!validDate().test(JsonUtils.emptyObject().put("InvoiceDate", "2010-12-01 08:80:00").asInstanceOf[JsonNode]))
+  }
+  it should "return false when InvoiceDate is wrong hour" in {
+    assert(!validDate().test(JsonUtils.emptyObject().put("InvoiceDate", "2010-12-01 90:26:00").asInstanceOf[JsonNode]))
+  }
 }

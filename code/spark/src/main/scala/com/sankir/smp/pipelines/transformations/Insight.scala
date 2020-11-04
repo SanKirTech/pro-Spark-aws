@@ -36,9 +36,9 @@ object Insight {
 
     kpiDF.show(100,false)
    // kpiDF.write.format("bigquery")
-    kpiDF.coalesce(5).write.format("bigquery")
-      .mode("overwrite")
-      .save(bqtbl)
+//    kpiDF.coalesce(5).write.format("bigquery")
+//      .mode("overwrite")
+//      .save(bqtbl)
     Some("Success")
   }
 

@@ -28,12 +28,12 @@ object ArgParser {
         .action((x, c) => c.copy(schemaLocation = x))
         .required()
         .text("Schema Path"),
-      opt[String]("businessRules")
-        .action((x, c) => {
-          c.copy(businessRulesPath = x)
-        })
-        .required()
-        .text("Business Rules Path"),
+//      opt[String]("businessRules")
+//        .action((x, c) => {
+//          c.copy(businessRulesPath = x)
+//        })
+//        .required()
+//        .text("Business Rules Path"),
       opt[String]("inputLocation")
         .action((x, c) => c.copy(inputLocation = x))
         .required()
@@ -72,7 +72,7 @@ object ArgParser {
 case class
 CmdLineOptions(
         schemaLocation: String = "",
-        businessRulesPath: String = "",
+      //  businessRulesPath: String = "",
         inputLocation: String = "",
         projectId: String = "",
         bqDataset: String = "",
