@@ -11,24 +11,22 @@
  *
  */
 
-package com.sankir.smp.pipelines.validators
+package com.sankir.smp.core.validators
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.sankir.smp.app.JsonUtils
-import com.sankir.smp.common.converters.Converter.{convertABToTryB, convertAToTryB}
-import com.sankir.smp.common.validators.SchemaValidator.validateSchema
-import org.apache.spark.sql.{DataFrame, Dataset}
+import com.sankir.smp.common.JsonUtils
+import com.sankir.smp.common.Converter.{convertABToTryB, convertAToTryB}
+import com.sankir.smp.core.validators.GenericSchemaValidator.validateSchema
+import org.apache.spark.sql.Dataset
 
 import scala.util.Try
 
-object Validator {
+object DataValidator {
 
   // Try returns success or failure of JSON format
   // JsonNode is Json file - read line by line
   def jsonValidator(rawRecords: Dataset[String]): Dataset[(String, Try[JsonNode])] = {
     import com.sankir.smp.utils.encoders.CustomEncoders._
-//    val str="HelloWorld"
-//    convertAToTryB[String, Integer](str, (a)=> a.length)
     rawRecords.map(rec => (rec, convertAToTryB[String, JsonNode](rec, JsonUtils.toJsonNode)))
   }
 
@@ -36,7 +34,6 @@ object Validator {
     import com.sankir.smp.utils.encoders.CustomEncoders._
     rawRecords.map(vr => (vr._1, convertABToTryB[String, JsonNode](schema, vr._2.get("_p").get("data"), validateSchema)))
     //rawRecords.map(vr => (vr._1, convertABToTryB[String, JsonNode](schema, vr._2.get("_p").get("data"), validateSchema)))  (Encoders.kryo[(String, Try[JsonNode])]) // if you remove implicit statement
-
   }
 
   def businessValidator(rawRecords: Dataset[(String, JsonNode)], fun: JsonNode => Try[JsonNode]): Dataset[(String, Try[JsonNode])] = {
@@ -44,14 +41,6 @@ object Validator {
     rawRecords.map(rec => (rec._1, fun.apply(rec._2)))
     //rawRecords.map(vr => (vr._1, convertABToTryB[String, JsonNode](schema, vr._2.get("_p").get("data"), validateSchema)))  (Encoders.kryo[(String, Try[JsonNode])]) // if you remove implicit statement
 
-  }
-
-  def businessRuleValidator(rawRecords:DataFrame, filterConditions: List[String]): DataFrame = {
-    var validatedRecords = rawRecords
-    filterConditions.foreach(condition => {
-      validatedRecords = rawRecords.filter(condition)
-    })
-    validatedRecords
   }
 
 }

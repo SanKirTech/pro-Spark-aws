@@ -16,7 +16,7 @@ package com.sankir.smp.utils
 import java.io.InputStream
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.sankir.smp.app.JsonUtils
+import com.sankir.smp.common.JsonUtils
 import org.everit.json.schema.Schema
 import org.everit.json.schema.loader.SchemaLoader
 import org.json.{JSONObject, JSONTokener}

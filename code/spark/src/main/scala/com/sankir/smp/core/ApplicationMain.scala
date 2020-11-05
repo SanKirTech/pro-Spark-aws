@@ -11,15 +11,15 @@
  *
  */
 
-package com.sankir.smp.pipelines
+package com.sankir.smp.core
 
-//import com.sankir.smp.pipelines.transformations.ErrorTransformations.writeToBigQuery
+//import com.sankir.smp.core.transformations.ErrorTransformations.writeToBigQuery
 
-import com.sankir.smp.pipelines.retail.RetailBusinessValidator
-import com.sankir.smp.pipelines.transformations.Insight
-import com.sankir.smp.pipelines.validators.Validator.{businessValidator, jsonValidator, schemaValidator}
+import com.sankir.smp.core.transformations.Insight
+import com.sankir.smp.core.validators.RetailBusinessValidator
+import com.sankir.smp.core.validators.DataValidator.{businessValidator, jsonValidator, schemaValidator}
 import com.sankir.smp.utils.ArgParser
-import com.sankir.smp.utils.Resources.readAsStringFromGCS
+import com.sankir.smp.utils.FileSource.readAsStringFromGCS
 //import com.sankir.smp.utils.enums.ErrorEnums.{INVALID_JSON_ERROR, SCHEMA_VALIDATION_ERROR}
 import org.apache.spark.sql.SparkSession
 
@@ -60,36 +60,31 @@ object ApplicationMain {
     val jsonValidatedRecords = jsonValidator(sdfRecords)
     println("\n--------------- JSON Validated Records -------------")
     jsonValidatedRecords.take(20).foreach(println)
-    //jsonValidatedRecords.collect().foreach(println)
 
     // get the content wrapped in Success  rec_._2.get does this
     val validJsonRecords = jsonValidatedRecords.filter(_._2.isSuccess).map(rec => (rec._1, rec._2.get))
     //val validJsonRecords = jsonValidatedRecords.filter(_._2.isSuccess).map(rec => (rec._1, rec._2.get.get("_p").get("data")))
     println("\n--------------- valid JSON Records --------------- " + validJsonRecords.count())
     validJsonRecords.take(20).foreach(println)
-    // validJsonRecords.collect().foreach(println)
+
 
     val invalidJsonRecords = jsonValidatedRecords.filter(_._2.isFailure)
     //writeToBigQuery(invalidJsonRecords, CMDLINEOPTIONS, JOBNAME, INVALID_JSON_ERROR)
     println("\n--------------- invalid JSON Records ------------- " + invalidJsonRecords.count())
     invalidJsonRecords.take(20).foreach(println)
-    // invalidJsonRecords.collect().foreach(println)
 
     val schemaValidatedRecords = schemaValidator(validJsonRecords, schema)
     println("\n---------------- Schema Validated Records ------")
     schemaValidatedRecords.take(20).foreach(println)
-    //  schemaValidatedRecords.collect.foreach(println)
 
     val validSchemaRecords = schemaValidatedRecords.filter(_._2.isSuccess).map(rec => (rec._1, rec._2.get))
     println("\n---------------- valid Schema Records ------  " + validSchemaRecords.count())
     validSchemaRecords.take(20).foreach(println)
-    //  validSchemaRecords.collect.foreach(println)
 
     val invalidSchemaRecords = schemaValidatedRecords.filter(_._2.isFailure)
     //writeToBigQuery(invalidSchemaRecords, CMDLINEOPTIONS, JOBNAME, INVALID_SCHEMA_ERROR)
     println("\n---------------- invalid Schema Records ------ " + invalidSchemaRecords.count())
     invalidSchemaRecords.take(20).foreach(println)
-    //    invalidSchemaRecords.collect.foreach(println)
 
     val businessValidatedRecords = businessValidator(validSchemaRecords, RetailBusinessValidator.validate)
 
@@ -109,38 +104,6 @@ object ApplicationMain {
 
     retailDF.printSchema()
     retailDF.show(20, false)
-
-//    // Now view Datframe data through spark.sql
-//    println("\n----------------Spark sql table retail_tbl------")
-//    retailDF.createOrReplaceGlobalTempView("retail_tbl")
-//    val sparkTable = "global_temp.retail_tbl"
-//    sparkSession.sql("SELECT * from global_temp.retail_tbl").show(2, false)
-//
-//    println("\n----------------Revenue per stockcode------")
-//    sparkSession.sql("SELECT distinct stockcode,  quantity*unitprice as Revenue from global_temp.retail_tbl")
-//      .show(2, false)
-//
-//        println("KPI1: Highest selling SKUs on a daily basis (M,T,W,Th,F,S,Su) per country")
-//        println("----------------------------------------------------")
-//        Insight.runKPIQuery(sparkSession, sparkTable, CMDLINEOPTIONS.kpiLocation)
-
-
-    //  BELOW code ONLY for REFERENCE
-
-    // StructType, StructField, StringType, IntegerType, DoublleType are sql Datatypes
-    // println("\n---------------- kpi1 Dataframe------")
-
-    //val kpi1 = sparkSession.read.schema(retailSchema).json(validSchemaRecords.map(_._2.toString))
-    //
-    //    validSchemaRecords.show(false)
-    //    val kpi1 = validSchemaRecords.map(rec => rec._2)
-
-    //    val kp = validSchemaRecords.map(rec => rec._2)
-    //    kp.
-    //    val kpi1 = sparkSession.read.schema(retailSchema)
-    //      .json(validSchemaRecords
-    //        .map(rec => JsonTransformation.convertJsonNodesToProperFormat(rec._2).toString))
-
 
   }
 }

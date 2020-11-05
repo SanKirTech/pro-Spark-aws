@@ -11,10 +11,10 @@
  *
  */
 
-package com.sankir.smp.pipelines.transformations
+package com.sankir.smp.core.transformations
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.sankir.smp.common.converters.Converter.convertToErrorTableRows
+import com.sankir.smp.common.Converter.convertToErrorTableRows
 import com.sankir.smp.connectors.BigQueryIO
 import com.sankir.smp.utils.CmdLineOptions
 import com.sankir.smp.utils.enums.ErrorEnums.ErrorEnums

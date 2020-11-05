@@ -1,4 +1,20 @@
-package com.sankir.smp.common.validators
+/*
+ * Comment for pipeline module
+ * Scala objects
+ * Spark sql table
+ * KPI tables
+ *
+ */
+
+/*
+ * Comment for pipeline module
+ * Scala objects
+ * Spark sql table
+ * KPI tables
+ *
+ */
+
+package com.sankir.smp.common
 
 trait  Matcher[T] {
   def test(t: T): Boolean

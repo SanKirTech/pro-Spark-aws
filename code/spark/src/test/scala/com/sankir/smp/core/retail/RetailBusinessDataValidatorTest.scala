@@ -1,11 +1,12 @@
-package com.sankir.smp.pipelines.retail
+package com.sankir.smp.core.retail
 
 import org.scalatest.flatspec.AnyFlatSpec
-import RetailBusinessValidator._
+import com.sankir.smp.core.validators.RetailBusinessValidator._
 import com.fasterxml.jackson.databind.JsonNode
-import com.sankir.smp.app.JsonUtils
+import com.sankir.smp.common.JsonUtils
+import com.sankir.smp.core.validators.RetailBusinessValidator
 
-class RetailBusinessValidatorTest extends AnyFlatSpec {
+class RetailBusinessDataValidatorTest extends AnyFlatSpec {
 
   behavior of "RetailBusiness validator"
   it should "return success when all the business rules are met" in {

@@ -1,4 +1,4 @@
-package com.sankir.smp.pipelines
+package com.sankir.smp.core
 
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession

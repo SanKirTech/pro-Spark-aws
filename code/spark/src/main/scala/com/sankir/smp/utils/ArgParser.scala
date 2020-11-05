@@ -72,7 +72,6 @@ object ArgParser {
 case class
 CmdLineOptions(
         schemaLocation: String = "",
-      //  businessRulesPath: String = "",
         inputLocation: String = "",
         projectId: String = "",
         bqDataset: String = "",

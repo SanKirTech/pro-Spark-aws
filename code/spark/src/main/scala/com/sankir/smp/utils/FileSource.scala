@@ -18,7 +18,7 @@ import java.io.InputStream
 import com.sankir.smp.connectors.GcsIO
 
 
-object Resources {
+object FileSource {
   def readAsStringIterator(path: String): Iterator[String] = {
     scala.io.Source.fromInputStream(read(path)).getLines()
   }
@@ -28,7 +28,7 @@ object Resources {
   }
 
   def read(path: String): InputStream =
-    Resources.getClass.getClassLoader.getResourceAsStream(path)
+    FileSource.getClass.getClassLoader.getResourceAsStream(path)
 
   def readAsStringFromGCS(projectId: String, path: String): String = {
     val gcsIO = GcsIO(projectId = projectId)

@@ -14,6 +14,7 @@
 package com.sankir.smp.app
 
 import com.fasterxml.jackson.core.JsonParseException
+import com.sankir.smp.common.JsonUtils
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 

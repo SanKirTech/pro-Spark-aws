@@ -14,7 +14,7 @@
 package com.sankir.smp.common.converters
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.sankir.smp.app.JsonUtils
+import com.sankir.smp.common.{Converter, JsonUtils}
 import org.scalatest.flatspec.AnyFlatSpec
 
 class ConverterTest extends AnyFlatSpec {

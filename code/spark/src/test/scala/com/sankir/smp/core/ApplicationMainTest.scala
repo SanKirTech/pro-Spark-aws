@@ -11,11 +11,11 @@
  *
  */
 
-package com.sankir.smp.pipelines
+package com.sankir.smp.core
 
-import com.sankir.smp.app.JsonUtils
-import com.sankir.smp.pipelines.validators.Validator.{schemaValidator, jsonValidator}
-import com.sankir.smp.utils.Resources.{readAsString, readAsStringIterator}
+import com.sankir.smp.common.JsonUtils
+import com.sankir.smp.core.validators.DataValidator.{jsonValidator, schemaValidator}
+import com.sankir.smp.utils.FileSource.{readAsString, readAsStringIterator}
 import org.scalatest.flatspec.AnyFlatSpec
 
 class ApplicationMainTest extends AnyFlatSpec with SharedSparkContext {

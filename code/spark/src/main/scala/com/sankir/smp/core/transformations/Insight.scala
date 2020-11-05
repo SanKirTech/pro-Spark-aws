@@ -11,7 +11,7 @@
  *
  */
 
-package com.sankir.smp.pipelines.transformations
+package com.sankir.smp.core.transformations
 
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.types.{DateType, DoubleType, IntegerType, StringType, StructField, StructType}
