@@ -1,0 +1,5 @@
+{"InvoiceNo": "100801", "StockCode": "22386", "Description": "JUMBO BAG PINK POLKADOT", "Quantity": 10, "InvoiceDate": "2020-08-10 11:00:00", "UnitPrice": 2.0, "CustomerID": 10310.0, "Country": "United Kingdom"}
+{"InvoiceNo": "100801", "StockCode": "22386", "Description": "JUMBO BAG PINK POLKADOT", "Quantity": 10, "InvoiceDate": "2020-08-10 11:00:05", "UnitPrice": 2.0, "CustomerID": 10310.0, "Country": "France"}
+{"InvoiceNo": "100802", "StockCode": "71053", "Description": "WHITE METAL LANTERN", "Quantity": 11, "InvoiceDate": "2020-08-10 11:10:10", "UnitPrice": 3.00, "CustomerID": 10311.0, "Country": "United Kingdom"}
+{"InvoiceNo": "100803", "StockCode": "22180", "Description": "RETROSPOT LAMP", "Quantity": 12, "InvoiceDate": "2020-08-10 11:20:15", "UnitPrice": 10.0, "CustomerID": 10312.0, "Country": "Italy"}
+{"InvoiceNo": "100803", "StockCode": "22180", "Description": "RETROSPOT LAMP", "Quantity": 12, "InvoiceDate": "2020-08-10 11:20:20", "UnitPrice": 10.0, "CustomerID": 10312.0, "Country": "United Kingdom"}

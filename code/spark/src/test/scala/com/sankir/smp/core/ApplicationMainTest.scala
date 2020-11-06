@@ -54,7 +54,7 @@ class ApplicationMainTest extends AnyFlatSpec with SharedSparkContext {
     assert(schemaValidatedRecords.filter(_._2.isSuccess).count() == 2)
   }
 
-  it should "Actual Data" in {
+  it should "Actual Data" ignore {
     import com.sankir.smp.utils.encoders.CustomEncoders._
     val sdfData = sparkSession.createDataset(readAsStringIterator("pipelines/SixRecs.json").toSeq)
 

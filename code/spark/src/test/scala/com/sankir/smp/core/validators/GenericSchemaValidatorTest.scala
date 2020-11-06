@@ -11,17 +11,16 @@
  *
  */
 
-package com.sankir.smp.common.validators
+package com.sankir.smp.core.validators
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.sankir.smp.common.JsonUtils
-import com.sankir.smp.core.validators.GenericSchemaValidator
 import com.sankir.smp.utils.FileSource
 import com.sankir.smp.utils.FileSource.readAsString
 import com.sankir.smp.utils.exceptions.SchemaValidationFailedException
 import org.scalatest.flatspec.AnyFlatSpec
 
-class SchemaDataValidatorTest extends AnyFlatSpec {
+class GenericSchemaValidatorTest extends AnyFlatSpec {
   behavior of "GenericSchemaValidator"
 
   it should "return Failure for invalid Json" in  {

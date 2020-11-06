@@ -50,7 +50,10 @@ object RetailBusinessValidator {
 
   def validInvoices(): Matcher[JsonNode] = {
     new Matcher[JsonNode] {
-      override def test(t: JsonNode): Boolean = Try(!t.get("InvoiceNo").asText().startsWith("C")).getOrElse(false)
+      override def test(t: JsonNode): Boolean = Try({
+        val invoice = t.get("InvoiceNo").asText();
+        !(invoice.isEmpty || invoice.startsWith("C"))
+      }).getOrElse(false)
     }
   }
 

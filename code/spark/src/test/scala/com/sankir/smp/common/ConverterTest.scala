@@ -11,10 +11,9 @@
  *
  */
 
-package com.sankir.smp.common.converters
+package com.sankir.smp.common
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.sankir.smp.common.{Converter, JsonUtils}
 import org.scalatest.flatspec.AnyFlatSpec
 
 class ConverterTest extends AnyFlatSpec {

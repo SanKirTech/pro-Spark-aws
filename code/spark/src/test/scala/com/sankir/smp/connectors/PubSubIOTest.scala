@@ -16,11 +16,11 @@ package com.sankir.smp.connectors
 import java.io.{File, FileInputStream}
 
 import com.google.auth.oauth2.ServiceAccountCredentials
-import org.scalatest.BeforeAndAfterAll
+import org.scalatest.{BeforeAndAfterAll, Ignore}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.funsuite.AnyFunSuite
 
-
+@Ignore
 class PubSubIOTest extends AnyFlatSpec with BeforeAndAfterAll {
 
   var pubSubIO: PubSubIO = null;

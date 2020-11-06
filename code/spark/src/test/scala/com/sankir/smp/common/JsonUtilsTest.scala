@@ -11,14 +11,14 @@
  *
  */
 
-package com.sankir.smp.app
+package com.sankir.smp.common
 
 import com.fasterxml.jackson.core.JsonParseException
-import com.sankir.smp.common.JsonUtils
 import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 
-class JsonUtilsTest extends AnyFlatSpec {
+class JsonUtilsTest extends AnyFlatSpec with Matchers{
 
   behavior of "JsonUtils"
 

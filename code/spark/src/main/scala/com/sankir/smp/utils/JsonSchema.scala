@@ -23,7 +23,7 @@ import org.json.{JSONObject, JSONTokener}
 
 object JsonSchema {
 
-  def fromJson(jsonString: String) =
+  def fromJson(jsonString: String): Schema =
     loadSchema(new JSONTokener(jsonString))
 
   private def loadSchema(jsonTokener: JSONTokener): Schema = {
@@ -32,11 +32,11 @@ object JsonSchema {
       .schemaJson(new JSONObject(jsonTokener))
       .draftV7Support()
       .build()
-    val schema: Schema = loader.load().build()
+    val schema: Schema = loader.load().build().asInstanceOf[Schema]
     schema
   }
 
-  def fromJsonFile(jsonSchema: InputStream) =
+  def fromJsonFile(jsonSchema: InputStream): Schema =
     loadSchema(new JSONTokener(jsonSchema))
 
   def fromJsonNode(jsonSchema: JsonNode) : Schema = {
