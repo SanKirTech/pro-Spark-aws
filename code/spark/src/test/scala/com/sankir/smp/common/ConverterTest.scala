@@ -22,15 +22,16 @@ class ConverterTest extends AnyFlatSpec {
 
   it should "return success when converting jsonString" in {
     val jsonString = "{\"key\": \"value\"}"
-    val result = Converter.convertAToTryB[String,JsonNode](jsonString, JsonUtils.toJsonNode)
+    val result = Converter
+      .convertAToTryB[String, JsonNode](jsonString, JsonUtils.toJsonNode)
     assert(result.isSuccess)
   }
 
   it should "return failure when converting a bad json string" in {
     val jsonString = "{\"key\": \"value\""
-    val result = Converter.convertAToTryB[String,JsonNode](jsonString, JsonUtils.toJsonNode)
+    val result = Converter
+      .convertAToTryB[String, JsonNode](jsonString, JsonUtils.toJsonNode)
     assert(result.isFailure)
   }
-
 
 }

@@ -18,11 +18,11 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 
-class JsonUtilsTest extends AnyFlatSpec with Matchers{
+class JsonUtilsTest extends AnyFlatSpec with Matchers {
 
   behavior of "JsonUtils"
 
-  it should "be able to parse a json string" in {
+  it should "be able to parseLogic a json string" in {
     val jsonNode = JsonUtils.toJsonNode("{\"key\":\"value\"}")
     assert(jsonNode.get("key").asText() == "value")
   }
@@ -33,14 +33,16 @@ class JsonUtilsTest extends AnyFlatSpec with Matchers{
     }
   }
 
-  it should "be able to parse bytes" in {
+  it should "be able to parseLogic bytes" in {
     val jsonNode = JsonUtils.toJsonNode("{\"key\":\"value\"}".getBytes)
     assert(jsonNode.get("key").asText() == "value")
   }
 
   it should "return option when asStringPropertyOptional called" in {
     val jsonNode = JsonUtils.emptyObject().put("key", "value")
-    JsonUtils.asStringPropertyOptional(jsonNode, "key") shouldEqual Some("value")
+    JsonUtils.asStringPropertyOptional(jsonNode, "key") shouldEqual Some(
+      "value"
+    )
   }
 
   it should "return option when getLongPropertyOptional called" in {

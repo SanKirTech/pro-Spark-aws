@@ -12,7 +12,8 @@ trait SharedSparkContext extends BeforeAndAfterAll { self: Suite =>
   var conf = new SparkConf(false)
 
   override protected def beforeAll(): Unit = {
-    _spark = SparkSession.builder().appName("Test").master("local[2]").getOrCreate()
+    _spark =
+      SparkSession.builder().appName("Test").master("local[2]").getOrCreate()
     super.beforeAll()
   }
 

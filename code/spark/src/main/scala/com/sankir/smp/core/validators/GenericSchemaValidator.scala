@@ -18,6 +18,13 @@ import scala.collection.JavaConversions.asScalaBuffer
 
 // To Validate JsonNode when Schema is provided
 object GenericSchemaValidator {
+
+  /***
+    * validateSchema
+    * @param schemaString - json schema
+    * @param jsonNode  - JsonNode object as defined by Jackson library
+    * @return returns a JsonNod
+    */
   def validateSchema(schemaString: String, jsonNode: JsonNode): JsonNode = {
     try {
       val schema = JsonSchema.fromJson(schemaString)
@@ -25,7 +32,9 @@ object GenericSchemaValidator {
       jsonNode
     } catch {
       case validationException: ValidationException =>
-        throw SchemaValidationFailedException(validationException.getAllMessages.mkString("\n"))
+        throw SchemaValidationFailedException(
+          validationException.getAllMessages.mkString("\n")
+        )
     }
   }
 }

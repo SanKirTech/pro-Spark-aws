@@ -13,6 +13,16 @@
 
 package com.sankir.smp.utils.exceptions
 
-case class SchemaValidationFailedException(message: String) extends Exception(message)
+/***
+  *
+  * @param message takes in a error string and prints exception
+  */
+case class SchemaValidationFailedException(message: String)
+    extends Exception(message)
 
-case class BusinessValidationFailedException(message: String) extends Exception(message)
+/***
+  *
+  * @param message takes in a error string and prints exception
+  */
+case class BusinessValidationFailedException(message: String)
+    extends Exception(message)

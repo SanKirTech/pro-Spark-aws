@@ -48,15 +48,15 @@ resource "google_bigquery_table" "error" {
 }
 
 //++ KPI Tables Below //
-resource "google_bigquery_table" "sku_dow_daily1" {
+resource "google_bigquery_table" "sku_dow_daily" {
   dataset_id = google_bigquery_dataset.retail_kpi.dataset_id
-  table_id   = "t_sku_dow_daily1"
+  table_id   = "t_sku_dow_daily"
 
   labels = {
     env = "default"
   }
 
-  schema = file("bigquery-schema/t_sku_dow_daily1.json")
+  schema = file("bigquery-schema/t_sku_dow_daily.json")
 }
 
 resource "google_bigquery_table" "t_sku_revenue_w_dly" {

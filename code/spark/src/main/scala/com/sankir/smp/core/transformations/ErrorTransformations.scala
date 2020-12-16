@@ -23,13 +23,30 @@ import org.apache.spark.sql.Dataset
 import scala.util.Try
 
 object ErrorTransformations {
-  def writeToBigQuery(errorDataSet: Dataset[(String, Try[JsonNode])], configs: CmdLineOptions, jobName: String, errorEnums: ErrorEnums): Unit = {
+
+  /***
+    *
+    * @param errorDataSet
+    * @param configs
+    * @param jobName
+    * @param errorEnums
+    */
+  def writeToBigQuery(errorDataSet: Dataset[(String, Try[JsonNode])],
+                      configs: CmdLineOptions,
+                      jobName: String,
+                      errorEnums: ErrorEnums): Unit = {
     import com.sankir.smp.utils.encoders.CustomEncoders._
-    errorDataSet.map(errMsg =>
-      convertToErrorTableRows[JsonNode](errMsg, errorEnums, jobName))
+    errorDataSet
+      .map(
+        errMsg => convertToErrorTableRows[JsonNode](errMsg, errorEnums, jobName)
+      )
       .foreachPartition(tableRows => {
         val bigQueryIO = BigQueryIO(projectId = configs.projectId)
-        bigQueryIO.insertIterableRows(configs.bqDataset, configs.bqErrorTable, tableRows.toIterable)
+        bigQueryIO.insertIterableRows(
+          configs.bqDataset,
+          configs.bqErrorTable,
+          tableRows.toIterable
+        )
       })
   }
 }

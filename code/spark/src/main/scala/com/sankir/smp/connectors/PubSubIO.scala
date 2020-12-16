@@ -13,7 +13,6 @@
 
 package com.sankir.smp.connectors
 
-
 import java.io.IOException
 import java.util.concurrent.{ExecutionException, TimeUnit}
 
@@ -25,7 +24,9 @@ import com.google.protobuf.ByteString
 import com.google.pubsub.v1.{PubsubMessage, TopicName}
 import org.slf4j.LoggerFactory
 
-case class PubSubIO(projectId: String, topicId: String, var googleCredentials: ServiceAccountCredentials = null) {
+case class PubSubIO(projectId: String,
+                    topicId: String,
+                    var googleCredentials: ServiceAccountCredentials = null) {
 
   private val LOG = LoggerFactory.getLogger(PubSubIO.getClass)
 
@@ -33,8 +34,11 @@ case class PubSubIO(projectId: String, topicId: String, var googleCredentials: S
     Publisher
       .newBuilder(TopicName.of(projectId, topicId))
       .setCredentialsProvider(
-        if (googleCredentials ne null) FixedCredentialsProvider.create(googleCredentials)
-        else FixedCredentialsProvider.create(GoogleCredentials.getApplicationDefault())
+        if (googleCredentials ne null)
+          FixedCredentialsProvider.create(googleCredentials)
+        else
+          FixedCredentialsProvider
+            .create(GoogleCredentials.getApplicationDefault())
       )
       .build()
 

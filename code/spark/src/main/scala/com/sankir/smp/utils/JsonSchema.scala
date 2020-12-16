@@ -23,11 +23,22 @@ import org.json.{JSONObject, JSONTokener}
 
 object JsonSchema {
 
+  /***
+    *
+    * @param jsonString takes in json string
+    * @return returns a schema object
+    */
   def fromJson(jsonString: String): Schema =
     loadSchema(new JSONTokener(jsonString))
 
+  /***
+    *
+    * @param jsonTokener
+    * @return
+    */
   private def loadSchema(jsonTokener: JSONTokener): Schema = {
-    val loader: SchemaLoader = SchemaLoader.builder()
+    val loader: SchemaLoader = SchemaLoader
+      .builder()
       .useDefaults(true)
       .schemaJson(new JSONObject(jsonTokener))
       .draftV7Support()
@@ -36,10 +47,20 @@ object JsonSchema {
     schema
   }
 
+  /***
+    *
+    * @param jsonSchema
+    * @return
+    */
   def fromJsonFile(jsonSchema: InputStream): Schema =
     loadSchema(new JSONTokener(jsonSchema))
 
-  def fromJsonNode(jsonSchema: JsonNode) : Schema = {
+  /***
+    *
+    * @param jsonSchema
+    * @return
+    */
+  def fromJsonNode(jsonSchema: JsonNode): Schema = {
     loadSchema(new JSONTokener(JsonUtils.jsonNodetoString(jsonSchema)))
   }
 

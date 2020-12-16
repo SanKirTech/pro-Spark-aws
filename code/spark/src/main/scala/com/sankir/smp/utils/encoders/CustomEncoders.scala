@@ -15,13 +15,25 @@ package com.sankir.smp.utils.encoders
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.google.api.services.bigquery.model.TableRow
-import org.apache.spark.sql.{Encoder, Encoders}
+import com.sankir.smp.core.transformations.Insight.{kpiSchema, retailSchema}
+import org.apache.spark.sql.{Encoder, Encoders, Row}
+import org.apache.spark.sql.catalyst.encoders.ExpressionEncoder
+import org.apache.spark.sql.catalyst.encoders.RowEncoder
 
 import scala.util.Try
 
+/***
+  * Define all the implict parameters needed by Dataset
+  */
 object CustomEncoders {
   implicit val stringEncoder: Encoder[String] = Encoders.STRING
-  implicit val stringJsonNodeEncoder: Encoder[(String,JsonNode)] = Encoders.kryo[(String,JsonNode)]
-  implicit val jsonNodeTupleEncoder: Encoder[(String, Try[JsonNode])] = Encoders.kryo[(String, Try[JsonNode])]
+  implicit val stringJsonNodeEncoder: Encoder[(String, JsonNode)] =
+    Encoders.kryo[(String, JsonNode)]
+  implicit val jsonNodeTupleEncoder: Encoder[(String, Try[JsonNode])] =
+    Encoders.kryo[(String, Try[JsonNode])]
   implicit val tableRowEncoder: Encoder[TableRow] = Encoders.kryo[TableRow]
+//  implicit val retailEncoder = Encoders.product[retailSchema]
+//  implicit val kpiEncoder = Encoders.product[kpiSchema]
+  implicit val jsonNodeEncoder: Encoder[JsonNode] = Encoders.kryo[JsonNode]
+
 }

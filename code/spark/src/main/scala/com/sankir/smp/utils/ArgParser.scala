@@ -17,6 +17,13 @@ import scopt.OParser
 
 object ArgParser {
   private val builder = OParser.builder[CmdLineOptions]
+
+  /***
+    * OParser.parse(parser, args, CmdLineOptions()) is invoked by parseLogic() function.
+    * parser which is function passed as argument gets invoked and the following code gets execueted
+    * Options are compared and its value is populated into CmdLineOptions case object
+    * and passed back to ApplicationMain
+    */
   private val parser = {
     import builder._
     OParser.sequence(
@@ -28,12 +35,6 @@ object ArgParser {
         .action((x, c) => c.copy(schemaLocation = x))
         .required()
         .text("Schema Path"),
-//      opt[String]("businessRules")
-//        .action((x, c) => {
-//          c.copy(businessRulesPath = x)
-//        })
-//        .required()
-//        .text("Business Rules Path"),
       opt[String]("inputLocation")
         .action((x, c) => c.copy(inputLocation = x))
         .required()
@@ -57,25 +58,38 @@ object ArgParser {
     )
   }
 
-  def parse(args: Array[String]): CmdLineOptions = {
+  /***
+    *
+    * @param args takes in all the arguments string and return a case class object
+    * @return o/p of parser if success or if there is failure then exits with status 1
+    *         and return CmdLineOptions()
+    */
+  def parseLogic(args: Array[String]): CmdLineOptions = {
     OParser.parse(parser, args, CmdLineOptions()) match {
       case Some(value) => value
-      case None => System.exit(1)
+      case None =>
+        System.exit(1)
         CmdLineOptions()
     }
   }
 
-
 }
 
-//  All these are populated from command line arguments
-case class
-CmdLineOptions(
-        schemaLocation: String = "",
-        inputLocation: String = "",
-        projectId: String = "",
-        bqDataset: String = "",
-        bqTableName: String = "",
-        bqErrorTable: String = "",
-        kpiLocation: String = ""
-      )
+/***
+  *
+  * @param schemaLocation - Location of the scheama json which is used as reference
+  *                       while doing schema validation
+  * @param inputLocation - Location where data is stored.
+  * @param projectId  - GCP projectId
+  * @param bqDataset  - BigQuery Dataset
+  * @param bqTableName  - BigQuery Table name where the results are persisted
+  * @param bqErrorTable  - BigQuery Error table where invalid records are stored
+  * @param kpiLocation  - Location of JSON containinig KPI
+  */
+case class CmdLineOptions(schemaLocation: String = "",
+                          inputLocation: String = "",
+                          projectId: String = "",
+                          bqDataset: String = "",
+                          bqTableName: String = "",
+                          bqErrorTable: String = "",
+                          kpiLocation: String = "")

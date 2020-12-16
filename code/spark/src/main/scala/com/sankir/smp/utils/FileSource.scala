@@ -17,7 +17,6 @@ import java.io.InputStream
 
 import com.sankir.smp.connectors.GcsIO
 
-
 object FileSource {
   def readAsStringIterator(path: String): Iterator[String] = {
     scala.io.Source.fromInputStream(read(path)).getLines()
@@ -30,6 +29,12 @@ object FileSource {
   def read(path: String): InputStream =
     FileSource.getClass.getClassLoader.getResourceAsStream(path)
 
+  /***
+    *
+    * @param projectId - Pass the projectid which you have created in GCP
+    * @param path  - Path of the schema json which is used as reference to validate the schema
+    * @return return the content of the file as string
+    */
   def readAsStringFromGCS(projectId: String, path: String): String = {
     val gcsIO = GcsIO(projectId = projectId)
     gcsIO.getData(path)

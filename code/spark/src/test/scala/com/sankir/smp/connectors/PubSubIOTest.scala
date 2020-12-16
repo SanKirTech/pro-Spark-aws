@@ -27,12 +27,15 @@ class PubSubIOTest extends AnyFlatSpec with BeforeAndAfterAll {
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    val credentialsPath = new File("F:\\extra-work\\lockdown_usecases\\SparkUsecase\\key.json")
-    val googleCredentials = ServiceAccountCredentials.fromStream(new FileInputStream(credentialsPath))
-    pubSubIO = PubSubIO("sankir-1705","sample")
+    val credentialsPath = new File(
+      "F:\\extra-work\\lockdown_usecases\\SparkUsecase\\key.json"
+    )
+    val googleCredentials =
+      ServiceAccountCredentials.fromStream(new FileInputStream(credentialsPath))
+    pubSubIO = PubSubIO("sankir-1705", "sample")
   }
 
-  override protected def afterAll(): Unit =  {
+  override protected def afterAll(): Unit = {
     super.afterAll()
     pubSubIO.close()
   }
@@ -40,8 +43,7 @@ class PubSubIOTest extends AnyFlatSpec with BeforeAndAfterAll {
   behavior of "pubsubio"
 
   it should "send message to pubsub" in {
-      assert(pubSubIO.publishMessage("message") != null)
-
+    assert(pubSubIO.publishMessage("message") != null)
 
   }
 
