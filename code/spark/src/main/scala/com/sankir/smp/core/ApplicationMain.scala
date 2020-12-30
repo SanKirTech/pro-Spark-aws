@@ -32,9 +32,6 @@ import scala.util.Try
 //import com.sankir.smp.utils.enums.ErrorEnums.{INVALID_JSON_ERROR, SCHEMA_VALIDATION_ERROR}
 import org.apache.spark.sql.SparkSession
 
-//import scala.util.Try
-
-// run terraform at D:\1-Data Leap\SparkCode\Testing\sankir-spark-052020\infrastructure\terraforms\project level
 object ApplicationMain {
   def main(args: Array[String]): Unit = {
 
@@ -199,7 +196,7 @@ object ApplicationMain {
       "\n---------------- retailDS with retailaSchema field types matched------"
     )
 
-    import com.sankir.smp.utils.encoders.CustomEncoders
+    //import com.sankir.smp.utils.encoders.CustomEncoders
 
     import sparkSession.implicits._
 

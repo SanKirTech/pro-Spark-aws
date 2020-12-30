@@ -83,10 +83,14 @@ country order by dayofweek(InvoiceDate),country) order by revenue desc, Day_Of_W
     kpiDF.printSchema()
 
     kpiDF.show(100, false)
-    // kpiDF.write.format("bigquery")
-//    kpiDF.coalesce(5).write.format("bigquery")
-//      .mode("overwrite")
-//      .save(bqtbl)
+    kpiDF.write.format("bigquery")
+    kpiDF
+      .coalesce(5)
+      .write
+      .format("bigquery")
+      .mode("overwrite")
+      .save(bqtbl)
+
     Some("Success")
   }
 

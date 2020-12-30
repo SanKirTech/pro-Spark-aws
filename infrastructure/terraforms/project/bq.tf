@@ -5,17 +5,17 @@ resource "google_bigquery_dataset" "retail" {
   location                    = "US"
 }
 
-resource "google_bigquery_dataset" "retail_analytics" {
-  dataset_id                  = "retail_analytics"
-  friendly_name               = "retail_analytics"
-  description                 = "This is retail_analytics Dataset"
-  location                    = "US"
-}
-
 resource "google_bigquery_dataset" "retail_kpi" {
   dataset_id                  = "retail_kpi"
   friendly_name               = "retail_kpi"
   description                 = "This is retail_kpi Dataset"
+  location                    = "US"
+}
+
+resource "google_bigquery_dataset" "recon" {
+  dataset_id                  = "recon"
+  friendly_name               = "recon"
+  description                 = "This is Dataset to hold reconciliation table"
   location                    = "US"
 }
 
@@ -48,7 +48,7 @@ resource "google_bigquery_table" "error" {
 }
 
 //++ KPI Tables Below //
-resource "google_bigquery_table" "sku_dow_daily" {
+resource "google_bigquery_table" "t_sku_dow_daily" {
   dataset_id = google_bigquery_dataset.retail_kpi.dataset_id
   table_id   = "t_sku_dow_daily"
 
@@ -169,14 +169,60 @@ resource "google_bigquery_table" "t_sku_revenue_c_summary" {
 
   schema = file("bigquery-schema/t_sku_revenue_c_summary.json")
 }
-/* Summary Table creation Ends */
-resource "google_bigquery_table" "sku_dow_kiran" {
+
+
+resource "google_bigquery_table" "t_sales_anomoly_summary" {
   dataset_id = google_bigquery_dataset.retail_kpi.dataset_id
-  table_id = "t_sku_dow_kiran"
+  table_id   = "t_sales_anomoly_summary"
 
   labels = {
     env = "default"
   }
 
-  schema = file("bigquery-schema/kiran.json")
+  schema = file("bigquery-schema/t_sales_anomoly_summary.json")
+}
+resource "google_bigquery_table" "t_revenue_country_summary" {
+  dataset_id = google_bigquery_dataset.retail_kpi.dataset_id
+  table_id   = "t_revenue_country_summary"
+
+  labels = {
+    env = "default"
+  }
+
+  schema = file("bigquery-schema/t_revenue_country_summary.json")
+}
+
+resource "google_bigquery_table" "t_revenue_qtr_summary" {
+  dataset_id = google_bigquery_dataset.retail_kpi.dataset_id
+  table_id   = "t_revenue_qtr_summary"
+
+  labels = {
+    env = "default"
+  }
+
+  schema = file("bigquery-schema/t_revenue_qtr_summary.json")
+}
+
+resource "google_bigquery_table" "t_revenue_country_qtr_summary" {
+  dataset_id = google_bigquery_dataset.retail_kpi.dataset_id
+  table_id   = "t_revenue_country_qtr_summary"
+
+  labels = {
+    env = "default"
+  }
+
+  schema = file("bigquery-schema/t_revenue_country_qtr_summary.json")
+}
+/* Summary Table creation Ends */
+
+/* Reconciliation table for SDF-converter */
+resource "google_bigquery_table" "reconciliation" {
+  dataset_id = google_bigquery_dataset.recon.dataset_id
+  table_id   = "reconciliation"
+
+  labels = {
+    env = "default"
+  }
+
+  schema = file("bigquery-schema/reconciliation.json")
 }

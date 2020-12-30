@@ -20,11 +20,14 @@ import com.sankir.smp.core.validators.DataValidator.{
 }
 import com.sankir.smp.utils.FileSource.{readAsString, readAsStringIterator}
 import org.scalatest.flatspec.AnyFlatSpec
+import org.apache.spark.sql.{Encoder, Encoders, Row}
+import org.apache.spark.sql.catalyst.encoders.ExpressionEncoder
+import org.apache.spark.sql.catalyst.encoders.RowEncoder
 
 class ApplicationMainTest extends AnyFlatSpec with SharedSparkContext {
 
   behavior of "Application"
-
+  implicit val stringEncoder: Encoder[String] = Encoders.STRING
   it should "should convert invalid jsons to Failure objects" in {
     import com.sankir.smp.utils.encoders.CustomEncoders._
     val sdfData = sparkSession.createDataset(
