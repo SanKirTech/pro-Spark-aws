@@ -48,9 +48,9 @@ resource "google_bigquery_table" "error" {
 }
 
 //++ KPI Tables Below //
-resource "google_bigquery_table" "t_sku_dow_daily" {
+resource "google_bigquery_table" "t_sku_dow_dly" {
   dataset_id = google_bigquery_dataset.retail_kpi.dataset_id
-  table_id   = "t_sku_dow_daily"
+  table_id   = "t_sku_dow_dly"
 
   labels = {
     env = "default"

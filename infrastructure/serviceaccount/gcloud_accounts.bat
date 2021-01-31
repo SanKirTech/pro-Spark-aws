@@ -1,7 +1,7 @@
 @echo off
 set project_name=pro-spark
-set account_name=pro-spark-sa1
-set key_location=E:\prospark
+set account_name=
+set key_location=
 set key_file=%account_name%_cred.json
 
 echo -----------------------------------------------------------------------------------

@@ -17,7 +17,7 @@ package com.sankir.smp.core
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.sankir.smp.core.transformations.Insight
-import com.sankir.smp.core.transformations.Insight.retailSchema
+import com.sankir.smp.core.transformations.Insight.RetailCase
 import com.sankir.smp.core.validators.RetailBusinessValidator
 import com.sankir.smp.core.validators.DataValidator.{
   businessValidator,
@@ -40,7 +40,7 @@ object ApplicationMain {
     val CMDLINEOPTIONS = ArgParser.parseLogic(args)
 
     /***
-      * schema json is stored in t_transaction.json.  The following code access the
+      * schema json is stored in t_transaction.json.  The following code accesses the
       * GCS storage and gets it back in the form of string for
       * downstream utility such as schema validation
       */
@@ -52,7 +52,8 @@ object ApplicationMain {
     /* Creating SparkSession
      * Sparksession is the driver program
      * */
-    /* Use this declaration os sparkSession when submitting on dataproc cluster */
+    /* Use this declaration of sparkSession when submitting on dataproc cluster */
+
     //val sparkSession = SparkSession.builder().appName("Pro-Spark-Batch").getOrCreate()
 
     /* The following is for testing your program locally on laptop */
@@ -202,7 +203,7 @@ object ApplicationMain {
 
     val retailDS = sparkSession.read
       .json(validBusinessRecords.map(_._2.toString))
-      .as[retailSchema]
+      .as[RetailCase]
 
     retailDS.printSchema()
     retailDS.show(20, false)

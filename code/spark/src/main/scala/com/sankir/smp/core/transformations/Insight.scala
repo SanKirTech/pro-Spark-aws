@@ -25,7 +25,7 @@ import org.apache.spark.sql.types.{
 
 object Insight {
 
-//  val retailSchema = StructType(
+//  val RetailCase = StructType(
 //    Array(
 //      StructField("InvoiceNo", StringType, nullable = false),
 //      StructField("StockCode", StringType, nullable = false),
@@ -49,14 +49,14 @@ object Insight {
     * @param CustomerID
     * @param Country
     */
-  case class retailSchema(InvoiceNo: String,
-                          StockCode: String,
-                          Description: String,
-                          Quantity: BigInt,
-                          InvoiceDate: String,
-                          UnitPrice: Double,
-                          CustomerID: Double,
-                          Country: String)
+  case class RetailCase(InvoiceNo: String,
+                        StockCode: String,
+                        Description: String,
+                        Quantity: BigInt,
+                        InvoiceDate: String,
+                        UnitPrice: Double,
+                        CustomerID: Double,
+                        Country: String)
   /*
 {"kpiindex":"k1",
 "kpitable":"retail_kpi.t_sku_dow_daily1",
@@ -218,7 +218,7 @@ country order by dayofweek(InvoiceDate),country) order by revenue desc, Day_Of_W
       .toString
 
     println(
-      "KPI4:" + qTable + ":Rank the most valuable to least valuable customers"
+      "KPI4:" + qTable + ":Rank the Customers based on the business value"
     )
     println("--------------------------------------------------------")
     println(
