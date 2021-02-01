@@ -18,6 +18,7 @@ package com.sankir.smp.core
 import com.fasterxml.jackson.databind.JsonNode
 import com.sankir.smp.core.transformations.Insight
 import com.sankir.smp.core.transformations.Insight.RetailCase
+
 import com.sankir.smp.core.validators.RetailBusinessValidator
 import com.sankir.smp.core.validators.DataValidator.{
   businessValidator,
@@ -212,10 +213,7 @@ object ApplicationMain {
     retailDS.createOrReplaceGlobalTempView("retail_tbl")
 
     val sparkTable = "global_temp.retail_tbl"
-    println(
-      "KPI1: Highest selling SKUs on a daily basis (M,T,W,Th,F,S,Su) per country"
-    )
-    println("----------------------------------------------------")
+
     Insight.runKPIQuery(sparkSession, sparkTable, CMDLINEOPTIONS.kpiLocation)
 
   }

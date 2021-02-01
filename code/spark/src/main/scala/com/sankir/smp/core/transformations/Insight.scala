@@ -108,189 +108,50 @@ country order by dayofweek(InvoiceDate),country) order by revenue desc, Day_Of_W
     println("KPI Location in GCP : " + kpiLocation)
     var qString: String = "" //Query String to be populated
     var qTable: String = "" //BigQUery table to be used for storing the results
+    var qDisc: String = "" //KPI Description
+
     //val queryDS = sparkSession.read.json(kpiLocation)
     import sparkSession.implicits._
     val queryDS = sparkSession.read.json(kpiLocation).as[kpiSchema]
 
-    println(
-      "KPI1: Highest selling SKUs on a daily basis (M,T,W,Th,F,S,Su) per country"
-    )
-    println("----------------------------------------------------")
-    qString = queryDS
-      .where("kpiindex = 'k1' ")
-      .select("kpiquery")
-      .first()
-      .get(0)
-      .toString
-    qTable = queryDS
-      .where("kpiindex = 'k1' ")
-      .select("kpitable")
-      .first()
-      .get(0)
-      .toString
-    println(
-      Insight
-        .writekpiToBigQ(sparkSession, qString.format(sparkTable), qTable)
-        .get
-    )
+    val kpiIndices = List("k1a", "k1b", "k2", "k3", "k4", "k5", "k6", "k7")
 
-    println("KPI2a: Rank the SKUs based on the revenue - Worldwide")
-    println("----------------------------------------------------")
-    qString = queryDS
-      .where("kpiindex = 'k2a' ")
-      .select("kpiquery")
-      .first()
-      .get(0)
-      .toString
-    qTable = queryDS
-      .where("kpiindex = 'k2a' ")
-      .select("kpitable")
-      .first()
-      .get(0)
-      .toString
+    def kpiPrint(kpiIndex: String): Unit = {
 
-    println(
-      Insight
-        .writekpiToBigQ(sparkSession, qString.format(sparkTable), qTable)
-        .getOrElse("Failed in KPII2a")
-    )
+      val filterCondition = "kpiindex = '%s'".format(kpiIndex)
 
-    qString = queryDS
-      .where("kpiindex = 'k2b' ")
-      .select("kpiquery")
-      .first()
-      .get(0)
-      .toString
-    qTable = queryDS
-      .where("kpiindex = 'k2b' ")
-      .select("kpitable")
-      .first()
-      .get(0)
-      .toString
+      qString = queryDS
+        .where(filterCondition)
+        .select("kpiquery")
+        .first()
+        .get(0)
+        .toString
 
-    println(
-      "KPI2b:" + qTable + ":Rank the SKUs based on the revenue - Countrywide"
-    )
-    println("------------------------------------------------------")
-    println(
-      Insight
-        .writekpiToBigQ(sparkSession, qString.format(sparkTable), qTable)
-        .getOrElse("Failed in KPII2b")
-    )
-    println(
-      "KPI3:" + qTable + ":Identify Sales Anomalies in any month for a given SKU"
-    )
-    println("-----------------------------------------------------------")
-    qString = queryDS
-      .where("kpiindex = 'k3' ")
-      .select("kpiquery")
-      .first()
-      .get(0)
-      .toString
-    qTable = queryDS
-      .where("kpiindex = 'k3' ")
-      .select("kpitable")
-      .first()
-      .get(0)
-      .toString
+      qTable = queryDS
+        .where(filterCondition)
+        .select("kpitable")
+        .first()
+        .get(0)
+        .toString
+      qDisc = queryDS
+        .where(filterCondition)
+        .select("kpidiscription")
+        .first()
+        .get(0)
+        .toString
 
-    println(
-      "KPI3:" + qTable + ":Identify Sales Anomalies in any month for a given SKU"
-    )
-    println("-----------------------------------------------------------")
-    println(
-      Insight
-        .writekpiToBigQ(sparkSession, qString.format(sparkTable), qTable)
-        .getOrElse("Failed in KPI3")
-    )
+      println("----------------------------------------------------")
+      println(kpiIndex + ":" + qTable + ":" + qDisc)
+      println("----------------------------------------------------")
+      println("Query String")
+      println(qString)
+      println(
+        Insight
+          .writekpiToBigQ(sparkSession, qString.format(sparkTable), qTable)
+          .getOrElse("Failed in %s".format(kpiIndex))
+      )
+    }
 
-    qString = queryDS
-      .where("kpiindex = 'k4' ")
-      .select("kpiquery")
-      .first()
-      .get(0)
-      .toString
-    qTable = queryDS
-      .where("kpiindex = 'k4' ")
-      .select("kpitable")
-      .first()
-      .get(0)
-      .toString
-
-    println(
-      "KPI4:" + qTable + ":Rank the Customers based on the business value"
-    )
-    println("--------------------------------------------------------")
-    println(
-      Insight
-        .writekpiToBigQ(sparkSession, qString.format(sparkTable), qTable)
-        .getOrElse("Failed in KPI4")
-    )
-
-    qString = queryDS
-      .where("kpiindex = 'k5' ")
-      .select("kpiquery")
-      .first()
-      .get(0)
-      .toString
-    qTable = queryDS
-      .where("kpiindex = 'k5' ")
-      .select("kpitable")
-      .first()
-      .get(0)
-      .toString
-
-    println(
-      "KPI5:" + qTable + ":Rank the highest revenue to lowest revenue generating countries"
-    )
-    println("--------------------------------------------------------")
-    println(
-      Insight
-        .writekpiToBigQ(sparkSession, qString.format(sparkTable), qTable)
-        .getOrElse("Failed in KPI5")
-    )
-
-    qString = queryDS
-      .where("kpiindex = 'k6' ")
-      .select("kpiquery")
-      .first()
-      .get(0)
-      .toString
-    qTable = queryDS
-      .where("kpiindex = 'k6' ")
-      .select("kpitable")
-      .first()
-      .get(0)
-      .toString
-
-    println("KPI6:" + qTable + ":Revenue per SKU - Quarterwise")
-    println("-----------------------------------")
-    println(
-      Insight
-        .writekpiToBigQ(sparkSession, qString.format(sparkTable), qTable)
-        .getOrElse("Failed in KPI6")
-    )
-
-    qString = queryDS
-      .where("kpiindex = 'k7' ")
-      .select("kpiquery")
-      .first()
-      .get(0)
-      .toString
-    qTable = queryDS
-      .where("kpiindex = 'k7' ")
-      .select("kpitable")
-      .first()
-      .get(0)
-      .toString
-
-    println("KPI7:" + qTable + ": Revenue per country - QTR")
-    println("-------------------------------")
-    println(
-      Insight
-        .writekpiToBigQ(sparkSession, qString.format(sparkTable), qTable)
-        .getOrElse("Failed in KPI7")
-    )
-
+    kpiIndices.foreach(kpiPrint)
   }
 }
