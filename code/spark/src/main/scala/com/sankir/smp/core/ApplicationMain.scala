@@ -174,6 +174,8 @@ object ApplicationMain {
      */
     val businessValidatedRecords: Dataset[(String, Try[JsonNode])] =
       businessValidator(validSchemaRecords, RetailBusinessValidator.validate)
+    println("\n---------------- Business Validated Records ------")
+    businessValidatedRecords.take(20).foreach(println)
 
     val validBusinessRecords = businessValidatedRecords
       .filter(_._2.isSuccess)
@@ -202,6 +204,7 @@ object ApplicationMain {
 
     import sparkSession.implicits._
 
+    //Dataset retailDS is created from the validBusinessRecords JsonNode
     val retailDS = sparkSession.read
       .json(validBusinessRecords.map(_._2.toString))
       .as[RetailCase]

@@ -116,6 +116,10 @@ country order by dayofweek(InvoiceDate),country) order by revenue desc, Day_Of_W
 
     val kpiIndices = List("k1a", "k1b", "k2", "k3", "k4", "k5", "k6", "k7")
 
+    /***
+      *
+      * @param kpiIndex
+      */
     def kpiPrint(kpiIndex: String): Unit = {
 
       val filterCondition = "kpiindex = '%s'".format(kpiIndex)
