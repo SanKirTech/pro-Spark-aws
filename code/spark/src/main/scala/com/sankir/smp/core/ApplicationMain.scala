@@ -18,6 +18,7 @@ package com.sankir.smp.core
 import com.fasterxml.jackson.databind.JsonNode
 import com.sankir.smp.core.transformations.Insight
 import com.sankir.smp.core.transformations.Insight.RetailCase
+import com.sankir.smp.core.transformations.ErrorTransformations._
 
 import com.sankir.smp.core.validators.RetailBusinessValidator
 import com.sankir.smp.core.validators.DataValidator.{
@@ -30,7 +31,11 @@ import com.sankir.smp.utils.FileSource.readAsStringFromGCS
 import org.apache.spark.sql.{Dataset, Encoders}
 
 import scala.util.Try
-//import com.sankir.smp.utils.enums.ErrorEnums.{INVALID_JSON_ERROR, SCHEMA_VALIDATION_ERROR}
+import com.sankir.smp.utils.enums.ErrorEnums.{
+  INVALID_JSON,
+  INVALID_SCHEMA,
+  INVALID_BIZ_DATA
+}
 import org.apache.spark.sql.SparkSession
 
 object ApplicationMain {
@@ -110,7 +115,7 @@ object ApplicationMain {
     validJsonRecords.take(20).foreach(println)
 
     val invalidJsonRecords = jsonValidatedRecords.filter(_._2.isFailure)
-    //writeToBigQuery(invalidJsonRecords, CMDLINEOPTIONS, JOBNAME, INVALID_JSON_ERROR)
+    writeToBigQuery(invalidJsonRecords, CMDLINEOPTIONS, JOBNAME, INVALID_JSON)
     println(
       "\n--------------- invalid JSON Records ------------- " + invalidJsonRecords
         .count()
@@ -148,7 +153,12 @@ object ApplicationMain {
     validSchemaRecords.take(20).foreach(println)
 
     val invalidSchemaRecords = schemaValidatedRecords.filter(_._2.isFailure)
-    //writeToBigQuery(invalidSchemaRecords, CMDLINEOPTIONS, JOBNAME, INVALID_SCHEMA_ERROR)
+//    writeToBigQuery(
+//      invalidSchemaRecords,
+//      CMDLINEOPTIONS,
+//      JOBNAME,
+//      INVALID_SCHEMA
+//    )
 
     println(
       "\n---------------- invalid Schema Records ------ " + invalidSchemaRecords
@@ -188,7 +198,13 @@ object ApplicationMain {
     validBusinessRecords.take(20).foreach(println)
 
     val invalidBusinessRecords = businessValidatedRecords.filter(_._2.isFailure)
-//    writeToBigQuery(invalidSchemaRecords, CMDLINEOPTIONS, JOBNAME, INVALID_BIZ_DATA)
+    //writeToBigQuery(invalidSchemaRecords, CMDLINEOPTIONS, JOBNAME, INVALID_BIZ_DATA)
+//    writeToBigQuery(
+//      invalidBusinessRecords,
+//      CMDLINEOPTIONS,
+//      JOBNAME,
+//      INVALID_BIZ_DATA
+//    )
     println(
       "\n---------------- invalid BizData Records ------ " + invalidBusinessRecords
         .count()

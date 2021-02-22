@@ -11,8 +11,8 @@ package com.sankir.smp.common
 import java.time.Instant
 
 import com.google.api.services.bigquery.model.TableRow
+import com.sankir.smp.utils.BigTableErrorRows
 import com.sankir.smp.utils.enums.ErrorEnums.ErrorEnums
-import com.sankir.smp.vo.BigTableErrorRows
 
 import scala.util.Try
 

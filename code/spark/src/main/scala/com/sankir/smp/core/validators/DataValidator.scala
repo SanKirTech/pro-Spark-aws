@@ -23,8 +23,8 @@ import scala.util.Try
 
 object DataValidator {
 
-  // Try returns success or failure of JSON format
-  // JsonNode is Json file - read line by line
+  // Try returns success or failure of JSON formatis Json file - read line by line
+  // JsonNode
   def jsonValidator(
     rawRecords: Dataset[String]
   ): Dataset[(String, Try[JsonNode])] = {
