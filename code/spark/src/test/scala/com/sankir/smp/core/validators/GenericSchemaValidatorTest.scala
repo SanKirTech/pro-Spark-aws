@@ -25,20 +25,20 @@ import org.scalatest.flatspec.AnyFlatSpec
 class GenericSchemaValidatorTest extends AnyFlatSpec {
   behavior of "GenericSchemaValidator"
 
-  it should "return Failure for invalid Json" in {
+  it should "return Failure for invalid Schema" in {
     intercept[SchemaValidationFailedException] {
       val schema = FileSource.readAsString("core/validators/schema.json")
       val jsonNode: JsonNode = JsonUtils.toJsonNode(
-        readAsString("core/validators/invalid_json_schema_file.json")
+        readAsString("core/validators/invalid_schema_data.json")
       )
       GenericSchemaValidator.validateSchema(schema, jsonNode)
     }
   }
 
-  it should "return Success for valid Json" in {
+  it should "return Success for valid Schema" in {
     val schema = FileSource.readAsString("core/validators/schema.json")
     val jsonNode: JsonNode = JsonUtils.toJsonNode(
-      readAsString("core/validators/valid_json_schema_file.json")
+      readAsString("core/validators/valid_schema_data.json")
     )
     assert(GenericSchemaValidator.validateSchema(schema, jsonNode) == jsonNode)
   }
