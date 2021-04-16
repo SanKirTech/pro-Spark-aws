@@ -15,24 +15,14 @@
 
 package com.sankir.smp.core.validators
 
-import com.fasterxml.jackson.databind.JsonNode
-import com.sankir.smp.common.JsonUtils
 import com.sankir.smp.core.SharedSparkContext
-import com.sankir.smp.core.validators.DataValidator.businessValidator
-import com.sankir.smp.utils.FileSource.readAsStringIterator
-import org.apache.spark.sql.Dataset
-import org.scalatest.flatspec.AnyFlatSpec
 import com.fasterxml.jackson.databind.JsonNode
 import com.sankir.smp.common.JsonUtils
 import com.sankir.smp.core.validators.DataValidator.{businessValidator, jsonValidator, schemaValidator}
-import com.sankir.smp.core.validators.RetailBusinessValidator
 import com.sankir.smp.utils.FileSource.{readAsString, readAsStringIterator}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.apache.spark.sql.{Dataset, Encoder, Encoders, Row}
-import org.apache.spark.sql.catalyst.encoders.ExpressionEncoder
-import org.apache.spark.sql.catalyst.encoders.RowEncoder
 
-import scala.util.Try
 import scala.util.Try
 
 class DataValidatorTest extends AnyFlatSpec with SharedSparkContext{

@@ -75,19 +75,7 @@
             <version>0.17.0</version>
         </dependency>
 
-
-        <!--   Scala Unit Test Dependecies     -->
-<!--        <dependency>-->
-<!--            <groupId>org.scalatest</groupId>-->
-<!--            <artifactId>scalatest-funsuite_2.11</artifactId>-->
-<!--            <version>3.2.0</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-        <dependency>
-            <groupId>org.scalactic</groupId>
-            <artifactId>scalactic_2.11</artifactId>
-            <version>3.2.0</version>
-        </dependency>
+        <!-- Required for Unit Test Cases-->
         <dependency>
             <groupId>org.scalatest</groupId>
             <artifactId>scalatest_2.11</artifactId>
@@ -125,12 +113,6 @@
         </dependency>
 
         <!--  Schema Validation      -->
-<!--        <dependency>-->
-<!--            <groupId>org.everit.json</groupId>-->
-<!--            <artifactId>org.everit.json.schema</artifactId>-->
-<!--            <version>1.5.1</version>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>com.github.everit-org.json-schema</groupId>
             <artifactId>org.everit.json.schema</artifactId>

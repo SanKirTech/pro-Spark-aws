@@ -20,49 +20,87 @@ import com.sankir.smp.core.validators.RetailBusinessValidator._
 import com.fasterxml.jackson.databind.JsonNode
 import com.sankir.smp.common.JsonUtils
 
+
 class RetailBusinessValidatorTest extends AnyFlatSpec {
 
   behavior of "RetailBusiness validator"
-  it should "return success when all the business rules are met" ignore {
-    val jsonString =
-      "{\"InvoiceNo\": \"C536365\", \"StockCode\": \"85123A\", \"Description\": \"WHITE HANGING HEART T-LIGHT HOLDER\", \"Quantity\": \"6\", \"InvoiceDate\": \"2010-12-01 08:26:00\", \"UnitPrice\": \"2.55\", \"CustomerID\": \"17850.0\", \"Country\": \"United Kingdom\"}"
+  it should "return success when all the business rules are met" in {
+    val jsonString = {
+      """
+        |{
+        |    "InvoiceNo": "536365",
+        |    "StockCode": "85123A",
+        |    "Description": "WHITE HANGING HEART T-LIGHT HOLDER",
+        |    "Quantity": 6,
+        |    "InvoiceDate": "2010-12-01 08:26:00",
+        |    "UnitPrice": 2.55,
+        |    "CustomerID": 17850,
+        |    "Country": "United Kingdom"
+        |}
+        |""".stripMargin
+    }
     val jsonNode = JsonUtils.toJsonNode(jsonString)
     assert(RetailBusinessValidator.validate(jsonNode).isSuccess)
   }
 
   it should "return Failure when one of the business rules fails" in {
     val jsonString =
-      "{\"InvoiceNo\": \"Failed-invoice-number\", \"StockCode\": \"85123A\", \"Description\": \"WHITE HANGING HEART T-LIGHT HOLDER\", \"Quantity\": \"6\", \"InvoiceDate\": \"2010-12-01 08:26:00\", \"UnitPrice\": \"2.55\", \"CustomerID\": \"17850.0\", \"Country\": \"United Kingdom\"}"
+      """
+        |{
+        |    "InvoiceNo": "Failed-invoice-number",
+        |    "StockCode": "85123A",
+        |    "Description": "WHITE HANGING HEART T-LIGHT HOLDER",
+        |    "Quantity": 6,
+        |    "InvoiceDate": "2010-12-01 08:26:00",
+        |    "UnitPrice": 2.55,
+        |    "CustomerID": 17850,
+        |    "Country": "United"
+        |}
+        |""".stripMargin
     val jsonNode = JsonUtils.toJsonNode(jsonString)
     assert(RetailBusinessValidator.validate(jsonNode).isFailure)
   }
 
   it should "return Failure when all the business rules are failed" in {
     val jsonString =
-      "{\"InvoiceNo\": \"Failed-invoice-number\", \"StockCode\": \"Failed-StockCode\", \"Description\": \"WHITE HANGING HEART T-LIGHT HOLDER\", \"Quantity\": \"0\", \"InvoiceDate\": \"2010-12-008:26:00\", \"UnitPrice\": \"abc\", \"CustomerID\": \"\", \"Country\": \"United\"}"
+      """
+        |{
+        |    "InvoiceNo": "Failed-invoice-number",
+        |    "StockCode": "Failed-StockCode",
+        |    "Description": "WHITE HANGING HEART T-LIGHT HOLDER",
+        |    "Quantity": -100,
+        |    "InvoiceDate": "2010-12-008:26:00",
+        |    "UnitPrice": -2.5,
+        |    "CustomerID": 0,
+        |    "Country": "United"
+        |}
+        |""".stripMargin
     val jsonNode = JsonUtils.toJsonNode(jsonString)
     assert(RetailBusinessValidator.validate(jsonNode).isFailure)
   }
 
   it should "return Failure when wrong json is passed" in {
-    val jsonString = "{\"key\":\"value\"}"
+    val jsonString =
+      """
+        |{"key":"value"}
+        |""".stripMargin
     val jsonNode = JsonUtils.toJsonNode(jsonString)
     assert(RetailBusinessValidator.validate(jsonNode).isFailure)
   }
 
-//  behavior of  "validStockCode"
-//  it should "return false when Empty Json are passed" in {
-//    assert(!validStockCode().test(JsonUtils.emptyObject().asInstanceOf[JsonNode]))
-//  }
-//  it should "return false when StockCode Key is not present in json" in {
-//    assert(!validStockCode().test(JsonUtils.emptyObject().put("Quantity", "abc").asInstanceOf[JsonNode]))
-//  }
-//  it should "return false when StockCode not present in validjsonList" in {
-//    assert(!validStockCode().test(JsonUtils.emptyObject().put("StockCode", "not-present").asInstanceOf[JsonNode]))
-//  }
-//  it should "return true when Success StockCode present in validjsonList" in {
-//    assert(validStockCode().test(JsonUtils.emptyObject().put("StockCode", "abc").asInstanceOf[JsonNode]))
-//  }
+  behavior of  "validStockCode"
+  it should "return false when Empty Json are passed" in {
+    assert(!validStockCode().test(JsonUtils.emptyObject().asInstanceOf[JsonNode]))
+  }
+  it should "return false when StockCode Key is not present in json" in {
+    assert(!validStockCode().test(JsonUtils.emptyObject().put("Stocked", "abc").asInstanceOf[JsonNode]))
+  }
+  it should "return false when StockCode not present in validjsonList" in {
+    assert(!validStockCode().test(JsonUtils.emptyObject().put("StockCode", "not-present").asInstanceOf[JsonNode]))
+  }
+  it should "return true when Success StockCode present in validjsonList" in {
+    assert(validStockCode().test(JsonUtils.emptyObject().put("StockCode", "10080").asInstanceOf[JsonNode]))
+  }
 
   behavior of "validCountry"
   it should "return false when Empty Json are passed" in {
