@@ -22,7 +22,7 @@ jobs:
         java-version: '8'
         distribution: 'adopt'
     - name: Build with Maven
-      run: mvn -B clean install --file code/spark/pom.xml
+      run: mvn -B package --file code/spark/pom.xml
     - run: mkdir staging && cp target/*.jar staging
     - uses: actions/upload-artifact@v2
       with:
