@@ -52,6 +52,7 @@ object ApplicationMain {
       * GCS storage and gets it back in the form of string for
       * downstream utility such as schema validation
       */
+    println("Schema Location = " + CMDLINEOPTIONS.schemaLocation)
     val schema = readAsStringFromGCS(
       CMDLINEOPTIONS.projectId,
       CMDLINEOPTIONS.schemaLocation
@@ -69,7 +70,7 @@ object ApplicationMain {
     val sparkSession = SparkSession
       .builder()
       .appName("Pro-Spark-Batch")
-      .master("local[*]")
+      //.master("local[*]")
       .getOrCreate()
     /* comment the above sparkSession when running on the cluster */
 
