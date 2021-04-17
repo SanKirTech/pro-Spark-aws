@@ -26,11 +26,6 @@ jobs:
     - name: Build with Maven
     - run: mkdir target
     - run: mvn -B package --file code/spark/pom.xml -Ddir=target
-    - run: mkdir staging && cp target/*.jar staging
-    - uses: actions/upload-artifact@v2
-      with:
-        name: Package
-        path: staging
     - name: Setup - gcloud / gsutil
       uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
       with:
