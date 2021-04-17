@@ -32,6 +32,8 @@ class GenericSchemaValidatorTest extends AnyFlatSpec {
         readAsString("core/validators/invalid_schema_data.json")
       )
       GenericSchemaValidator.validateSchema(schema, jsonNode)
+
+      // assert missing here ?????
     }
   }
 
@@ -40,6 +42,7 @@ class GenericSchemaValidatorTest extends AnyFlatSpec {
     val jsonNode: JsonNode = JsonUtils.toJsonNode(
       readAsString("core/validators/valid_schema_data.json")
     )
-    assert(GenericSchemaValidator.validateSchema(schema, jsonNode) == jsonNode)
+     assert(GenericSchemaValidator.validateSchema(schema, jsonNode).equals(jsonNode))
+
   }
 }

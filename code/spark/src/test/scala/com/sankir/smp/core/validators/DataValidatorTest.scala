@@ -28,24 +28,29 @@ import scala.util.Try
 class DataValidatorTest extends AnyFlatSpec with SharedSparkContext{
 
   implicit val stringEncoder: Encoder[String] = Encoders.STRING
+
+  //  jsonValidator
+
   behavior of "JsonValidator"
   it should "convert invalid jsons to Failure objects" in {
     import com.sankir.smp.utils.encoders.CustomEncoders._
-    val sdfData = sparkSession.createDataset(
+    val rawRecords = sparkSession.createDataset(
       readAsStringIterator("core/validators/invalid_data.json").toSeq
     )
-    val jsonValidatedRecords = jsonValidator(sdfData)
-    assert(jsonValidatedRecords.filter(_._2.isFailure).count() == 4)
+    val jsonValidatedRecords = jsonValidator(rawRecords)
+    assert(jsonValidatedRecords.filter(_._2.isFailure).count() == 5)
   }
 
   it should "convert valid jsons to Success objects" in {
     import com.sankir.smp.utils.encoders.CustomEncoders._
-    val sdfData = sparkSession.createDataset(
+    val rawRecords = sparkSession.createDataset(
       readAsStringIterator("core/validators/valid_data.json").toSeq
     )
-    val jsonValidatedRecords = jsonValidator(sdfData)
+    val jsonValidatedRecords = jsonValidator(rawRecords)
     assert(jsonValidatedRecords.filter(_._2.isSuccess).count() == 5)
   }
+
+  // schemaValidator
 
   behavior of "SchemaValidator"
   it should "convert invalid schema jsons to Failure objects" in {
@@ -54,32 +59,34 @@ class DataValidatorTest extends AnyFlatSpec with SharedSparkContext{
       readAsStringIterator("core/validators/invalid_schema_data.json").toSeq
     )
     val schema = readAsString("core/validators/schema.json")
-    val jsonValidatedRecords =
+    val validJsonRecords =
       sdfData.map(rec => (rec, JsonUtils.toJsonNode(rec)))
-    val schemaValidatedRecords = schemaValidator(jsonValidatedRecords, schema)
+    val schemaValidatedRecords = schemaValidator(validJsonRecords, schema)
     assert(schemaValidatedRecords.filter(_._2.isFailure).count() == 1)
   }
 
   it should "convert valid schema jsons to Success objects" in {
     import com.sankir.smp.utils.encoders.CustomEncoders._
-    val sdfData = sparkSession.createDataset(
-      readAsStringIterator("core/validators/valid_schema_data_with_payload.json").toSeq
+    val rawRecords = sparkSession.createDataset(
+      readAsStringIterator("core/validators/valid_schema_data.json").toSeq
     )
     val schema = readAsString("core/validators/schema.json")
-    val jsonValidatedRecords =
-      sdfData.map(rec => (rec, JsonUtils.toJsonNode(rec)))
-    val schemaValidatedRecords = schemaValidator(jsonValidatedRecords, schema)
+    val validJsonRecords =
+      rawRecords.map(rec => (rec, JsonUtils.toJsonNode(rec)))
+    val schemaValidatedRecords = schemaValidator(validJsonRecords, schema)
     assert(schemaValidatedRecords.filter(_._2.isSuccess).count() == 1)
   }
+
+  // businessValidator
 
   behavior of "BusinessValidator"
   it should "convert invalid biz data to Failure objects" in {
     import com.sankir.smp.utils.encoders.CustomEncoders._
-    val sdfData = sparkSession.createDataset(
+    val rawRecords = sparkSession.createDataset(
       readAsStringIterator("core/validators/invalid_biz_data.json").toSeq
     )
     val validSchemaRecords =
-      sdfData.map(rec => (rec, JsonUtils.toJsonNode(rec)))
+      rawRecords.map(rec => (rec, JsonUtils.toJsonNode(rec)))
     val businessValidatedRecords: Dataset[(String, Try[JsonNode])] =
       businessValidator(validSchemaRecords, RetailBusinessValidator.validate)
     assert(businessValidatedRecords.filter(_._2.isFailure).count() == 5)
@@ -87,11 +94,11 @@ class DataValidatorTest extends AnyFlatSpec with SharedSparkContext{
 
   it should "convert valid biz data to Success objects" in {
     import com.sankir.smp.utils.encoders.CustomEncoders._
-    val sdfData = sparkSession.createDataset(
+    val rawRecords = sparkSession.createDataset(
       readAsStringIterator("core/validators/valid_biz_data.json").toSeq
     )
     val validSchemaRecords =
-      sdfData.map(rec => (rec, JsonUtils.toJsonNode(rec)))
+      rawRecords.map(rec => (rec, JsonUtils.toJsonNode(rec)))
     val businessValidatedRecords: Dataset[(String, Try[JsonNode])] =
       businessValidator(validSchemaRecords, RetailBusinessValidator.validate)
     assert(businessValidatedRecords.filter(_._2.isSuccess).count() == 5)

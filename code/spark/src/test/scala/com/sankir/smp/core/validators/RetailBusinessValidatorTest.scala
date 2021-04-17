@@ -25,36 +25,48 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
 
   behavior of "RetailBusiness validator"
   it should "return success when all the business rules are met" in {
-    val jsonString = {
+    val jsonString =
       """
         |{
         |    "InvoiceNo": "536365",
         |    "StockCode": "85123A",
-        |    "Description": "WHITE HANGING HEART T-LIGHT HOLDER",
+        |    "Description": "T-LIGHT HOLDER",
         |    "Quantity": 6,
         |    "InvoiceDate": "2010-12-01 08:26:00",
         |    "UnitPrice": 2.55,
-        |    "CustomerID": 17850,
+        |    "CustomerID": 17850.0,
         |    "Country": "United Kingdom"
         |}
         |""".stripMargin
-    }
+
     val jsonNode = JsonUtils.toJsonNode(jsonString)
     assert(RetailBusinessValidator.validate(jsonNode).isSuccess)
   }
 
-  it should "return Failure when one of the business rules fails" in {
+//
+//  "{\"InvoiceNo\": \"C536365\", \"StockCode\": \"85123A\", \"Description\": \"T-LIGHT HOLDER\", \"Quantity\": \"6\", \"InvoiceDate\": \"2010-12-01 08:26:00\", \"UnitPrice\": \"2.55\", \"CustomerID\": \"17850.0\", \"Country\": \"United Kingdom\"}"
+//
+//
+//  it should "return success when all the business rules are met" in {
+//    val jsonString =
+//      "{\"InvoiceNo\": \"C536365\", \"StockCode\": \"85123A\", " +
+//        "\"Description\": \"T-LIGHT HOLDER\", " +
+//        "\"Quantity\": \"6\", \"InvoiceDate\": \"2010-12-01 08:26:00\"," +
+//        " \"UnitPrice\": \"2.55\", \"CustomerID\": \"17850.0\", \"Country\": \"United Kingdom\"}"
+//
+//  }
+    it should "return Failure when one of the business rules fails" in {
     val jsonString =
       """
         |{
         |    "InvoiceNo": "Failed-invoice-number",
         |    "StockCode": "85123A",
-        |    "Description": "WHITE HANGING HEART T-LIGHT HOLDER",
+        |    "Description": "T-LIGHT HOLDER",
         |    "Quantity": 6,
         |    "InvoiceDate": "2010-12-01 08:26:00",
         |    "UnitPrice": 2.55,
-        |    "CustomerID": 17850,
-        |    "Country": "United"
+        |    "CustomerID": 17850.0,
+        |    "Country": "xyz"
         |}
         |""".stripMargin
     val jsonNode = JsonUtils.toJsonNode(jsonString)
@@ -67,12 +79,12 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
         |{
         |    "InvoiceNo": "Failed-invoice-number",
         |    "StockCode": "Failed-StockCode",
-        |    "Description": "WHITE HANGING HEART T-LIGHT HOLDER",
+        |    "Description": "T-LIGHT HOLDER",
         |    "Quantity": -100,
-        |    "InvoiceDate": "2010-12-008:26:00",
+        |    "InvoiceDate": "2010-24-01 08:26:00",
         |    "UnitPrice": -2.5,
-        |    "CustomerID": 0,
-        |    "Country": "United"
+        |    "CustomerID": "abc",
+        |    "Country": "xyz"
         |}
         |""".stripMargin
     val jsonNode = JsonUtils.toJsonNode(jsonString)
@@ -96,10 +108,10 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
     assert(!validStockCode().test(JsonUtils.emptyObject().put("Stocked", "abc").asInstanceOf[JsonNode]))
   }
   it should "return false when StockCode not present in validjsonList" in {
-    assert(!validStockCode().test(JsonUtils.emptyObject().put("StockCode", "not-present").asInstanceOf[JsonNode]))
+    assert(!validStockCode().test(JsonUtils.emptyObject().put("StockCode", "1234AB").asInstanceOf[JsonNode]))
   }
   it should "return true when Success StockCode present in validjsonList" in {
-    assert(validStockCode().test(JsonUtils.emptyObject().put("StockCode", "10080").asInstanceOf[JsonNode]))
+    assert(validStockCode().test(JsonUtils.emptyObject().put("StockCode", "85123A").asInstanceOf[JsonNode]))
   }
 
   behavior of "validCountry"
@@ -109,7 +121,7 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
   it should "return false when Country Key is not present in json" in {
     assert(
       !validCountry()
-        .test(JsonUtils.emptyObject().put("XYZ", "abc").asInstanceOf[JsonNode])
+        .test(JsonUtils.emptyObject().put("state", "abc").asInstanceOf[JsonNode])
     )
   }
   it should "return false when Country is empty" in {
