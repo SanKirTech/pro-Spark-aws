@@ -81,9 +81,9 @@ resource "google_bigquery_table" "t_sku_revenue_c_dly" {
   schema = file("bigquery-schema/t_sku_revenue_c_dly.json")
 }
 
-resource "google_bigquery_table" "t_sales_anomoly_dly" {
+resource "google_bigquery_table" "t_sales_anomaly_dly" {
   dataset_id = google_bigquery_dataset.retail_kpi.dataset_id
-  table_id   = "t_sales_anomoly_dly"
+  table_id   = "t_sales_anomaly_dly"
 
   labels = {
     env = "default"
@@ -201,6 +201,17 @@ resource "google_bigquery_table" "t_revenue_qtr_summary" {
   }
 
   schema = file("bigquery-schema/t_revenue_qtr_summary.json")
+}
+
+resource "google_bigquery_table" "t_customer_rank_summary" {
+  dataset_id = google_bigquery_dataset.retail_kpi.dataset_id
+  table_id   = "t_customer_rank_summary"
+
+  labels = {
+    env = "default"
+  }
+
+  schema = file("bigquery-schema/t_customer_rank_summary.json")
 }
 
 resource "google_bigquery_table" "t_revenue_country_qtr_summary" {
