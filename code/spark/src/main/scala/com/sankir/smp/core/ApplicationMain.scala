@@ -70,7 +70,7 @@ object ApplicationMain {
     val sparkSession = SparkSession
       .builder()
       .appName("Pro-Spark-Batch")
-      //.master("local[*]")
+      .master("local[*]")
       .getOrCreate()
     /* comment the above sparkSession when running on the cluster */
 

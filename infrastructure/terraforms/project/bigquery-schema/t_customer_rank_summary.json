@@ -3,7 +3,7 @@
     "description": "Customer ID ",
     "mode": "REQUIRED",
     "name": "customerid",
-    "type": "STRING"
+    "type": "FLOAT"
   },
   {
     "description": "Revenue",
