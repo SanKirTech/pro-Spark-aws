@@ -56,7 +56,7 @@ resource "google_bigquery_table" "t_sku_dow_dly" {
     env = "default"
   }
 
-  schema = file("bigquery-schema/t_sku_dow_daily.json")
+  schema = file("bigquery-schema/t_sku_dow_dly.json")
 }
 
 resource "google_bigquery_table" "t_sku_revenue_w_dly" {
@@ -89,7 +89,7 @@ resource "google_bigquery_table" "t_sales_anomaly_dly" {
     env = "default"
   }
 
-  schema = file("bigquery-schema/t_sales_anomoly_dly.json")
+  schema = file("bigquery-schema/t_sales_anomaly_dly.json")
 }
 
 resource "google_bigquery_table" "t_customer_rank_dly" {
@@ -171,15 +171,15 @@ resource "google_bigquery_table" "t_sku_revenue_c_summary" {
 }
 
 
-resource "google_bigquery_table" "t_sales_anomoly_summary" {
+resource "google_bigquery_table" "t_sales_anomaly_summary" {
   dataset_id = google_bigquery_dataset.retail_kpi.dataset_id
-  table_id   = "t_sales_anomoly_summary"
+  table_id   = "t_sales_anomaly_summary"
 
   labels = {
     env = "default"
   }
 
-  schema = file("bigquery-schema/t_sales_anomoly_summary.json")
+  schema = file("bigquery-schema/t_sales_anomaly_summary.json")
 }
 resource "google_bigquery_table" "t_revenue_country_summary" {
   dataset_id = google_bigquery_dataset.retail_kpi.dataset_id
