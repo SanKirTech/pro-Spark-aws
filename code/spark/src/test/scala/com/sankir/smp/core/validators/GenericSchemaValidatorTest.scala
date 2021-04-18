@@ -26,23 +26,39 @@ class GenericSchemaValidatorTest extends AnyFlatSpec {
   behavior of "GenericSchemaValidator"
 
   it should "return Failure for invalid Schema" in {
+    val schema = FileSource.readAsString("core/validators/schema.json")
+    val jsonNode: JsonNode = JsonUtils.toJsonNode(
+      readAsString("core/validators/schema_invalid.json")
+    )
     intercept[SchemaValidationFailedException] {
-      val schema = FileSource.readAsString("core/validators/schema.json")
-      val jsonNode: JsonNode = JsonUtils.toJsonNode(
-        readAsString("core/validators/invalid_schema_data.json")
-      )
       GenericSchemaValidator.validateSchema(schema, jsonNode)
-
-      // assert missing here ?????
+      // assert missing here ????? (look at intercept)
     }
   }
 
   it should "return Success for valid Schema" in {
     val schema = FileSource.readAsString("core/validators/schema.json")
     val jsonNode: JsonNode = JsonUtils.toJsonNode(
-      readAsString("core/validators/valid_schema_data.json")
+      readAsString("core/validators/schema_valid.json")
     )
-     assert(GenericSchemaValidator.validateSchema(schema, jsonNode).equals(jsonNode))
-
+    assert(GenericSchemaValidator.validateSchema(schema, jsonNode).equals(jsonNode))
   }
+
 }
+
+//
+//  it should "return Failure for invalid Schema" in {
+//    val schema = FileSource.readAsString("core/validators/schema.json")
+//    val jsonNode: JsonNode = JsonUtils.toJsonNode(
+//      readAsString("core/validators/schema_valid.json")
+//    )
+//
+//    assert(GenericSchemaValidator.validateSchema(schema, jsonNode).equals(jsonNode))
+//
+//    intercept[SchemaValidationFailedException] {
+//      GenericSchemaValidator.validateSchema(schema, jsonNode)
+//      // assert missing here ????? (look at intercept)
+//    }
+//
+//  }
+

@@ -19,12 +19,14 @@ import org.scalatest.flatspec.AnyFlatSpec
 import com.sankir.smp.core.validators.RetailBusinessValidator._
 import com.fasterxml.jackson.databind.JsonNode
 import com.sankir.smp.common.JsonUtils
+import org.scalatest._
+import matchers.should.Matchers._
 
 
 class RetailBusinessValidatorTest extends AnyFlatSpec {
 
   behavior of "RetailBusiness validator"
-  it should "return success when all the business rules are met" in {
+  it should "return success when all the business rules are valid in json" in {
     val jsonString =
       """
         |{
@@ -40,22 +42,13 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
         |""".stripMargin
 
     val jsonNode = JsonUtils.toJsonNode(jsonString)
-    assert(RetailBusinessValidator.validate(jsonNode).isSuccess)
+    RetailBusinessValidator.validate(jsonNode).isSuccess shouldBe true
+
+    // All the fields are correct
+    //assert(RetailBusinessValidator.validate(jsonNode).isSuccess)
   }
 
-//
-//  "{\"InvoiceNo\": \"C536365\", \"StockCode\": \"85123A\", \"Description\": \"T-LIGHT HOLDER\", \"Quantity\": \"6\", \"InvoiceDate\": \"2010-12-01 08:26:00\", \"UnitPrice\": \"2.55\", \"CustomerID\": \"17850.0\", \"Country\": \"United Kingdom\"}"
-//
-//
-//  it should "return success when all the business rules are met" in {
-//    val jsonString =
-//      "{\"InvoiceNo\": \"C536365\", \"StockCode\": \"85123A\", " +
-//        "\"Description\": \"T-LIGHT HOLDER\", " +
-//        "\"Quantity\": \"6\", \"InvoiceDate\": \"2010-12-01 08:26:00\"," +
-//        " \"UnitPrice\": \"2.55\", \"CustomerID\": \"17850.0\", \"Country\": \"United Kingdom\"}"
-//
-//  }
-    it should "return Failure when one of the business rules fails" in {
+    it should "return Failure when one of the business rules is invalid in json" in {
     val jsonString =
       """
         |{
@@ -70,15 +63,17 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
         |}
         |""".stripMargin
     val jsonNode = JsonUtils.toJsonNode(jsonString)
-    assert(RetailBusinessValidator.validate(jsonNode).isFailure)
+      RetailBusinessValidator.validate(jsonNode).isSuccess shouldBe false
+
+      // country name is wrong ( not in the validCountryList)
   }
 
-  it should "return Failure when all the business rules are failed" in {
+  it should "return Failure when the business rules are invalid in json " in {
     val jsonString =
       """
         |{
-        |    "InvoiceNo": "Failed-invoice-number",
-        |    "StockCode": "Failed-StockCode",
+        |    "InvoiceNo": "Wrong-invoice-number",
+        |    "StockCode": "Wrong-StockCode",
         |    "Description": "T-LIGHT HOLDER",
         |    "Quantity": -100,
         |    "InvoiceDate": "2010-24-01 08:26:00",
@@ -88,313 +83,293 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
         |}
         |""".stripMargin
     val jsonNode = JsonUtils.toJsonNode(jsonString)
-    assert(RetailBusinessValidator.validate(jsonNode).isFailure)
+    RetailBusinessValidator.validate(jsonNode).isSuccess shouldBe false
+
+    // Invalid Invoie No, Stockcode, Quantity is -ve, InvoiceDate has month val as 24
+    // UnitPrice is -ve, Customer ID is string and country name is wrong ( not in the validCountryList)
   }
 
-  it should "return Failure when wrong json is passed" in {
+//   behavior of validStockCode
+
+  behavior of "validStockCode"
+  it should "return false when valid StockCode Key is not present in json" in {
     val jsonString =
       """
-        |{"key":"value"}
+        |{
+        |    "Stocked": "abc"
+        |}
         |""".stripMargin
     val jsonNode = JsonUtils.toJsonNode(jsonString)
-    assert(RetailBusinessValidator.validate(jsonNode).isFailure)
+    validStockCode().test(jsonNode) shouldBe  false
+
+    // StockCode key is absent , insted wrong 'Stocked' key is present
   }
 
-  behavior of  "validStockCode"
-  it should "return false when Empty Json are passed" in {
-    assert(!validStockCode().test(JsonUtils.emptyObject().asInstanceOf[JsonNode]))
+  it should "return false when invalid StockCode value is  empty in json" in {
+    val jsonString =
+      """
+        |{
+        |    "StockCode": ""
+        |}
+        |""".stripMargin
+    val jsonNode = JsonUtils.toJsonNode(jsonString)
+    validStockCode().test(jsonNode) shouldBe  false
+
+    // StockCode key is present,  but StockCode value is invalid because it is not present in validStockCode
   }
-  it should "return false when StockCode Key is not present in json" in {
-    assert(!validStockCode().test(JsonUtils.emptyObject().put("Stocked", "abc").asInstanceOf[JsonNode]))
+
+  it should "return false when invalid StockCode value is  present in json" in {
+    val jsonString =
+      """
+        |{
+        |    "StockCode": "1234Z"
+        |}
+        |""".stripMargin
+    val jsonNode = JsonUtils.toJsonNode(jsonString)
+    validStockCode().test(jsonNode) shouldBe  false
+
+    // StockCode key is present,  but StockCode value is empty
   }
-  it should "return false when StockCode not present in validjsonList" in {
-    assert(!validStockCode().test(JsonUtils.emptyObject().put("StockCode", "1234AB").asInstanceOf[JsonNode]))
+
+  it should "return true when valid StockCode value is present in json" in {
+    val jsonString =
+      """
+        |{
+        |    "StockCode": "85123A"
+        |}
+        |""".stripMargin
+    val jsonNode = JsonUtils.toJsonNode(jsonString)
+    validStockCode().test(jsonNode) shouldBe  true
+
+    // StockCode key is present,  and StockCode value is valid
   }
-  it should "return true when Success StockCode present in validjsonList" in {
-    assert(validStockCode().test(JsonUtils.emptyObject().put("StockCode", "85123A").asInstanceOf[JsonNode]))
-  }
+
+  //   behavior of validCountry
 
   behavior of "validCountry"
-  it should "return false when Empty Json are passed" in {
-    assert(!validCountry().test(JsonUtils.emptyObject().asInstanceOf[JsonNode]))
+  it should "return false when invalid Country value is present in json" in {
+    val jsonString =
+      """
+        |{
+        |    "Country": "Venezula"
+        |}
+        |""".stripMargin
+    val jsonNode = JsonUtils.toJsonNode(jsonString)
+    validCountry().test(jsonNode) shouldBe  false
+
+    // Country value 'Venezula' is not present in validCountryList
   }
-  it should "return false when Country Key is not present in json" in {
-    assert(
-      !validCountry()
-        .test(JsonUtils.emptyObject().put("state", "abc").asInstanceOf[JsonNode])
-    )
+
+  it should "return true when valid Country value is present in json" in {
+    val jsonString =
+      """
+        |{
+        |    "Country": "France"
+        |}
+        |""".stripMargin
+    val jsonNode = JsonUtils.toJsonNode(jsonString)
+    validCountry().test(jsonNode) shouldBe  true
+
+    // Country value 'France' is present in validCountryList
   }
-  it should "return false when Country is empty" in {
-    assert(
-      !validCountry()
-        .test(JsonUtils.emptyObject().put("Country", "").asInstanceOf[JsonNode])
-    )
-  }
-  it should "return false when Country not present in CountryList" in {
-    assert(
-      !validCountry().test(
-        JsonUtils
-          .emptyObject()
-          .put("Country", "Venezula")
-          .asInstanceOf[JsonNode]
-      )
-    )
-  }
-  it should "return true when Country present in CountryList" in {
-    // Country present in json
-    assert(
-      validCountry().test(
-        JsonUtils.emptyObject().put("Country", "France").asInstanceOf[JsonNode]
-      )
-    )
-  }
+
+  //   behavior of validInvoices
 
   behavior of "validInvoices"
-  it should "return false when Empty Json is passed" in {
-    assert(
-      !validInvoices().test(JsonUtils.emptyObject().asInstanceOf[JsonNode])
-    )
+  it should "return false when InvoiceNo starts with C in json" in {
+    val jsonString =
+      """
+        |{
+        |    "InvoiceNo": "C84123"
+        |}
+        |""".stripMargin
+    val jsonNode = JsonUtils.toJsonNode(jsonString)
+    validInvoices().test(jsonNode) shouldBe false
+
+    // InvoiceNo should not start with C
   }
-  it should "return false when InvoiceNo Key is not present in json" in {
-    assert(
-      !validInvoices()
-        .test(JsonUtils.emptyObject().put("XYZ", "abc").asInstanceOf[JsonNode])
-    )
+
+  it should "return true when correct InvoiceNo is in json" in {
+    val jsonString =
+      """
+        |{
+        |    "InvoiceNo": "536365"
+        |}
+        |""".stripMargin
+    val jsonNode = JsonUtils.toJsonNode(jsonString)
+    validInvoices().test(jsonNode) shouldBe true
+
+    // valid InvoiceNo present
+
   }
-  it should "return false when InvoiceNo is Empty" in {
-    assert(
-      !validInvoices().test(
-        JsonUtils.emptyObject().put("InvoiceNo", "").asInstanceOf[JsonNode]
-      )
-    )
-  }
-  it should "return false when InvoiceNo starts with C" in {
-    assert(
-      !validInvoices().test(
-        JsonUtils
-          .emptyObject()
-          .put("InvoiceNo", "C12345")
-          .asInstanceOf[JsonNode]
-      )
-    )
-  }
-  it should "return true when InvoiceNo starts with C" in {
-    assert(
-      validInvoices().test(
-        JsonUtils
-          .emptyObject()
-          .put("InvoiceNo", "541267")
-          .asInstanceOf[JsonNode]
-      )
-    )
-  }
+
+  //   behavior of validQuantity
 
   behavior of "validQuantity"
-  it should "return false when Empty Json is passed" in {
-    assert(
-      !validQuantity().test(JsonUtils.emptyObject().asInstanceOf[JsonNode])
-    )
+  it should "return false when Quantity is -ve in json" in {
+    val jsonString =
+      """
+        |{
+        |    "Quantity": -1
+        |}
+        |""".stripMargin
+    val jsonNode = JsonUtils.toJsonNode(jsonString)
+    validQuantity().test(jsonNode) shouldBe false
+
+    // Quantity should not be -ve
   }
-  it should "return false when Quantity Key is not present in json" in {
-    assert(
-      !validQuantity()
-        .test(JsonUtils.emptyObject().put("XYZ", "abc").asInstanceOf[JsonNode])
-    )
+
+  it should "return false when Quantity is Zero in json" in {
+    val jsonString =
+      """
+        |{
+        |    "Quantity": 0
+        |}
+        |""".stripMargin
+    val jsonNode = JsonUtils.toJsonNode(jsonString)
+    validQuantity().test(jsonNode) shouldBe false
+
+    // Quantity should not be zero
   }
-  it should "return false when Quantity is Empty" in {
-    assert(
-      !validQuantity().test(
-        JsonUtils.emptyObject().put("Quantity", "").asInstanceOf[JsonNode]
-      )
-    )
+
+  it should "return true when Quantity is +ve in json" in {
+    val jsonString =
+      """
+        |{
+        |    "Quantity": 6
+        |}
+        |""".stripMargin
+    val jsonNode = JsonUtils.toJsonNode(jsonString)
+    validQuantity().test(jsonNode) shouldBe true
+
+    // valid Quantity present
   }
-  it should "return false when Quantity is -ve" in {
-    assert(
-      !validQuantity().test(
-        JsonUtils.emptyObject().put("Quantity", -1).asInstanceOf[JsonNode]
-      )
-    )
-  }
-  it should "return false when Quantity is 0" in {
-    assert(
-      !validQuantity()
-        .test(JsonUtils.emptyObject().put("Quantity", 0).asInstanceOf[JsonNode])
-    )
-  }
-  it should "return true when Quantity is positive" in {
-    assert(
-      validQuantity().test(
-        JsonUtils.emptyObject().put("Quantity", 10).asInstanceOf[JsonNode]
-      )
-    )
-  }
+
+  // behavior of validUnitPrice
 
   behavior of "validUnitPrice"
-  it should "return false when Empty Json is passed" in {
-    assert(
-      !validUnitPrice().test(JsonUtils.emptyObject().asInstanceOf[JsonNode])
-    )
+  it should "return false when UnitPrice is -ve in json" in {
+    val jsonString =
+      """
+        |{
+        |    "UnitPrice": -1
+        |}
+        |""".stripMargin
+    val jsonNode = JsonUtils.toJsonNode(jsonString)
+    validUnitPrice().test(jsonNode) shouldBe false
+
+    // UnitPrice should not be -ve
   }
-  it should "return false when UnitPrice Key is not present in json" in {
-    assert(
-      !validUnitPrice()
-        .test(JsonUtils.emptyObject().put("XYZ", "abc").asInstanceOf[JsonNode])
-    )
+
+  it should "return false when UnitPrice is Zero in json" in {
+    val jsonString =
+      """
+        |{
+        |    "UnitPrice": 0
+        |}
+        |""".stripMargin
+    val jsonNode = JsonUtils.toJsonNode(jsonString)
+    validUnitPrice().test(jsonNode) shouldBe false
+
+    // UnitPrice should not be Zero
   }
-  it should "return false when UnitPrice is Empty" in {
-    assert(
-      !validUnitPrice().test(
-        JsonUtils.emptyObject().put("UnitPrice", "").asInstanceOf[JsonNode]
-      )
-    )
+
+  it should "return true when UnitPrice is +ve in json" in {
+    val jsonString =
+      """
+        |{
+        |    "UnitPrice": 2.55
+        |}
+        |""".stripMargin
+    val jsonNode = JsonUtils.toJsonNode(jsonString)
+    validUnitPrice().test(jsonNode) shouldBe true
+
+    // valid UnitPrice present
   }
-  it should "return false when UnitPrice is -ve" in {
-    assert(
-      !validUnitPrice().test(
-        JsonUtils.emptyObject().put("UnitPrice", "-1.0").asInstanceOf[JsonNode]
-      )
-    )
-  }
-  it should "return false when UnitPrice is 0" in {
-    assert(
-      !validUnitPrice().test(
-        JsonUtils.emptyObject().put("UnitPrice", "0.0").asInstanceOf[JsonNode]
-      )
-    )
-  }
-  it should "return true when UnitPrice is positive" in {
-    assert(
-      validUnitPrice().test(
-        JsonUtils.emptyObject().put("UnitPrice", "10.50").asInstanceOf[JsonNode]
-      )
-    )
-  }
+
+  // behavior of "validCustomerID"
 
   behavior of "validCustomerID"
-  it should "return false when Empty Json is passed" in {
-    assert(
-      !validCustomerId().test(JsonUtils.emptyObject().asInstanceOf[JsonNode])
-    )
-  }
-  it should "return false when CustomerID Key is not present in json" in {
-    assert(
-      !validCustomerId()
-        .test(JsonUtils.emptyObject().put("XYZ", "abc").asInstanceOf[JsonNode])
-    )
-  }
-  it should "return false when CustomerID is Empty" in {
-    assert(
-      !validCustomerId().test(
-        JsonUtils.emptyObject().put("CustomerID", "").asInstanceOf[JsonNode]
-      )
-    )
-  }
-  it should "return true when CustomerID is correct" in {
-    assert(
-      validCustomerId().test(
-        JsonUtils
-          .emptyObject()
-          .put("CustomerID", 12779.0)
-          .asInstanceOf[JsonNode]
-      )
-    )
+  it should "return false when CustomerID is empty in json" in {
+    val jsonString =
+      """
+        |{
+        |    "CustomerID": ""
+        |}
+        |""".stripMargin
+    val jsonNode = JsonUtils.toJsonNode(jsonString)
+    validCustomerId().test(jsonNode) shouldBe false
+
+    // CustomerID is empty
   }
 
-  behavior of "validDate"
-  it should "return false when Empty Json is passed" in {
-    assert(!validDate().test(JsonUtils.emptyObject().asInstanceOf[JsonNode]))
+  it should "return true when CustomerID is proper in json" in {
+    val jsonString =
+      """
+        |{
+        |    "CustomerID": 17850.0
+        |}
+        |""".stripMargin
+    val jsonNode = JsonUtils.toJsonNode(jsonString)
+    validCustomerId().test(jsonNode) shouldBe true
+
+    // valid CustomerID present
   }
-  it should "return false when InvoiceDate is not present in json" in {
-    assert(
-      !validDate()
-        .test(JsonUtils.emptyObject().put("XYZ", "abc").asInstanceOf[JsonNode])
-    )
+
+  //  behavior of validDate
+
+  behavior of "validInvoiceDate"
+  it should "return true when InvoiceDate is proper in json" in {
+    val jsonString =
+      """
+        |{
+        |    "InvoiceDate": "2010-12-01 08:26:00"
+        |}
+        |""".stripMargin
+    val jsonNode = JsonUtils.toJsonNode(jsonString)
+    validDate().test(jsonNode) shouldBe true
+
+    // valid InvoiceDate present
   }
-  it should "return false when InvoiceDate is Empty" in {
-    assert(
-      !validDate().test(
-        JsonUtils.emptyObject().put("InvoiceDate", "").asInstanceOf[JsonNode]
-      )
-    )
+
+
+  it should "return false when InvoiceDate is having date > today date in json" in {
+    val jsonString =
+      """
+        |{
+        |    "InvoiceDate": "2023-12-01 08:26:00"
+        |}
+        |""".stripMargin
+    val jsonNode = JsonUtils.toJsonNode(jsonString)
+    validDate().test(jsonNode) shouldBe false
+
+    // InvoiceDate is > today's date, 2023-12-01
   }
-  it should "return false when InvoiceDate is not date" in {
-    assert(
-      !validDate().test(
-        JsonUtils
-          .emptyObject()
-          .put("InvoiceDate", "not-present")
-          .asInstanceOf[JsonNode]
-      )
-    )
+
+  it should "return false when InvoiceDate is having wrong month in json" in {
+    val jsonString =
+      """
+        |{
+        |    "InvoiceDate": "2010-40-01 08:26:00"
+        |}
+        |""".stripMargin
+    val jsonNode = JsonUtils.toJsonNode(jsonString)
+    validDate().test(jsonNode) shouldBe false
+
+    // InvoiceDate is having wrong month value of 40
   }
-  it should "return true when InvoiceDate is proper" in {
-    assert(
-      validDate().test(
-        JsonUtils
-          .emptyObject()
-          .put("InvoiceDate", "2010-12-01 08:26:00")
-          .asInstanceOf[JsonNode]
-      )
-    )
+
+  it should "return false when InvoiceDate is having wrong hour in json" in {
+    val jsonString =
+      """
+        |{
+        |    "InvoiceDate": "2010-40-01 08:86:00"
+        |}
+        |""".stripMargin
+    val jsonNode = JsonUtils.toJsonNode(jsonString)
+    validDate().test(jsonNode) shouldBe false
+
+    // InvoiceDate is having wrong hour value of 86
   }
-  it should "return false when InvoiceDate is having wrong day " in {
-    assert(
-      !validDate().test(
-        JsonUtils
-          .emptyObject()
-          .put("InvoiceDate", "2011-01-51 08:26:00")
-          .asInstanceOf[JsonNode]
-      )
-    )
-  }
-  it should "return false when InvoiceDate is having wrong month " in {
-    assert(
-      !validDate().test(
-        JsonUtils
-          .emptyObject()
-          .put("InvoiceDate", "2011-41-01 08:26:00")
-          .asInstanceOf[JsonNode]
-      )
-    )
-  }
-  it should "return false when InvoiceDate is having date > today date  " in {
-    assert(
-      !validDate().test(
-        JsonUtils
-          .emptyObject()
-          .put("InvoiceDate", "2022-01-17 08:26:00")
-          .asInstanceOf[JsonNode]
-      )
-    )
-  }
-  it should "return false when InvoiceDate is wrong sec" in {
-    assert(
-      !validDate().test(
-        JsonUtils
-          .emptyObject()
-          .put("InvoiceDate", "2010-12-01 08:26:70")
-          .asInstanceOf[JsonNode]
-      )
-    )
-  }
-  it should "return false when InvoiceDate is wrong min" in {
-    assert(
-      !validDate().test(
-        JsonUtils
-          .emptyObject()
-          .put("InvoiceDate", "2010-12-01 08:80:00")
-          .asInstanceOf[JsonNode]
-      )
-    )
-  }
-  it should "return false when InvoiceDate is wrong hour" in {
-    assert(
-      !validDate().test(
-        JsonUtils
-          .emptyObject()
-          .put("InvoiceDate", "2010-12-01 90:26:00")
-          .asInstanceOf[JsonNode]
-      )
-    )
-  }
+
 }

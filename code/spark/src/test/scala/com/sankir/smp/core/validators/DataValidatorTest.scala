@@ -32,75 +32,51 @@ class DataValidatorTest extends AnyFlatSpec with SharedSparkContext{
   //  jsonValidator
 
   behavior of "JsonValidator"
-  it should "convert invalid jsons to Failure objects" in {
+  it should "convert valid jsons to Success objects and invalid jsons to Failure objects" in {
     import com.sankir.smp.utils.encoders.CustomEncoders._
     val rawRecords = sparkSession.createDataset(
-      readAsStringIterator("core/validators/invalid_data.json").toSeq
+      readAsStringIterator("core/validators/json_data.json").toSeq
     )
     val jsonValidatedRecords = jsonValidator(rawRecords)
-    assert(jsonValidatedRecords.filter(_._2.isFailure).count() == 5)
-  }
+    assert(jsonValidatedRecords.filter(_._2.isSuccess).count() == 3)
+    assert(jsonValidatedRecords.filter(_._2.isFailure).count() == 2)
 
-  it should "convert valid jsons to Success objects" in {
-    import com.sankir.smp.utils.encoders.CustomEncoders._
-    val rawRecords = sparkSession.createDataset(
-      readAsStringIterator("core/validators/valid_data.json").toSeq
-    )
-    val jsonValidatedRecords = jsonValidator(rawRecords)
-    assert(jsonValidatedRecords.filter(_._2.isSuccess).count() == 5)
   }
 
   // schemaValidator
 
   behavior of "SchemaValidator"
-  it should "convert invalid schema jsons to Failure objects" in {
-    import com.sankir.smp.utils.encoders.CustomEncoders._
-    val sdfData = sparkSession.createDataset(
-      readAsStringIterator("core/validators/invalid_schema_data.json").toSeq
-    )
-    val schema = readAsString("core/validators/schema.json")
-    val validJsonRecords =
-      sdfData.map(rec => (rec, JsonUtils.toJsonNode(rec)))
-    val schemaValidatedRecords = schemaValidator(validJsonRecords, schema)
-    assert(schemaValidatedRecords.filter(_._2.isFailure).count() == 1)
-  }
-
-  it should "convert valid schema jsons to Success objects" in {
+  it should "convert valid schema jsons to Failure objects and invalid schema jsons to Failure objects" in {
     import com.sankir.smp.utils.encoders.CustomEncoders._
     val rawRecords = sparkSession.createDataset(
-      readAsStringIterator("core/validators/valid_schema_data.json").toSeq
+      readAsStringIterator("core/validators/schema_data.json").toSeq
     )
     val schema = readAsString("core/validators/schema.json")
     val validJsonRecords =
       rawRecords.map(rec => (rec, JsonUtils.toJsonNode(rec)))
     val schemaValidatedRecords = schemaValidator(validJsonRecords, schema)
-    assert(schemaValidatedRecords.filter(_._2.isSuccess).count() == 1)
+    assert(schemaValidatedRecords.filter(_._2.isSuccess).count() == 2)
+    assert(schemaValidatedRecords.filter(_._2.isFailure).count() == 1)
+
   }
+
 
   // businessValidator
 
   behavior of "BusinessValidator"
-  it should "convert invalid biz data to Failure objects" in {
+  it should "convert valid biz data to Success objects and convert invalid biz data to Failure objects" in {
     import com.sankir.smp.utils.encoders.CustomEncoders._
     val rawRecords = sparkSession.createDataset(
-      readAsStringIterator("core/validators/invalid_biz_data.json").toSeq
+      readAsStringIterator("core/validators/biz_data.json").toSeq
     )
     val validSchemaRecords =
       rawRecords.map(rec => (rec, JsonUtils.toJsonNode(rec)))
     val businessValidatedRecords: Dataset[(String, Try[JsonNode])] =
       businessValidator(validSchemaRecords, RetailBusinessValidator.validate)
+    assert(businessValidatedRecords.filter(_._2.isSuccess).count() == 3)
     assert(businessValidatedRecords.filter(_._2.isFailure).count() == 5)
+
   }
 
-  it should "convert valid biz data to Success objects" in {
-    import com.sankir.smp.utils.encoders.CustomEncoders._
-    val rawRecords = sparkSession.createDataset(
-      readAsStringIterator("core/validators/valid_biz_data.json").toSeq
-    )
-    val validSchemaRecords =
-      rawRecords.map(rec => (rec, JsonUtils.toJsonNode(rec)))
-    val businessValidatedRecords: Dataset[(String, Try[JsonNode])] =
-      businessValidator(validSchemaRecords, RetailBusinessValidator.validate)
-    assert(businessValidatedRecords.filter(_._2.isSuccess).count() == 5)
-  }
+
 }
