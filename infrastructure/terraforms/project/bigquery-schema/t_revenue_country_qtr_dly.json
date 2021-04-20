@@ -1,19 +1,19 @@
 [
   {
     "description": "Country",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "name": "country",
     "type": "STRING"
   },
   {
     "description": "Year",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "name": "year1",
     "type": "INTEGER"
   },
   {
     "description": "Quarter",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "name": "qtr",
     "type": "INTEGER"
   },

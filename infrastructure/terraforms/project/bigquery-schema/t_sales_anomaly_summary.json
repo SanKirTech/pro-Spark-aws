@@ -1,19 +1,19 @@
 [
   {
     "description": "Stock Code ",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "name": "StockCode",
     "type": "STRING"
   },
   {
     "description": "Year",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "name": "year1",
     "type": "INTEGER"
   },
   {
     "description": "Month",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "name": "month1",
     "type": "INTEGER"
   },

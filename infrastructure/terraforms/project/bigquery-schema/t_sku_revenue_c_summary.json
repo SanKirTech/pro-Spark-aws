@@ -1,13 +1,13 @@
 [
   {
     "description": "Stock Code ",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "name": "StockCode",
     "type": "STRING"
   },
   {
     "description": "Country",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "name": "country",
     "type": "STRING"
   },

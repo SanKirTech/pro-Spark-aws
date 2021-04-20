@@ -1,7 +1,7 @@
 [
   {
     "description": "Stock Code ",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "name": "StockCode",
     "type": "STRING"
   },

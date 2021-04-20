@@ -1,7 +1,7 @@
 [
   {
     "description": "Customer ID ",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "name": "customerid",
     "type": "FLOAT"
   },

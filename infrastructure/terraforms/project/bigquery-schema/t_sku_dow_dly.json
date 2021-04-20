@@ -1,7 +1,7 @@
 [
   {
     "description": "Stock Code ",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "name": "StockCode",
     "type": "STRING"
   },
@@ -13,13 +13,13 @@
   },
   {
     "description": "Day of the Week",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "name": "day_of_week",
     "type": "INTEGER"
   },
   {
     "description" : "Country",
-    "mode" : "REQUIRED",
+    "mode" : "NULLABLE",
     "name" : "Country",
     "type" : "STRING"
   }

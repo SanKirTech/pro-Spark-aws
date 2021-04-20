@@ -22,7 +22,6 @@ import com.sankir.smp.common.JsonUtils
 import org.scalatest._
 import matchers.should.Matchers._
 
-
 class RetailBusinessValidatorTest extends AnyFlatSpec {
 
   behavior of "RetailBusiness validator"
@@ -48,7 +47,7 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
     //assert(RetailBusinessValidator.validate(jsonNode).isSuccess)
   }
 
-    it should "return Failure when one of the business rules is invalid in json" in {
+  it should "return Failure when one of the business rules is invalid in json" in {
     val jsonString =
       """
         |{
@@ -63,9 +62,9 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
         |}
         |""".stripMargin
     val jsonNode = JsonUtils.toJsonNode(jsonString)
-      RetailBusinessValidator.validate(jsonNode).isSuccess shouldBe false
+    RetailBusinessValidator.validate(jsonNode).isSuccess shouldBe false
 
-      // country name is wrong ( not in the validCountryList)
+    // country name is wrong ( not in the validCountryList)
   }
 
   it should "return Failure when the business rules are invalid in json " in {
@@ -100,7 +99,7 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
         |}
         |""".stripMargin
     val jsonNode = JsonUtils.toJsonNode(jsonString)
-    validStockCode().test(jsonNode) shouldBe  false
+    validStockCode().test(jsonNode) shouldBe false
 
     // StockCode key is absent , insted wrong 'Stocked' key is present
   }
@@ -113,7 +112,7 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
         |}
         |""".stripMargin
     val jsonNode = JsonUtils.toJsonNode(jsonString)
-    validStockCode().test(jsonNode) shouldBe  false
+    validStockCode().test(jsonNode) shouldBe false
 
     // StockCode key is present,  but StockCode value is invalid because it is not present in validStockCode
   }
@@ -126,7 +125,7 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
         |}
         |""".stripMargin
     val jsonNode = JsonUtils.toJsonNode(jsonString)
-    validStockCode().test(jsonNode) shouldBe  false
+    validStockCode().test(jsonNode) shouldBe false
 
     // StockCode key is present,  but StockCode value is empty
   }
@@ -139,7 +138,7 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
         |}
         |""".stripMargin
     val jsonNode = JsonUtils.toJsonNode(jsonString)
-    validStockCode().test(jsonNode) shouldBe  true
+    validStockCode().test(jsonNode) shouldBe true
 
     // StockCode key is present,  and StockCode value is valid
   }
@@ -155,7 +154,7 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
         |}
         |""".stripMargin
     val jsonNode = JsonUtils.toJsonNode(jsonString)
-    validCountry().test(jsonNode) shouldBe  false
+    validCountry().test(jsonNode) shouldBe false
 
     // Country value 'Venezula' is not present in validCountryList
   }
@@ -168,7 +167,7 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
         |}
         |""".stripMargin
     val jsonNode = JsonUtils.toJsonNode(jsonString)
-    validCountry().test(jsonNode) shouldBe  true
+    validCountry().test(jsonNode) shouldBe true
 
     // Country value 'France' is present in validCountryList
   }
@@ -331,7 +330,6 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
 
     // valid InvoiceDate present
   }
-
 
   it should "return false when InvoiceDate is having date > today date in json" in {
     val jsonString =

@@ -1,7 +1,7 @@
   [
   {
     "description": "Country",
-    "mode": "REQUIRED",
+    "mode": "NULLABLE",
     "name": "country",
     "type": "STRING"
   },

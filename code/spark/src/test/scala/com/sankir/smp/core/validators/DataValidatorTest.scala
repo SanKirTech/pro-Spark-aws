@@ -18,14 +18,18 @@ package com.sankir.smp.core.validators
 import com.sankir.smp.core.SharedSparkContext
 import com.fasterxml.jackson.databind.JsonNode
 import com.sankir.smp.common.JsonUtils
-import com.sankir.smp.core.validators.DataValidator.{businessValidator, jsonValidator, schemaValidator}
+import com.sankir.smp.core.validators.DataValidator.{
+  businessValidator,
+  jsonValidator,
+  schemaValidator
+}
 import com.sankir.smp.utils.FileSource.{readAsString, readAsStringIterator}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.apache.spark.sql.{Dataset, Encoder, Encoders, Row}
 
 import scala.util.Try
 
-class DataValidatorTest extends AnyFlatSpec with SharedSparkContext{
+class DataValidatorTest extends AnyFlatSpec with SharedSparkContext {
 
   implicit val stringEncoder: Encoder[String] = Encoders.STRING
 
@@ -60,7 +64,6 @@ class DataValidatorTest extends AnyFlatSpec with SharedSparkContext{
 
   }
 
-
   // businessValidator
 
   behavior of "BusinessValidator"
@@ -77,6 +80,5 @@ class DataValidatorTest extends AnyFlatSpec with SharedSparkContext{
     assert(businessValidatedRecords.filter(_._2.isFailure).count() == 5)
 
   }
-
 
 }

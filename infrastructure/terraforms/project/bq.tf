@@ -12,6 +12,13 @@ resource "google_bigquery_dataset" "retail_kpi" {
   location                    = "US"
 }
 
+resource "google_bigquery_dataset" "retail_kpi_summary" {
+  dataset_id                  = "retail_kpi_summary"
+  friendly_name               = "retail_kpi_summary"
+  description                 = "This is retail_kpi Dataset for Summary tables"
+  location                    = "US"
+}
+
 resource "google_bigquery_dataset" "recon" {
   dataset_id                  = "recon"
   friendly_name               = "recon"
@@ -46,6 +53,7 @@ resource "google_bigquery_table" "error" {
 
   schema = file("bigquery-schema/t_error.json")
 }
+
 
 //++ KPI Tables Below //
 resource "google_bigquery_table" "t_sku_dow_dly" {
@@ -138,7 +146,7 @@ resource "google_bigquery_table" "t_revenue_country_qtr" {
 
 /* Summary Table creation begins */
 resource "google_bigquery_table" "sku_dow_summary" {
-  dataset_id = google_bigquery_dataset.retail_kpi.dataset_id
+  dataset_id = google_bigquery_dataset.retail_kpi_summary.dataset_id
   table_id   = "t_sku_dow_summary"
 
   labels = {
@@ -149,7 +157,7 @@ resource "google_bigquery_table" "sku_dow_summary" {
 }
 
 resource "google_bigquery_table" "t_sku_revenue_w_summary" {
-  dataset_id = google_bigquery_dataset.retail_kpi.dataset_id
+  dataset_id = google_bigquery_dataset.retail_kpi_summary.dataset_id
   table_id   = "t_sku_revenue_w_summary"
 
   labels = {
@@ -160,7 +168,7 @@ resource "google_bigquery_table" "t_sku_revenue_w_summary" {
 }
 
 resource "google_bigquery_table" "t_sku_revenue_c_summary" {
-  dataset_id = google_bigquery_dataset.retail_kpi.dataset_id
+  dataset_id = google_bigquery_dataset.retail_kpi_summary.dataset_id
   table_id   = "t_sku_revenue_c_summary"
 
   labels = {
@@ -172,7 +180,7 @@ resource "google_bigquery_table" "t_sku_revenue_c_summary" {
 
 
 resource "google_bigquery_table" "t_sales_anomaly_summary" {
-  dataset_id = google_bigquery_dataset.retail_kpi.dataset_id
+  dataset_id = google_bigquery_dataset.retail_kpi_summary.dataset_id
   table_id   = "t_sales_anomaly_summary"
 
   labels = {
@@ -182,7 +190,7 @@ resource "google_bigquery_table" "t_sales_anomaly_summary" {
   schema = file("bigquery-schema/t_sales_anomaly_summary.json")
 }
 resource "google_bigquery_table" "t_revenue_country_summary" {
-  dataset_id = google_bigquery_dataset.retail_kpi.dataset_id
+  dataset_id = google_bigquery_dataset.retail_kpi_summary.dataset_id
   table_id   = "t_revenue_country_summary"
 
   labels = {
@@ -193,7 +201,7 @@ resource "google_bigquery_table" "t_revenue_country_summary" {
 }
 
 resource "google_bigquery_table" "t_revenue_qtr_summary" {
-  dataset_id = google_bigquery_dataset.retail_kpi.dataset_id
+  dataset_id = google_bigquery_dataset.retail_kpi_summary.dataset_id
   table_id   = "t_revenue_qtr_summary"
 
   labels = {
@@ -204,7 +212,7 @@ resource "google_bigquery_table" "t_revenue_qtr_summary" {
 }
 
 resource "google_bigquery_table" "t_customer_rank_summary" {
-  dataset_id = google_bigquery_dataset.retail_kpi.dataset_id
+  dataset_id = google_bigquery_dataset.retail_kpi_summary.dataset_id
   table_id   = "t_customer_rank_summary"
 
   labels = {
@@ -215,7 +223,7 @@ resource "google_bigquery_table" "t_customer_rank_summary" {
 }
 
 resource "google_bigquery_table" "t_revenue_country_qtr_summary" {
-  dataset_id = google_bigquery_dataset.retail_kpi.dataset_id
+  dataset_id = google_bigquery_dataset.retail_kpi_summary.dataset_id
   table_id   = "t_revenue_country_qtr_summary"
 
   labels = {
