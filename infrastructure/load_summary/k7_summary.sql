@@ -1,4 +1,4 @@
-merge pro-spark.retail_kpi.t_sales_anomaly_summary s
+merge pro-spark.retail_kpi_summary.t_sales_anomaly_summary s
   using pro-spark.retail_kpi.t_sales_anomaly_dly d
    on (s.stockcode = d.stockcode and s.year1 = d.year1 and s.month1 = d.month1)
 when matched

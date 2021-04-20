@@ -1,4 +1,4 @@
-merge pro-spark.retail_kpi.t_sku_dow_summary s
+merge pro-spark.retail_kpi_summary.t_sku_dow_summary s
   using pro-spark.retail_kpi.t_sku_dow_dly d
    on (s.stockcode = d.stockcode and s.day_of_week = d.day_of_week and s.country=d.country)
 when matched
