@@ -31,7 +31,6 @@ class GenericSchemaValidatorTest extends AnyFlatSpec {
       JsonUtils.toJsonNode(readAsString("core/validators/schema_invalid.json"))
     intercept[SchemaValidationFailedException] {
       GenericSchemaValidator.validateSchema(schema, jsonNode)
-      // assert missing here ????? (look at intercept)
     }
   }
 
