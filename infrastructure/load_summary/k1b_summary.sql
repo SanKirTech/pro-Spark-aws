@@ -1,7 +1,7 @@
 Begin
 merge pro-spark.retail_kpi_summary.t_sku_revenue_c_summary s
   using pro-spark.retail_kpi.t_sku_revenue_c_dly d
-   on (s.stockcode = d.stockcode)
+   on (s.stockcode = d.stockcode and s.country = d.country)
 when matched
   then update set 
    s.revenue = s.revenue + d.revenue, s.rank = 0

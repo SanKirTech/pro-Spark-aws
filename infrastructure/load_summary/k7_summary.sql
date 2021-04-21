@@ -8,5 +8,6 @@ when matched
    s.revenue = s.revenue + d.revenue
 WHEN NOT MATCHED BY TARGET 
     THEN INSERT (stockcode, year1, month1, revenue)
-         VALUES(stockcode, year1, month1, revenue)
+         VALUES(stockcode, year1, month1, revenue);
+
 end
