@@ -218,7 +218,8 @@
                             </filters>
                             <relocations>
                                 <relocation>
-                                    <pattern>com</pattern>   <shadedPattern>repackaged.com.google.common</shadedPattern>
+                                    <pattern>com</pattern>
+                                    <shadedPattern>repackaged.com.google.common</shadedPattern>
                                     <includes>
                                         <include>com.google.common.**</include>
                                     </includes>

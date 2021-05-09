@@ -202,12 +202,7 @@ object ApplicationMain {
 
     val invalidBusinessRecords = businessValidatedRecords.filter(_._2.isFailure)
     //writeToBigQuery(invalidSchemaRecords, CMDLINEOPTIONS, JOBNAME, INVALID_BIZ_DATA)
-//    writeToBigQuery(
-//      invalidBusinessRecords,
-//      CMDLINEOPTIONS,
-//      JOBNAME,
-//      INVALID_BIZ_DATA
-//    )
+
     println(
       "\n---------------- invalid BizData Records ------ " + invalidBusinessRecords
         .count()
@@ -227,6 +222,9 @@ object ApplicationMain {
     val retailDS = sparkSession.read
       .json(validBusinessRecords.map(_._2.toString))
       .as[RetailCase]
+
+    val ingressTable = CMDLINEOPTIONS.bqDataset + "." + CMDLINEOPTIONS.bqTableName
+    Insight.writeToIngress(sparkSession, retailDS, ingressTable)
 
     retailDS.printSchema()
     retailDS.show(20, false)

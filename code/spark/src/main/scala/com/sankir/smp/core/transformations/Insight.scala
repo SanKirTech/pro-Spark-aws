@@ -15,7 +15,7 @@
 
 package com.sankir.smp.core.transformations
 
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{Dataset, SparkSession}
 import org.apache.spark.sql.types.{
   DateType,
   DoubleType,
@@ -159,5 +159,28 @@ country order by dayofweek(InvoiceDate),country) order by revenue desc, Day_Of_W
     }
 
     kpiIndices.foreach(kpiPrint)
+
+  }
+
+  /***
+    *
+    * @param sparkSession
+    * @param goodRecords
+    * @param bqtbl
+    * @return
+    */
+  def writeToIngress(sparkSession: SparkSession,
+                     goodRecords: Dataset[RetailCase],
+                     bqtbl: String): Option[String] = {
+    val bucket = "sankir-storage-prospark"
+    sparkSession.conf.set("temporaryGcsBucket", bucket)
+    goodRecords
+      .coalesce(5)
+      .write
+      .format("bigquery")
+      .mode("append")
+      .save(bqtbl)
+
+    Some("Success")
   }
 }
