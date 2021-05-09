@@ -11,7 +11,6 @@ fi
 echo "#!/bin/bash" > $HOME/load_summary.sh
 echo "# Summary Tables load scripts" >> $HOME/load_summary.sh
 
-#for i in `gsutil ls gs://sankir-storage-prospark/kpi/load_summary/*.sql`
 for i in `gsutil ls $1`
 do
 
