@@ -223,8 +223,8 @@ object ApplicationMain {
       .json(validBusinessRecords.map(_._2.toString))
       .as[RetailCase]
 
-    val ingressTable = CMDLINEOPTIONS.bqDataset + "." + CMDLINEOPTIONS.bqTableName
-    Insight.writeToIngress(sparkSession, retailDS, ingressTable)
+//    val ingressTable = CMDLINEOPTIONS.bqDataset + "." + CMDLINEOPTIONS.bqTableName
+//    Insight.writeToIngress(sparkSession, retailDS, ingressTable)
 
     retailDS.printSchema()
     retailDS.show(20, false)

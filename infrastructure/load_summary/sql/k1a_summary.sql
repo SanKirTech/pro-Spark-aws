@@ -9,7 +9,7 @@ WHEN NOT MATCHED BY TARGET
     THEN INSERT (stockcode, revenue, rank)
          VALUES(stockcode, revenue, 0);
 
-select * from pro-spark.retail_kpi_summary.t_sku_revenue_w_summary ;
+select * from pro-spark.retail_kpi_summary.t_sku_revenue_w_summary order by rank asc;
 
 drop table if exists retail_kpi_summary.k1atemp;
 
