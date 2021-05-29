@@ -75,7 +75,7 @@ class DataValidatorTest extends AnyFlatSpec {
 
   // businessValidator
   behavior of "BusinessValidator"
-  it should "convert valid biz data to Success objects" in {
+  it should "convert valid business data to Success objects" in {
     import com.sankir.smp.utils.encoders.CustomEncoders._
     val rawRecords = sparkSession.createDataset(
       readAsStringIterator("core/validators/biz_data_valid.json").toSeq
@@ -87,7 +87,7 @@ class DataValidatorTest extends AnyFlatSpec {
     assert(businessValidatedRecords.filter(_._2.isSuccess).count() == 3)
   }
 
-  it should "convert invalid biz data to Failure objects" in {
+  it should "convert invalid business data to Failure objects" in {
     import com.sankir.smp.utils.encoders.CustomEncoders._
     val rawRecords = sparkSession.createDataset(
       readAsStringIterator("core/validators/biz_data_invalid.json").toSeq

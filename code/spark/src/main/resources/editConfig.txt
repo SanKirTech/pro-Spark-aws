@@ -1,4 +1,7 @@
+In IntelliJ,
 Click on Run --> Profile -> ApplicationMain --> Edit
-#cut paste the below line and paste in program arguments
+#copy the below line and paste in "Program arguments"
 --projectId pro-Spark --schemaLocation gs://sankir-storage-prospark/input/t_transaction.json --inputLocation gs://sankir-storage-prospark/processed-retail-data/q1/2011-01-04.json --bqDataset retail_bq --bqTableName t_transaction --bqErrorTable t_error --kpiLocation gs://sankir-storage-prospark/kpi/kpiquery.json
-#set GOOGLE_APPLICATION_CREDENTIALS=<path of credential json>> in IntelliJ as shown in the Cllesson video
+
+#set the following in "Environment Variables"
+GOOGLE_APPLICATION_CREDENTIALS=<path of credential json>
