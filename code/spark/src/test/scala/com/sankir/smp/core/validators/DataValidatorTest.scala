@@ -24,18 +24,37 @@ import org.apache.spark.sql.{Dataset, Encoder, Encoders, SparkSession}
 
 import scala.util.Try
 
+/*
+Unit Testing of pro-Spark
+Test Units :
+Data Validation -  DataValidatorTest suite
+Schema Validation - GenericSchemaValidatorTest suite
+Business Validation - RetailBusinessValidatorTest suite
+
+Test Framework : ScalaTest
+Testing Style : FlatSpec ( AyFlatSpec Class )
+Assertions used : assert
+Test data : in test/resources directory in this project
+
+behavior, it, should and in - are all methods of class AnyFlatSpec
+assert – is method in trait Assertions
+
+ */
+
+// Total of 6 tests in this suite
 class DataValidatorTest extends AnyFlatSpec {
 
   implicit val stringEncoder: Encoder[String] = Encoders.STRING
   val sparkSession =   SparkSession.builder().appName("Test").master("local[*]").getOrCreate()
 
-  //  jsonValidator
+  //  jsonValidator - 2 tests
   behavior of "JsonValidator"
   it should "convert valid jsons to Success objects" in {
     val rawRecords = sparkSession.createDataset(
       readAsStringIterator("core/validators/json_data_valid.json").toSeq
     )
-    val jsonValidatedRecords = jsonValidator(rawRecords)
+    val jsonValidatedRecords: Dataset[(String, Try[JsonNode])] =
+      jsonValidator(rawRecords)
     assert(jsonValidatedRecords.filter(_._2.isSuccess).count() == 3)
   }
 
@@ -43,13 +62,14 @@ class DataValidatorTest extends AnyFlatSpec {
     val rawRecords = sparkSession.createDataset(
       readAsStringIterator("core/validators/json_data_invalid.json").toSeq
     )
-    val jsonValidatedRecords = jsonValidator(rawRecords)
+    val jsonValidatedRecords: Dataset[(String, Try[JsonNode])] =
+      jsonValidator(rawRecords)
     assert(jsonValidatedRecords.filter(_._2.isFailure).count() == 2)
   }
 
-  // schemaValidator
+  // schemaValidator - 2 tests
   behavior of "SchemaValidator"
-  it should "convert valid schema jsons to Sucess objects" in {
+  it should "convert valid schema to Sucess objects" in {
     import com.sankir.smp.utils.encoders.CustomEncoders._
     val rawRecords = sparkSession.createDataset(
       readAsStringIterator("core/validators/schema_data_valid.json").toSeq
@@ -57,11 +77,12 @@ class DataValidatorTest extends AnyFlatSpec {
     val schema = readAsString("core/validators/schema.json")
     val validJsonRecords =
       rawRecords.map(rec => (rec, JsonUtils.toJsonNode(rec)))
-    val schemaValidatedRecords = schemaValidator(validJsonRecords, schema)
+    val schemaValidatedRecords: Dataset[(String, Try[JsonNode])]
+    = schemaValidator(validJsonRecords, schema)
     assert(schemaValidatedRecords.filter(_._2.isSuccess).count() == 2)
   }
 
-  it should "convert invalid schema jsons to Failure objects" in {
+  it should "convert invalid schema to Failure objects" in {
     import com.sankir.smp.utils.encoders.CustomEncoders._
     val rawRecords = sparkSession.createDataset(
       readAsStringIterator("core/validators/schema_data_invalid.json").toSeq
@@ -69,11 +90,12 @@ class DataValidatorTest extends AnyFlatSpec {
     val schema = readAsString("core/validators/schema.json")
     val validJsonRecords =
       rawRecords.map(rec => (rec, JsonUtils.toJsonNode(rec)))
-    val schemaValidatedRecords = schemaValidator(validJsonRecords, schema)
+    val schemaValidatedRecords: Dataset[(String, Try[JsonNode])] =
+      schemaValidator(validJsonRecords, schema)
     assert(schemaValidatedRecords.filter(_._2.isFailure).count() == 2)
   }
 
-  // businessValidator
+  // businessValidator - 2 tests
   behavior of "BusinessValidator"
   it should "convert valid business data to Success objects" in {
     import com.sankir.smp.utils.encoders.CustomEncoders._
@@ -96,7 +118,6 @@ class DataValidatorTest extends AnyFlatSpec {
       rawRecords.map(rec => (rec, JsonUtils.toJsonNode(rec)))
     val businessValidatedRecords: Dataset[(String, Try[JsonNode])] =
       businessValidator(validSchemaRecords, RetailBusinessValidator.validate)
-
     assert(businessValidatedRecords.filter(_._2.isFailure).count() == 5)
   }
 

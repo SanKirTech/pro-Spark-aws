@@ -19,9 +19,11 @@ import org.scalatest.flatspec.AnyFlatSpec
 import com.sankir.smp.core.validators.RetailBusinessValidator._
 import com.sankir.smp.common.JsonUtils
 
+// Total of 23 tests in this suite
 class RetailBusinessValidatorTest extends AnyFlatSpec {
 
-  behavior of "RetailBusiness validator"
+  //  RetailBusinessvalidator - 3 tests
+  behavior of "RetailBusinessvalidator"
   it should "return success when all the business rules are valid in json" in {
     val jsonString =
       """
@@ -47,7 +49,7 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
     val jsonString =
       """
         |{
-        |    "InvoiceNo": "Failed-invoice-number",
+        |    "InvoiceNo": "536365",
         |    "StockCode": "85123A",
         |    "Description": "T-LIGHT HOLDER",
         |    "Quantity": 6,
@@ -81,15 +83,14 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
     assert(RetailBusinessValidator.validate(jsonNode).isFailure)
   }
 
-  //   behavior of validStockCode
-
+  //   validStockCode - 4 tests
   behavior of "validStockCode"
   it should "return false when valid StockCode Key is not present in json" in {
     // StockCode key is absent , instead wrong 'Stocked' key is present
     val jsonString =
       """
         |{
-        |    "Stocked": "abc"
+        |    "Stockedddd": "abc"
         |}
         |""".stripMargin
     val jsonNode = JsonUtils.toJsonNode(jsonString)
@@ -132,7 +133,7 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
     assert(validStockCode().test(jsonNode))
   }
 
-  //   behavior of validCountry
+  //   validCountry - 2 tests
   behavior of "validCountry"
   it should "return false when Country is invalid" in {
     // Country value 'Venezula' is not present in validCountryList
@@ -158,7 +159,7 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
     assert(validCountry().test(jsonNode))
   }
 
-  //   behavior of validInvoices
+  //   validInvoices - 2 tests
   behavior of "validInvoices"
   it should "return false when InvoiceNo starts with C" in {
     // InvoiceNo should not start with C
@@ -184,7 +185,7 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
     assert(validInvoices().test(jsonNode))
   }
 
-  //   behavior of validQuantity
+  //   validQuantity - 3 tests
   behavior of "validQuantity"
   it should "return false when Quantity is -ve" in {
     // Quantity should not be -ve
@@ -222,7 +223,7 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
     assert(validQuantity().test(jsonNode))
   }
 
-  // behavior of validUnitPrice
+  // validUnitPrice - 3 tests
   behavior of "validUnitPrice"
   it should "return false when UnitPrice is -ve" in {
     // UnitPrice should not be -ve
@@ -260,7 +261,7 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
     assert(validUnitPrice().test(jsonNode))
   }
 
-  // behavior of "validCustomerID"
+  // validCustomerID - 2 tests
   behavior of "validCustomerID"
   it should "return false when CustomerID is empty" in {
     // CustomerID is empty
@@ -286,7 +287,7 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
     assert(validCustomerId().test(jsonNode))
   }
 
-  //  behavior of validDate
+  //  validInvoiceDate - 4 tests
   behavior of "validInvoiceDate"
   it should "return true when InvoiceDate is correct" in {
     // valid InvoiceDate present
@@ -330,7 +331,7 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
     val jsonString =
       """
         |{
-        |    "InvoiceDate": "2010-40-01 08:86:00"
+        |    "InvoiceDate": "2010-10-01 08:86:00"
         |}
         |""".stripMargin
     val jsonNode = JsonUtils.toJsonNode(jsonString)
