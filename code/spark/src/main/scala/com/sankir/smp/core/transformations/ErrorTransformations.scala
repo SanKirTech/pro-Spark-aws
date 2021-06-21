@@ -44,11 +44,14 @@ object ErrorTransformations {
       )
       .foreachPartition(tableRows => {
         val bigQueryIO = BigQueryIO(projectId = configs.projectId)
-        bigQueryIO.insertIterableRows(
-          configs.bqDataset,
-          configs.bqErrorTable,
-          tableRows.toIterable
+        tableRows.foreach(
+          bigQueryIO.insertRow(configs.bqDataset, configs.bqErrorTable, _)
         )
+//        bigQueryIO.insertIterableRows(
+//          configs.bqDataset,
+//          configs.bqErrorTable,
+//          tableRows.toIterable
+//        )
         //bigQueryIO.insertRow()
       })
   }

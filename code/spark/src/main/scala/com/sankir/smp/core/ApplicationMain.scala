@@ -58,20 +58,21 @@ object ApplicationMain {
       CMDLINEOPTIONS.schemaLocation
     )
 
-    /* Creating SparkSession
-     * Sparksession is the driver program
-     * */
-    /* Use this declaration of sparkSession when submitting on dataproc cluster */
-
-    //val sparkSession = SparkSession.builder().appName("Pro-Spark-Batch").getOrCreate()
-
-    /* The following is for testing your program locally on laptop */
+    //Use this declaration of sparkSession when submitting on dataproc cluster */
 
     val sparkSession = SparkSession
       .builder()
       .appName("Pro-Spark-Batch")
-      .master("local[*]")
       .getOrCreate()
+
+    /* The following declaration of sparkSession is for testing your program locally on laptop */
+
+    //    val sparkSession = SparkSession
+    //      .builder()
+    //      .appName("Pro-Spark-Batch")
+    //      .master("local[*]")
+    //      .getOrCreate()
+
     /* comment the above sparkSession when running on the cluster */
 
     //import sparkSession.implicits._
@@ -157,12 +158,12 @@ object ApplicationMain {
     validSchemaRecords.take(20).foreach(println)
 
     val invalidSchemaRecords = schemaValidatedRecords.filter(_._2.isFailure)
-//    writeToBigQuery(
-//      invalidSchemaRecords,
-//      CMDLINEOPTIONS,
-//      JOBNAME,
-//      INVALID_SCHEMA
-//    )
+    writeToBigQuery(
+      invalidSchemaRecords,
+      CMDLINEOPTIONS,
+      JOBNAME,
+      INVALID_SCHEMA
+    )
 
     println(
       "\n---------------- invalid Schema Records ------ " + invalidSchemaRecords
@@ -202,7 +203,12 @@ object ApplicationMain {
     validBusinessRecords.take(20).foreach(println)
 
     val invalidBusinessRecords = businessValidatedRecords.filter(_._2.isFailure)
-    //writeToBigQuery(invalidSchemaRecords, CMDLINEOPTIONS, JOBNAME, INVALID_BIZ_DATA)
+    writeToBigQuery(
+      invalidBusinessRecords,
+      CMDLINEOPTIONS,
+      JOBNAME,
+      INVALID_BIZ_DATA
+    )
 
     println(
       "\n---------------- invalid BizData Records ------ " + invalidBusinessRecords

@@ -7,7 +7,7 @@ Arguments
 
 --projectId=pro-Spark
 --schemaLocation=gs://sankir-storage-prospark/input/t_transaction.json
---inputLocation=gs://sankir-storage-prospark/processed-retail-data/q1/2011-005.json
+--inputLocation=gs://sankir-storage-prospark/processed-retail-data/q1/2011-01-05.json
 --bqDataset=retail_bq
 --bqTableName=t_transaction
 --bqErrorTable=t_error
