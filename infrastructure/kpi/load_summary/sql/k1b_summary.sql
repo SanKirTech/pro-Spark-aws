@@ -6,8 +6,8 @@ when matched
   then update set 
    s.revenue = s.revenue + d.revenue, s.rank = 0
 WHEN NOT MATCHED BY TARGET 
-    THEN INSERT (stockcode, revenue, rank)
-         VALUES(stockcode, revenue, 0);
+    THEN INSERT (stockcode, country, revenue,  rank)
+         VALUES(stockcode, country, revenue, 0);
 
 select * from pro-spark.retail_kpi_summary.t_sku_revenue_c_summary ;
 

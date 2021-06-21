@@ -110,6 +110,7 @@ object ApplicationMain {
     val validJsonRecords = jsonValidatedRecords
       .filter(_._2.isSuccess)
       .map(rec => (rec._1, rec._2.get))
+
     //val validJsonRecords = jsonValidatedRecords.filter(_._2.isSuccess).map(rec => (rec._1, rec._2.get.get("_p").get("data")))
     println(
       "\n--------------- valid JSON Records --------------- " + validJsonRecords
