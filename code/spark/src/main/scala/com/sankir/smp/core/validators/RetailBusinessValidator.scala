@@ -28,7 +28,7 @@ import java.time.format.DateTimeFormatter
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.sankir.smp.common.{Matcher, Matchers}
-import com.sankir.smp.utils.FileSource
+import com.sankir.smp.gcp.GCPConnector
 import com.sankir.smp.utils.exceptions.BusinessValidationFailedException
 
 import scala.util.{Failure, Success, Try}
@@ -65,7 +65,7 @@ object RetailBusinessValidator {
 
   def validStockCode(): Matcher[JsonNode] = {
     val validStockCodes =
-      FileSource.readAsStringIterator("validStockCode.txt").toSet
+      GCPConnector.readAsStringIterator("validStockCode.txt").toSet
     new Matcher[JsonNode] {
       override def test(t: JsonNode): Boolean =
         Try(validStockCodes.contains(t.get("StockCode").asText()))
@@ -75,7 +75,7 @@ object RetailBusinessValidator {
 
   def validCountry(): Matcher[JsonNode] = {
     val validCountries =
-      FileSource.readAsStringIterator("validCountryList.txt").toSet
+      GCPConnector.readAsStringIterator("validCountryList.txt").toSet
     new Matcher[JsonNode] {
       override def test(t: JsonNode): Boolean =
         Try(validCountries.contains(t.get("Country").asText())).getOrElse(false)

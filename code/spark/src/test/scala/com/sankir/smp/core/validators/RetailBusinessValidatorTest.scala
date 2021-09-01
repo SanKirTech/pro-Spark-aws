@@ -301,7 +301,6 @@ class RetailBusinessValidatorTest extends AnyFlatSpec {
     assert(validDate().test(jsonNode))
   }
 
-
   it should "return false when InvoiceDate is having date > today date" in {
     // InvoiceDate is > today's date, 2023-12-01
     val jsonString =

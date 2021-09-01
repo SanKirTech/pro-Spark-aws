@@ -13,7 +13,7 @@
  *
  */
 
-package com.sankir.smp.connectors
+package com.sankir.smp.gcp
 
 import com.google.auth.oauth2.ServiceAccountCredentials
 import com.google.cloud.storage.{BlobId, StorageException, StorageOptions}

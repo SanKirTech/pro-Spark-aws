@@ -17,8 +17,12 @@ package com.sankir.smp.core.validators
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.sankir.smp.common.JsonUtils
-import com.sankir.smp.core.validators.DataValidator.{businessValidator, jsonValidator, schemaValidator}
-import com.sankir.smp.utils.FileSource.{readAsString, readAsStringIterator}
+import com.sankir.smp.core.validators.DataValidator.{
+  businessValidator,
+  jsonValidator,
+  schemaValidator
+}
+import com.sankir.smp.gcp.GCPConnector.{readAsString, readAsStringIterator}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.apache.spark.sql.{Dataset, Encoder, Encoders, SparkSession}
 
@@ -45,7 +49,8 @@ assert – is method in trait Assertions
 class DataValidatorTest extends AnyFlatSpec {
 
   implicit val stringEncoder: Encoder[String] = Encoders.STRING
-  val sparkSession =   SparkSession.builder().appName("Test").master("local[*]").getOrCreate()
+  val sparkSession =
+    SparkSession.builder().appName("Test").master("local[*]").getOrCreate()
 
   //  jsonValidator - 2 tests
   behavior of "JsonValidator"
@@ -77,8 +82,8 @@ class DataValidatorTest extends AnyFlatSpec {
     val schema = readAsString("core/validators/schema.json")
     val validJsonRecords =
       rawRecords.map(rec => (rec, JsonUtils.toJsonNode(rec)))
-    val schemaValidatedRecords: Dataset[(String, Try[JsonNode])]
-    = schemaValidator(validJsonRecords, schema)
+    val schemaValidatedRecords: Dataset[(String, Try[JsonNode])] =
+      schemaValidator(validJsonRecords, schema)
     assert(schemaValidatedRecords.filter(_._2.isSuccess).count() == 2)
   }
 

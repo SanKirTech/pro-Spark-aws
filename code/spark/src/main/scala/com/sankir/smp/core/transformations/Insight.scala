@@ -15,7 +15,7 @@
 
 package com.sankir.smp.core.transformations
 
-import org.apache.spark.sql.{Dataset, SparkSession}
+import org.apache.spark.sql.{Dataset, SaveMode, SparkSession}
 import org.apache.spark.sql.types.{
   DateType,
   DoubleType,
@@ -85,13 +85,73 @@ country order by dayofweek(InvoiceDate),country) order by revenue desc, Day_Of_W
     kpiDF.printSchema()
 
     kpiDF.show(100, false)
-    kpiDF.write.format("bigquery")
     kpiDF
       .coalesce(5)
       .write
       .format("bigquery")
       .mode("overwrite")
       .save(bqtbl)
+
+    Some("Success")
+  }
+
+  def writeKpiToS3(sparkSession: SparkSession,
+                   kpiQuery: String,
+                   kpiTable: String): Option[String] = {
+    val bucket = "retail-sankir"
+    val kpiDF = sparkSession.sql(kpiQuery)
+    kpiDF.printSchema()
+
+    kpiDF.show(100, false)
+    val s3aPath = "s3a://" + kpiTable
+
+    kpiDF
+      .coalesce(5)
+      .write
+      .mode(SaveMode.Overwrite)
+      .csv(s3aPath)
+
+    Some("Success")
+  }
+
+  def writeKpiToMySQL(sparkSession: SparkSession,
+                      kpiQuery: String,
+                      kpiTable: String): Option[String] = {
+
+    val kpiDF = sparkSession.sql(kpiQuery)
+
+    kpiDF.show(100, false)
+    //val s3aPath = "s3a://" + kpiTable
+
+    val jdbcHostname = "database-1.cfguwzlxm4vc.us-east-2.rds.amazonaws.com"
+    val jdbcPort = 3306
+    val jdbcDatabase = "database-1"
+
+    // Create the JDBC URL without passing in the user and password parameters.
+    val jdbcUrl =
+      s"jdbc:mysql://${jdbcHostname}:${jdbcPort}"
+
+    println(jdbcUrl)
+
+    // Create a Properties() object to hold the parameters.
+    import java.util.Properties
+    val connectionProperties = new Properties()
+
+    val jdbcUsername = "admin"
+    val jdbcPassword = "test1234"
+    connectionProperties.put("user", jdbcUsername)
+    connectionProperties.put("password", jdbcPassword)
+    connectionProperties.put("driver", "com.mysql.cj.jdbc.Driver")
+
+    //Class.forName("com.mysql.cj.jdbc.Driver")
+
+    println("Inserting into table " + kpiTable)
+
+    kpiDF
+      .coalesce(5)
+      .write
+      .mode(SaveMode.Overwrite)
+      .jdbc(jdbcUrl, kpiTable, connectionProperties)
 
     Some("Success")
   }
@@ -116,7 +176,9 @@ country order by dayofweek(InvoiceDate),country) order by revenue desc, Day_Of_W
     import sparkSession.implicits._
     val queryDS = sparkSession.read.json(kpiLocation).as[kpiSchema]
 
-    val kpiIndices = List("k1a", "k1b", "k2", "k3", "k4", "k5", "k6", "k7")
+    //val kpiIndices = List("k1a", "k1b", "k2", "k3", "k4", "k5", "k6", "k7")
+    //val kpiIndices = List("k1a", "k1b", "k3", "k6")
+    val kpiIndices = List("k1a", "k1b")
 
     /***
       *
@@ -153,7 +215,7 @@ country order by dayofweek(InvoiceDate),country) order by revenue desc, Day_Of_W
       println(qString)
       println(
         Insight
-          .writekpiToBigQ(sparkSession, qString.format(sparkTable), qTable)
+          .writeKpiToS3(sparkSession, qString.format(sparkTable), qTable)
           .getOrElse("Failed in %s".format(kpiIndex))
       )
     }

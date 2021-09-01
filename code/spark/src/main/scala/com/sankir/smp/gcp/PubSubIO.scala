@@ -13,7 +13,7 @@
  *
  */
 
-package com.sankir.smp.connectors
+package com.sankir.smp.gcp
 
 import java.io.IOException
 import java.util.concurrent.{ExecutionException, TimeUnit}
