@@ -13,25 +13,11 @@
  *
  */
 
-package com.sankir.smp.gcp
+package com.sankir.smp.cloud.gcp
 
-import com.google.auth.oauth2.ServiceAccountCredentials
-import com.google.cloud.storage.{BlobId, StorageException, StorageOptions}
+import com.google.cloud.storage.{BlobId, Storage, StorageException}
 
-case class GcsIO(var googleCredentials: ServiceAccountCredentials = null,
-                 projectId: String) {
-
-  val storageClient =
-    if (googleCredentials ne null) {
-      StorageOptions
-        .newBuilder()
-        .setCredentials(googleCredentials)
-        .setProjectId(projectId)
-        .build()
-        .getService
-    } else {
-      StorageOptions.getDefaultInstance.getService
-    }
+case class GcsIO(storageClient: Storage) {
 
   /***
     *

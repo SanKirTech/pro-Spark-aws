@@ -15,71 +15,33 @@
 
 package com.sankir.smp.core
 
-import com.amazonaws.auth.AWSStaticCredentialsProvider
-import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.fasterxml.jackson.databind.JsonNode
-import com.sankir.smp.aws.AWSConnector.read
-import com.sankir.smp.core.transformations.Insight
+import com.sankir.smp.cloud.{CloudConfig, CloudConnector}
 import com.sankir.smp.core.transformations.Insight.RetailCase
 import com.sankir.smp.core.validators.RetailBusinessValidator
-import com.sankir.smp.core.validators.DataValidator.{
-  businessValidator,
-  jsonValidator,
-  schemaValidator
-}
-import com.sankir.smp.gcp.GCPConnector.writeError
-import com.sankir.smp.utils.ArgParser
+import com.sankir.smp.core.validators.DataValidator.{businessValidator, jsonValidator, schemaValidator}
 import org.apache.spark.sql.Dataset
 
 import scala.util.Try
-import com.sankir.smp.utils.enums.ErrorEnums.{
-  INVALID_BIZ_DATA,
-  INVALID_JSON,
-  INVALID_SCHEMA
-}
 import org.apache.spark.sql.SparkSession
 
-object ApplicationMain {
-  def main(args: Array[String]): Unit = {
+object AppMain {
+  def run(args: Array[String], cloudConnector: CloudConnector, cloudConfig: CloudConfig): Unit = {
     //Read the command line arguments
     //Check Case class CmdLineOptions in ArgParser to know the command line args
-    val CMDLINEOPTIONS = ArgParser.parseLogic(args)
 
     /***
       * schema json is stored in t_transaction.json.  The following code accesses the
       * GCS storage and gets it back in the form of string for
       * downstream utility such as schema validation
       */
-    println("Schema Location = " + CMDLINEOPTIONS.schemaLocation)
-
-    val schema = read(CMDLINEOPTIONS.projectId, CMDLINEOPTIONS.schemaLocation)
+    val schema = cloudConnector.readFromObjectStorage(cloudConfig.schemaLocation)
     println(schema)
-
-    val profileCredentialsProvider = new ProfileCredentialsProvider()
-
-    val awsAccessKeyId =
-      profileCredentialsProvider.getCredentials.getAWSAccessKeyId
-    val awsAccessKeySecret =
-      profileCredentialsProvider.getCredentials.getAWSSecretKey
-    //println(awsAccessKeyId, awsAccessKeySecret)
-
-    import org.apache.hadoop.fs._
-    import org.apache.hadoop.conf.Configuration
-    val conf = new Configuration()
-    conf.set("fs.s3a.access.key", awsAccessKeyId)
-    conf.set("fs.s3a.secret.key", awsAccessKeySecret)
 
     val sparkSession = SparkSession
       .builder()
       .appName("Pro-Spark-Batch")
       .master("local[*]")
-      .config("fs.s3a.awsAccessKeyId", awsAccessKeyId)
-      .config("fs.s3a.awsSecretAccessKey", awsAccessKeySecret)
-      .config("fs.s3a.endpoint", "s3.us-east-2.amazonaws.com")
-      .config(
-        "fs.s3a.aws.credentials.provider",
-        "com.amazonaws.auth.profile.ProfileCredentialsProvider"
-      )
       .getOrCreate();
 
 //    sparkSession.read
@@ -89,7 +51,10 @@ object ApplicationMain {
 
     import com.sankir.smp.utils.encoders.CustomEncoders._
 
-    val sdfRecords = sparkSession.read.textFile(CMDLINEOPTIONS.inputLocation)
+    println("==================================")
+    println(cloudConfig.inputLocation)
+    println("==================================")
+    val sdfRecords = sparkSession.read.textFile(cloudConfig.inputLocation)
     //println("\n--------  Total sdf Records ------------ " + sdfRecords.count())
     //sdfRecords.show(20, false)
 
@@ -221,6 +186,6 @@ object ApplicationMain {
 
     val sparkTable = "global_temp.retail_tbl"
 
-    Insight.runKPIQuery(sparkSession, sparkTable, CMDLINEOPTIONS.kpiLocation)
+//    Insight.runKPIQuery(sparkSession, sparkTable, cloudConfig.kpiLocation)
   }
 }

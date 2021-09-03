@@ -1,0 +1,15 @@
+inputLocation: gs://sankir-storage-prospark/processed-retail-data/q1/2011-01-04.json
+schemaLocation: gs://sankir-storage-prospark/input/t_transaction.json
+ingressTable: retail_bq.t_transaction
+errorTable: retail_bq.t_error
+kpiLocation: gs://sankir-storage-prospark/kpi/kpiquery.json
+
+cloud_type: gcp
+gcp:
+  projectId: pro-Spark
+  service_account_path: read_from_path
+
+#aws:
+#  kpi_table: abc
+#  error_table: def
+

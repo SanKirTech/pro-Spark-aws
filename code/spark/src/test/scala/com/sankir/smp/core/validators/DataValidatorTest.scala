@@ -17,12 +17,8 @@ package com.sankir.smp.core.validators
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.sankir.smp.common.JsonUtils
-import com.sankir.smp.core.validators.DataValidator.{
-  businessValidator,
-  jsonValidator,
-  schemaValidator
-}
-import com.sankir.smp.gcp.GCPConnector.{readAsString, readAsStringIterator}
+import com.sankir.smp.core.validators.DataValidator.{businessValidator, jsonValidator, schemaValidator}
+import com.sankir.smp.utils.Resources.{readAsString, readAsStringIterator}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.apache.spark.sql.{Dataset, Encoder, Encoders, SparkSession}
 
