@@ -8,5 +8,3 @@ object ApplicationInitializer {
     AppMain.run(args, cloudConnector, cloudConfig);
   }
 }
-
-

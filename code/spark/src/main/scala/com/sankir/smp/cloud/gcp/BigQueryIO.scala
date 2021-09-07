@@ -8,11 +8,11 @@ case class BigQueryIO(bigQueryClient: BigQuery) {
   private val LOG = LoggerFactory.getLogger(BigQueryIO.getClass)
 
   /** *
-   *
-   * @param dataset - BigQuery schema
-   * @param table   - Table that needs to be inserted with
-   * @param rows    - rows of records that need to be inserted
-   */
+    *
+    * @param dataset - BigQuery schema
+    * @param table   - Table that needs to be inserted with
+    * @param rows    - rows of records that need to be inserted
+    */
   def insertRow(dataset: String, table: String, rows: TableRow): Unit = {
 
     val tableId = TableId.of(dataset, table)

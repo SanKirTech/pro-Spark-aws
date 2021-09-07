@@ -1,5 +1,6 @@
 package com.sankir.smp.cloud
 
+import org.apache.spark.sql.{DataFrame, Dataset}
 import org.codehaus.jackson.JsonNode
 
 trait CloudConnector {
@@ -12,8 +13,14 @@ trait CloudConnector {
 
   def saveToErrorTable(datas: List[JsonNode])
 
-  def saveToIngresTable(data: JsonNode)
+  def saveToErrorTable(df: DataFrame)
+
+  def saveToIngressTable[T](ds: Dataset[T])
 
   def saveToIngressTable(datas: List[JsonNode])
+
+  def saveToIngressTable(data: JsonNode)
+
+  // def saveToIngressTable(df: DataFrame)
 
 }

@@ -19,14 +19,20 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.sankir.smp.cloud.{CloudConfig, CloudConnector}
 import com.sankir.smp.core.transformations.Insight.RetailCase
 import com.sankir.smp.core.validators.RetailBusinessValidator
-import com.sankir.smp.core.validators.DataValidator.{businessValidator, jsonValidator, schemaValidator}
+import com.sankir.smp.core.validators.DataValidator.{
+  businessValidator,
+  jsonValidator,
+  schemaValidator
+}
 import org.apache.spark.sql.Dataset
 
 import scala.util.Try
 import org.apache.spark.sql.SparkSession
 
 object AppMain {
-  def run(args: Array[String], cloudConnector: CloudConnector, cloudConfig: CloudConfig): Unit = {
+  def run(args: Array[String],
+          cloudConnector: CloudConnector,
+          cloudConfig: CloudConfig): Unit = {
     //Read the command line arguments
     //Check Case class CmdLineOptions in ArgParser to know the command line args
 
@@ -35,7 +41,8 @@ object AppMain {
       * GCS storage and gets it back in the form of string for
       * downstream utility such as schema validation
       */
-    val schema = cloudConnector.readFromObjectStorage(cloudConfig.schemaLocation)
+    val schema =
+      cloudConnector.readFromObjectStorage(cloudConfig.schemaLocation)
     println(schema)
 
     val sparkSession = SparkSession

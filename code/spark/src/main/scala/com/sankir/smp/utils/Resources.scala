@@ -15,9 +15,9 @@ object Resources {
     Resources.getClass.getClassLoader.getResourceAsStream(path)
 
   /***
-   *
-   * @param projectId - Pass the projectid which you have created in GCP
-   * @param path  - Path of the schema json which is used as reference to validate the schema
-   * @return return the content of the file as string
-   */
+  *
+  * @param projectId - Pass the projectid which you have created in GCP
+  * @param path  - Path of the schema json which is used as reference to validate the schema
+  * @return return the content of the file as string
+  */
 }

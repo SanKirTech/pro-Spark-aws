@@ -52,5 +52,4 @@ object Converter {
   def convertABToTryB[A, B](a: A, b: B, fun: (A, B) => B): Try[B] =
     Try(fun(a, b))
 
-
 }

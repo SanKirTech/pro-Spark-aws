@@ -10,7 +10,7 @@ import com.sankir.smp.cloud.{CloudConnector, CloudConfig}
 object CloudInitializer {
   var cloudConnector: CloudConnector = _
 
-  var cloudConfig : CloudConfig = _
+  var cloudConfig: CloudConfig = _
 
   def initializeCloud(): Unit = {
     val data = getClass.getClassLoader.getResourceAsStream("application.yaml")
@@ -23,7 +23,13 @@ object CloudInitializer {
 
     result.get("cloud_type").asText() match {
       case "gcp" =>
-        cloudConnector = GcpConnector(MAPPER.convertValue(result.get("gcp"), new TypeReference[Map[String, Any]] {}))
+        cloudConnector = GcpConnector(
+          cloudConfig,
+          MAPPER.convertValue(
+            result.get("gcp"),
+            new TypeReference[Map[String, Any]] {}
+          )
+        )
     }
   }
 }
