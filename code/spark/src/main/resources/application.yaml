@@ -3,11 +3,13 @@ schemaLocation: gs://sankir-storage-prospark/input/t_transaction.json
 ingressTable: retail_bq.t_transaction
 errorTable: retail_bq.t_error
 kpiLocation: gs://sankir-storage-prospark/kpi/kpiquery.json
+tempKPIViewName: retail_tbl
 
-cloud_type: gcp
+cloudType: gcp
 gcp:
   projectId: pro-Spark
-  service_account_path: read_from_path
+  tempGCSBucket: sankir-storage-prospark
+  serviceAccountPath: read_from_path
 
 #aws:
 #  kpi_table: abc

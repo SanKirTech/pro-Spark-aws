@@ -15,7 +15,7 @@
 
 package com.sankir.smp.common
 
-trait Matcher[T] {
+trait Matcher[T] extends Serializable {
   def test(t: T): Boolean
 }
 

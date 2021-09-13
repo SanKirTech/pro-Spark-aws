@@ -18,7 +18,6 @@ package com.sankir.smp.common
 import java.io.InputStream
 import java.time.ZonedDateTime
 
-import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.node.{ArrayNode, ObjectNode}
 import com.fasterxml.jackson.databind.{
   DeserializationFeature,
@@ -30,14 +29,14 @@ import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import scala.util.Try
 
 /***
-  * JsonNode objects for Int, String will be like IntNode, TextNode etc
-  * You have to use asText() , asInt() to deserialize them to scala objects
-  * so the process is
-  * json -> JsonNode object --> scala object
-  */
+ * JsonNode objects for Int, String will be like IntNode, TextNode etc
+ * You have to use asText() , asInt() to deserialize them to scala objects
+ * so the process is
+ * json -> JsonNode object --> scala object
+ */
 object JsonUtils {
 
-  val MAPPER = new ObjectMapper()
+  val MAPPER: ObjectMapper = new ObjectMapper()
     .registerModule(DefaultScalaModule)
     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
@@ -67,11 +66,6 @@ object JsonUtils {
 
   def toCustomClass[T](string: String, objectType: Class[T]): T =
     MAPPER.readValue(string, objectType)
-
-  def getObjectProperty(node: JsonNode, propertyName: String): ObjectNode =
-    getObjectPropertyOptional(node, propertyName).getOrElse(
-      throw throw requiredPropertyError(propertyName).apply()
-    )
 
   def getObjectPropertyOptional(node: JsonNode,
                                 property: String): Option[ObjectNode] = {
@@ -125,12 +119,14 @@ object JsonUtils {
       throw requiredPropertyError(propertyName).apply
     )
 
-  def requiredPropertyError(propertyName: String) =
+  def requiredPropertyError(
+                             propertyName: String
+                           ): () => IllegalArgumentException =
     () => new IllegalArgumentException(s"$propertyName is required")
 
   def getNotEmptyStringPropertyOptional(node: JsonNode,
                                         propertyName: String): Option[String] =
-    getStringPropertyOptional(node, propertyName).filter(!_.trim.isEmpty)
+    getStringPropertyOptional(node, propertyName).filter(_.trim.nonEmpty)
 
   def asStringPropertyOptional(node: JsonNode,
                                property: String): Option[String] = {

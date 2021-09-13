@@ -5,8 +5,14 @@ import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.sankir.smp.cloud.gcp.GcpConnector
-import com.sankir.smp.cloud.{CloudConnector, CloudConfig}
+import com.sankir.smp.cloud.CloudConnector
+import com.sankir.smp.cloud.common.vos.CloudConfig
 
+/**
+ * `CloudInitializer` will help us in creating the cloud connectors and cloud configs
+ * <br> It will read the <b>/resources/application.yaml</b> and will initialize the objects.
+ *
+ */
 object CloudInitializer {
   var cloudConnector: CloudConnector = _
 
@@ -21,7 +27,7 @@ object CloudInitializer {
     val result = MAPPER.readTree(data)
     cloudConfig = MAPPER.treeToValue(result, classOf[CloudConfig])
 
-    result.get("cloud_type").asText() match {
+    result.get("cloudType").asText() match {
       case "gcp" =>
         cloudConnector = GcpConnector(
           cloudConfig,
