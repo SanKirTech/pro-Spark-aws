@@ -11,7 +11,7 @@ import com.sankir.smp.common.{JsonUtils, Matcher, Matchers}
 import com.sankir.smp.utils.encoders.CustomEncoders.tableRowEncoder
 import org.apache.commons.lang3.StringUtils.isNotEmpty
 import org.apache.spark.internal.Logging
-import org.apache.spark.sql.Dataset
+import org.apache.spark.sql.{DataFrame, Dataset, SparkSession}
 
 import java.io.FileInputStream
 import java.nio.file.{Files, Paths}
@@ -95,4 +95,20 @@ final case class GcpConnector(cloudConfig: CloudConfig,
         })
       })
   }
+  override def saveToKPITable(df: DataFrame,
+                              kpiTable: String
+                              ): Unit = {
+
+    val bucket = configuration(TEMP_GCS_BUCKET).toString
+    df.sparkSession.conf.set("temporaryGcsBucket", bucket)
+    df.coalesce(5)
+      .write
+      .format("bigquery")
+      .mode("append")
+      .save(kpiTable)
+   // logInfo(s"Data saved to ${kpiTable}")
+
+  }
+
+  override def saveToKPILocation(df: DataFrame, kpiLocation: String): Unit = ???
 }
