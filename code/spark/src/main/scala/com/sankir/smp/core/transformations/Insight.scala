@@ -59,7 +59,7 @@ object Insight extends Logging {
 
     logInfo("KPI Location in GCP : " + kpiLocation)
     var qString: String = "" //Query String to be populated
-    var qTable: String = "" //BigQUery table to be used for storing the results
+    var qTable: String = "" //table to be used for storing the results
     var qDisc: String = "" //KPI Description
 
     import sparkSession.implicits._
