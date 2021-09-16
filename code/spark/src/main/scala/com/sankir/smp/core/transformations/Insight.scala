@@ -15,7 +15,7 @@
 
 package com.sankir.smp.core.transformations
 
-import com.sankir.smp.cloud.CloudConnector
+import com.sankir.smp.cloud.common.CloudConnector
 import com.sankir.smp.utils.LogFormatter.formatHeader
 import org.apache.spark.internal.Logging
 import org.apache.spark.sql.{Dataset, SparkSession}

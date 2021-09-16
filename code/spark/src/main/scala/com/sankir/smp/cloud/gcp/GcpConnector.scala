@@ -4,7 +4,7 @@ import com.google.api.services.bigquery.model.TableRow
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.bigquery.BigQueryOptions
 import com.google.cloud.storage.{Storage, StorageOptions}
-import com.sankir.smp.cloud.CloudConnector
+import com.sankir.smp.cloud.common.CloudConnector
 import com.sankir.smp.cloud.common.vos.{CloudConfig, ErrorTableRow}
 import com.sankir.smp.common.Matchers.and
 import com.sankir.smp.common.{JsonUtils, Matcher, Matchers}
@@ -22,7 +22,7 @@ final case class GcpConnector(cloudConfig: CloudConfig,
     with Logging
     with Serializable {
 
-  private val SERVICE_ACCOUNT_PATH = "serviceAaccountPath"
+  private val SERVICE_ACCOUNT_PATH = "serviceAccountPath"
   private val PROJECT_ID = "project_id"
   private val TEMP_GCS_BUCKET = "tempGCSBucket"
 

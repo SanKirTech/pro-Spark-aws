@@ -19,9 +19,9 @@ import com.google.cloud.storage.{BlobId, Storage, StorageException}
 
 case class GcsIO(storageClient: Storage) {
 
-  /***
+  /**
     *
-    * @param path takes path of the file in GCS determines the storage bucket from it
+    * @param path takes path of the file in Google Cloud Storage and determines the storage bucket from it
     *             gets the blobid gets the content
     * @throws exeption if not able to find the object
     * @return - returns the content of the file
@@ -42,7 +42,7 @@ case class GcsIO(storageClient: Storage) {
     }
   }
 
-  /***
+  /**
     *
     * @param path path of the file whose content is required to be read
     * @return  returns a GCSObject with bucket and path of the object

@@ -16,8 +16,7 @@
   package com.sankir.smp.core
 
   import com.fasterxml.jackson.databind.JsonNode
-  import com.sankir.smp.cloud.CloudConnector
-  import com.sankir.smp.cloud.common.CloudConverter
+  import com.sankir.smp.cloud.common.{CloudConnector, CloudConverter}
   import com.sankir.smp.cloud.common.vos.CloudConfig
   import com.sankir.smp.cloud.common.vos.RetailCase
   import com.sankir.smp.core.validators.DataValidator.{businessValidator, jsonValidator, schemaValidator}

@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.`type`.TypeReference
 import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import com.sankir.smp.cloud.common.CloudConnector
 import com.sankir.smp.cloud.gcp.GcpConnector
-import com.sankir.smp.cloud.CloudConnector
 import com.sankir.smp.cloud.common.vos.CloudConfig
 
 /**
