@@ -100,7 +100,7 @@ object Insight extends Logging {
       logInfo("Query String")
       logInfo(qString)
       val kpiDF = sparkSession.sql(qString.format(sparkTable))
-      this.cloudConnector.saveToKPITable(kpiDF,qTable)
+      this.cloudConnector.saveKPI(kpiDF,qTable)
     }
 
     kpiIndices.foreach(kpiPrint)

@@ -16,9 +16,7 @@
 package com.sankir.smp.utils.encoders
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.google.api.services.bigquery.model.TableRow
 import com.sankir.smp.cloud.common.vos.ErrorTableRow
-import com.sankir.smp.core.transformations.Insight.{RetailCase, kpiSchema}
 import org.apache.spark.sql.{Encoder, Encoders, Row}
 import org.apache.spark.sql.catalyst.encoders.ExpressionEncoder
 import org.apache.spark.sql.catalyst.encoders.RowEncoder
@@ -34,7 +32,7 @@ object CustomEncoders {
     Encoders.kryo[(String, JsonNode)]
   implicit val jsonNodeTupleEncoder: Encoder[(String, Try[JsonNode])] =
     Encoders.kryo[(String, Try[JsonNode])]
-  implicit val tableRowEncoder: Encoder[TableRow] = Encoders.kryo[TableRow]
+ // implicit val tableRowEncoder: Encoder[TableRow] = Encoders.kryo[TableRow]
   //  implicit val retailEncoder = Encoders.product[RetailCase]
   //  implicit val kpiEncoder = Encoders.product[kpiSchema]
   implicit val jsonNodeEncoder: Encoder[JsonNode] = Encoders.kryo[JsonNode]

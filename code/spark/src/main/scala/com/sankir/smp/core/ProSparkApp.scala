@@ -57,11 +57,19 @@
       logDebug(schema)
 
       // Create Spark session
-      val sparkSession = SparkSession
+      val sparkSessionBuilder = SparkSession
         .builder()
         .appName("Pro-Spark-Batch")
-        .master("local[*]")
-        .getOrCreate()
+
+      if (cloudConfig.runLocal)
+        sparkSessionBuilder.master("local[*]")
+      else
+        sparkSessionBuilder.master("yarn")
+
+      if (cloudConfig.sparkConfig.nonEmpty)
+        cloudConfig.sparkConfig.foreach(kv=> sparkSessionBuilder.config(kv._1,kv._2))
+
+      val sparkSession = sparkSessionBuilder.getOrCreate()
       logInfo("Spark session Created")
 
       // JobName created to identify the uniquness of each run. Its reference is used in error table
@@ -82,13 +90,12 @@
         .filter(_._2.isSuccess)
         .map(rec => (rec._1, rec._2.get))
 
-      //val validJsonRecords = jsonValidatedRecords.filter(_._2.isSuccess).map(rec => (rec._1, rec._2.get.get("_p").get("data")))
       logInfo(formatHeader(s" Valid JSON Records : ${validJsonRecords.count()} "))
       logDebug(dataSetAsString(validJsonRecords))
 
       val invalidJsonRecords = jsonValidatedRecords.filter(_._2.isFailure)
       cloudConnector
-        .saveToErrorTable(
+        .saveError(
           invalidJsonRecords
             .map(CloudConverter.convertToErrorTableRow(_, INVALID_JSON, JOBNAME))
         )
@@ -109,7 +116,7 @@
       val invalidSchemaRecords = schemaValidatedRecords.filter(_._2.isFailure)
       // Save invalid schema records to error Table
       cloudConnector
-        .saveToErrorTable(
+        .saveError(
           invalidSchemaRecords
             .map(
               CloudConverter.convertToErrorTableRow(_, INVALID_SCHEMA, JOBNAME)
@@ -140,7 +147,7 @@
 
       // Save invalid Business Data to error Table
       cloudConnector
-        .saveToErrorTable(
+        .saveError(
           invalidBusinessRecords
             .map(
               CloudConverter.convertToErrorTableRow(_, INVALID_BIZ_DATA, JOBNAME)
@@ -162,7 +169,7 @@
         .json(validBusinessRecords.map(_._2.toString))
         .as[RetailCase]
 
-      cloudConnector.saveToIngressTable[RetailCase](retailDS)
+      cloudConnector.saveIngress[RetailCase](retailDS)
 
       logInfo(formatLogger(retailDS.schema.treeString))
       retailDS.show(20, false)
@@ -172,8 +179,8 @@
 
       val sparkTable = s"global_temp.${cloudConfig.tempKPIViewName}"
 
-             Insight.initialize(cloudConnector)
-               Insight.runKPIQuery(sparkSession, sparkTable, cloudConfig.kpiLocation)
+      Insight.initialize(cloudConnector)
+      Insight.runKPIQuery(sparkSession, sparkTable, cloudConfig.kpiLocation)
     }
 
     private def dataSetAsString[T](ds: Dataset[T], num: Int = 20): String = {

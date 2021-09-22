@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.`type`.TypeReference
 import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import com.sankir.smp.cloud.aws.AWSConnector
 import com.sankir.smp.cloud.common.CloudConnector
-import com.sankir.smp.cloud.gcp.GcpConnector
 import com.sankir.smp.cloud.common.vos.CloudConfig
 
 /**
@@ -28,14 +28,11 @@ object CloudInitializer {
     cloudConfig = MAPPER.treeToValue(result, classOf[CloudConfig])
 
     result.get("cloudType").asText() match {
-      case "gcp" =>
-        cloudConnector = GcpConnector(
+      case "aws" =>
+        cloudConnector = AWSConnector(
           cloudConfig,
-          MAPPER.convertValue(
-            result.get("gcp"),
-            new TypeReference[Map[String, Any]] {}
+          result.get("aws")
           )
-        )
     }
   }
 }

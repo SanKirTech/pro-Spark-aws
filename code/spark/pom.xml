@@ -20,8 +20,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.sankir</groupId>
-    <artifactId>pro-spark-gcp</artifactId>
-    <version>1.0</version>
+    <artifactId>pro-spark-aws</artifactId>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -43,9 +43,9 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.google.cloud</groupId>
-                <artifactId>libraries-bom</artifactId>
-                <version>8.1.0</version>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-java-sdk-bom</artifactId>
+                <version>1.11.1000</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -55,35 +55,7 @@
 
     <dependencies>
 
-        <!--   GCP  Dependencies   -->
-        <dependency>
-            <groupId>com.google.cloud</groupId>
-            <artifactId>google-cloud-pubsub</artifactId>
-        </dependency>
 
-        <dependency>
-            <groupId>com.google.cloud</groupId>
-            <artifactId>google-cloud-bigquery</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.cloud</groupId>
-            <artifactId>google-cloud-storage</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.cloud.spark</groupId>
-            <artifactId>spark-bigquery_2.11</artifactId>
-            <version>0.17.0</version>
-        </dependency>
-
-        <!-- ScalaTest - Required for Unit Test Case-->
-        <dependency>
-            <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_2.11</artifactId>
-            <version>3.2.0</version>
-            <scope>test</scope>
-        </dependency>
 
         <!--   Json Parsing Dependencies     -->
         <dependency>
@@ -106,13 +78,6 @@
             <artifactId>jackson-module-scala_2.11</artifactId>
             <version>2.10.1</version>
         </dependency>
-
-        <!--   Jpath for Business Rule Validation     -->
-        <!--        <dependency>-->
-        <!--            <groupId>com.jayway.jsonpath</groupId>-->
-        <!--            <artifactId>json-path</artifactId>-->
-        <!--            <version>2.3.0</version>-->
-        <!--        </dependency>-->
 
         <!--  Schema Validation      -->
         <dependency>
@@ -142,23 +107,13 @@
             <!---<scope>provided</scope> -->
         </dependency>
 
-        <!--   Utils     -->
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.commons</groupId>-->
-        <!--            <artifactId>commons-text</artifactId>-->
-        <!--            <version>1.9</version>-->
-        <!--        </dependency>-->
+        <dependency>
+            <groupId>com.github.scopt</groupId>
+            <artifactId>scopt_2.11</artifactId>
+            <version>4.0.0-RC2</version>
+        </dependency>
 
-        <!--        <dependency>-->
-        <!--            <groupId>net.liftweb</groupId>-->
-        <!--            <artifactId>lift-json_${scala.tools.version}</artifactId>-->
-        <!--            <version>3.1.0</version>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>com.typesafe</groupId>-->
-        <!--            <artifactId>config</artifactId>-->
-        <!--            <version>1.2.1</version>-->
-        <!--        </dependency>-->
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -169,13 +124,33 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.7.5</version>
         </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-s3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-athena</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client</artifactId>
+            <version>${hadoop.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.hadoop/hadoop-aws -->
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-aws</artifactId>
+            <version>${hadoop.version}</version>
+        </dependency>
+
+
         <!--        Read Yaml configuration -->
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>
             <version>2.10.1</version>
         </dependency>
-
     </dependencies>
 
 
@@ -232,10 +207,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-
-
-
 
 
         </plugins>
