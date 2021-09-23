@@ -8,6 +8,8 @@ import com.sankir.smp.cloud.common.vos.{CloudConfig, ErrorTableRow}
 import com.sankir.smp.common.JsonUtils._
 import com.sankir.smp.common.{JsonUtils, Matcher}
 import com.sankir.smp.common.Matchers.and
+import com.sankir.smp.core.ProSparkApp.logInfo
+import com.sankir.smp.utils.encoders.CustomEncoders.errorTableRowEncoder
 import org.apache.commons.lang3.StringUtils.isNotEmpty
 import org.apache.spark.internal.Logging
 import org.apache.spark.sql.{DataFrame, Dataset, SaveMode}
@@ -41,7 +43,8 @@ final case class AWSConnector(cloudConfig: CloudConfig,
   override def saveError(ds: Dataset[ErrorTableRow]): Unit = {
     val error = asStringProperty(persistentStorageConfig, "error")
     if (isPersistentTypeObject) {
-      ds.write.format(CSV).mode(SaveMode.Overwrite).save(error)
+      //ds.toDF.write.format(CSV).mode(SaveMode.Append).save(error)
+      s3io.writeToS3("s3a://retail-sankir/error", ds.as[ErrorTableRow].toString())
     }
   }
 
@@ -59,8 +62,8 @@ final case class AWSConnector(cloudConfig: CloudConfig,
     }
   }
 
+  private val persistentStorageConfig = configuration.get("persistentStorage")
   private val isPersistentTypeObject: Boolean =
     asStringProperty(persistentStorageConfig, "type") == "object"
-  private val persistentStorageConfig = configuration.get("persistentStorage")
 
 }

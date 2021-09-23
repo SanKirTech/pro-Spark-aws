@@ -1,6 +1,6 @@
 package com.sankir.smp.cloud.common.vos
 
-case class ErrorTableRow(errorReplay: String = "",
+final case class ErrorTableRow(errorReplay: String = "",
                          timestamp: String,
                          errorType: String,
                          payload: String,

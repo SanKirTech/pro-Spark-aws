@@ -34,7 +34,7 @@
   /**
    * `ProSparkApp` will do the following
    * <ol>
-   * <li>Read the schema form cloud object storage
+   * <li>Read the schema from cloud object storage
    * <li>Create Spark Session
    * <li>Read the data from the input location into spark objects
    * <li>Validate if it is proper data
@@ -66,7 +66,7 @@
       else
         sparkSessionBuilder.master("yarn")
 
-      if (cloudConfig.sparkConfig.nonEmpty)
+      if (cloudConfig.sparkConfig != null)
         cloudConfig.sparkConfig.foreach(kv=> sparkSessionBuilder.config(kv._1,kv._2))
 
       val sparkSession = sparkSessionBuilder.getOrCreate()

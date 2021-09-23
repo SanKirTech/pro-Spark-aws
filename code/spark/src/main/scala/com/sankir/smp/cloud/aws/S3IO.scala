@@ -17,7 +17,7 @@ final case class S3IO(storageClient: AmazonS3) {
   def writeToS3(path: String, data: String): Unit = {
     val bucketObject =
       getBucketAndPath(path)
-        .getOrElse(throw new RuntimeException("Path is not valid" + path))
+        .getOrElse(throw new RuntimeException("Path is not valid :" + path))
     import java.nio.file.Paths
     val key_name = Paths.get(bucketObject.path).getFileName.toString
     storageClient.putObject(bucketObject.bucketName,key_name, bucketObject.path)
