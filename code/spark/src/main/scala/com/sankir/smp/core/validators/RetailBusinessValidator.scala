@@ -32,7 +32,7 @@ import com.sankir.smp.utils.exceptions.BusinessValidationFailedException
 
 import scala.util.{Failure, Success, Try}
 
-object RetailBusinessValidator {
+object RetailBusinessValidator extends BusinessValidator {
 
   /***
     *

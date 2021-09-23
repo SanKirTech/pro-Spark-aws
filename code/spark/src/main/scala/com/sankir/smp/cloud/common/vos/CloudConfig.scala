@@ -7,6 +7,7 @@ package com.sankir.smp.cloud.common.vos
 case class CloudConfig(runLocal: Boolean,
                        inputLocation: String,
                        schemaLocation: String,
+                       businessValidatorClassName: String,
                        kpiLocation: String,
                        tempKPIViewName: String,
                        sparkConfig: Map[String, String])

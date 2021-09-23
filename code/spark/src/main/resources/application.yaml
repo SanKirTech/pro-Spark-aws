@@ -1,6 +1,7 @@
 runLocal: true
 inputLocation: s3a://retail-sankir/processed-retail-data/q1/2011-01-04.json
 schemaLocation: s3a://retail-sankir/schemas/t_transaction.json
+businessValidatorClassName: com.sankir.smp.core.validators.RetailBusinessValidator
 kpiLocation: s3a://retail-sankir/input/kpiquery.json
 tempKPIViewName: "retail_tbl"
 sparkConfig:
@@ -16,7 +17,7 @@ aws:
   persistentStorage:
     type: object
     ingress: s3a://retail-sankir/ingress/
-    error: s3a://retail-sankir/error/
+    error: s3a://retail-sankir/errors/
     kpi: s3a://retail-sankir/kpi/
 
 gcp:

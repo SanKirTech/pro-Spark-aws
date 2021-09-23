@@ -27,16 +27,9 @@ import scala.util.Try
  * Define all the implict parameters needed by Dataset
  */
 object CustomEncoders {
-  //implicit val stringEncoder: Encoder[String] = Encoders.STRING
   implicit val stringJsonNodeEncoder: Encoder[(String, JsonNode)] =
     Encoders.kryo[(String, JsonNode)]
   implicit val jsonNodeTupleEncoder: Encoder[(String, Try[JsonNode])] =
     Encoders.kryo[(String, Try[JsonNode])]
- // implicit val tableRowEncoder: Encoder[TableRow] = Encoders.kryo[TableRow]
-  //  implicit val retailEncoder = Encoders.product[RetailCase]
-  //  implicit val kpiEncoder = Encoders.product[kpiSchema]
   implicit val jsonNodeEncoder: Encoder[JsonNode] = Encoders.kryo[JsonNode]
-  implicit val errorTableRowEncoder: Encoder[ErrorTableRow] =
-    Encoders.kryo[ErrorTableRow]
-
 }

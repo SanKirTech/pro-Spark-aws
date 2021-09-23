@@ -43,8 +43,9 @@ final case class AWSConnector(cloudConfig: CloudConfig,
   override def saveError(ds: Dataset[ErrorTableRow]): Unit = {
     val error = asStringProperty(persistentStorageConfig, "error")
     if (isPersistentTypeObject) {
-      //ds.toDF.write.format(CSV).mode(SaveMode.Append).save(error)
-      s3io.writeToS3("s3a://retail-sankir/error", ds.as[ErrorTableRow].toString())
+      ds.show()
+      ds.toDF.write.format(CSV).mode(SaveMode.Append).save(error)
+//      s3io.writeToS3("s3a://retail-sankir/error", ds.as[ErrorTableRow].toString())
     }
   }
 

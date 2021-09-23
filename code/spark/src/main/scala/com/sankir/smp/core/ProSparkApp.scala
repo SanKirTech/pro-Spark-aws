@@ -16,20 +16,20 @@
   package com.sankir.smp.core
 
   import com.fasterxml.jackson.databind.JsonNode
-  import com.sankir.smp.cloud.common.{CloudConnector, CloudConverter}
   import com.sankir.smp.cloud.common.vos.CloudConfig
-  import com.sankir.smp.cloud.common.vos.RetailCase
-  import com.sankir.smp.core.validators.DataValidator.{businessValidator, jsonValidator, schemaValidator}
-  import com.sankir.smp.core.validators.RetailBusinessValidator
-  import com.sankir.smp.utils.LogFormatter.{formatHeader, formatLogger}
-  import org.apache.spark.sql.Dataset
+  import com.sankir.smp.cloud.common.{CloudConnector, CloudConverter}
+  import com.sankir.smp.common.JsonUtils.{asStringProperty, toJsonNode}
   import com.sankir.smp.core.transformations.Insight
-
-  import scala.util.Try
+  import com.sankir.smp.core.validators.BusinessValidator
+  import com.sankir.smp.core.validators.DataValidator.{businessValidator, jsonValidator, schemaValidator}
+  import com.sankir.smp.utils.LogFormatter.{formatHeader, formatLogger}
   import com.sankir.smp.utils.encoders.CustomEncoders._
   import com.sankir.smp.utils.enums.ErrorEnums.{INVALID_BIZ_DATA, INVALID_JSON, INVALID_SCHEMA}
   import org.apache.spark.internal.Logging
-  import org.apache.spark.sql.SparkSession
+  import org.apache.spark.sql.types.{DoubleType, LongType, StructType}
+  import org.apache.spark.sql.{Dataset, Row, SparkSession}
+
+  import scala.util.Try
 
   /**
    * `ProSparkApp` will do the following
@@ -76,6 +76,14 @@
       val JOBNAME =
         s"${sparkSession.sparkContext.appName}-${sparkSession.sparkContext.applicationId}"
 
+      val ddlSchemaString =
+        scala.io.Source
+          .fromInputStream(
+            getClass
+              .getClassLoader
+              .getResourceAsStream("schema.ddl"))
+          .mkString
+
       logInfo(s"Input file location: ${cloudConfig.inputLocation}")
       // Read the data from the input location into spark objects
       val sdfRecords = sparkSession.read.textFile(cloudConfig.inputLocation)
@@ -94,6 +102,7 @@
       logDebug(dataSetAsString(validJsonRecords))
 
       val invalidJsonRecords = jsonValidatedRecords.filter(_._2.isFailure)
+      import sparkSession.implicits._
       cloudConnector
         .saveError(
           invalidJsonRecords
@@ -129,9 +138,11 @@
       logDebug(dataSetAsString(invalidSchemaRecords))
 
       /* Schema Validation Ends */
+      val useCaseBusinessValidator =
+        BusinessValidator.getFromReflection(cloudConfig.businessValidatorClassName)
 
       val businessValidatedRecords: Dataset[(String, Try[JsonNode])] =
-        businessValidator(validSchemaRecords, RetailBusinessValidator.validate)
+        businessValidator(validSchemaRecords, useCaseBusinessValidator.validate)
       logInfo(formatHeader("Business Validated Records"))
       logDebug(dataSetAsString(businessValidatedRecords))
 
@@ -161,21 +172,25 @@
       )
       logDebug(dataSetAsString(invalidBusinessRecords))
 
-      logInfo(formatHeader("retailDS with retail Schema field types matched"))
-      import sparkSession.implicits._
+      logInfo(formatHeader("useCaseDF with retail Schema field types matched"))
 
-      //Dataset retailDS is created from the validBusinessRecords JsonNode
-      val retailDS = sparkSession.read
-        .json(validBusinessRecords.map(_._2.toString))
-        .as[RetailCase]
+      //Dataset useCaseDF is created from the validBusinessRecords JsonNode
+      val datasetSchema: StructType = StructType.fromDDL(ddlSchemaString)
+      val useCaseDF = sparkSession.createDataFrame(
+        validBusinessRecords
+          .map(_._2.toString)
+          .rdd
+          .map(convertToRow(_,datasetSchema)),
+        datasetSchema
+      )
 
-      cloudConnector.saveIngress[RetailCase](retailDS)
+      cloudConnector.saveIngress(useCaseDF)
 
-      logInfo(formatLogger(retailDS.schema.treeString))
-      retailDS.show(20, false)
+      logInfo(formatLogger(useCaseDF.schema.treeString))
+      useCaseDF.show(20, false)
 
       logInfo(formatHeader("Spark sql table retail_tbl"))
-      retailDS.createOrReplaceGlobalTempView(cloudConfig.tempKPIViewName)
+      useCaseDF.createOrReplaceGlobalTempView(cloudConfig.tempKPIViewName)
 
       val sparkTable = s"global_temp.${cloudConfig.tempKPIViewName}"
 
@@ -185,5 +200,17 @@
 
     private def dataSetAsString[T](ds: Dataset[T], num: Int = 20): String = {
       ds.take(20).mkString("\n")
+    }
+
+    private def convertToRow(jsonString: String, schema: StructType) : Row = {
+      val jsonNode = toJsonNode(jsonString)
+      Row.fromSeq(schema.fields.map( field => {
+        val fieldValue = asStringProperty(jsonNode, field.name)
+        field.dataType match {
+          case LongType => fieldValue.toLong
+          case DoubleType => fieldValue.toDouble
+          case _ => fieldValue
+        }
+      }))
     }
   }
