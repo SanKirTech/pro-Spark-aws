@@ -13,6 +13,4 @@ trait CloudConnector {
 
   def saveKPI(df: DataFrame, kpiResultLocation: String)
 
-  def saveToObjectStorage(path: String, data: String)
-
 }

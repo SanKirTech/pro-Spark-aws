@@ -15,7 +15,7 @@ final case class AWSConnector(cloudConfig: CloudConfig,
     with Logging
     with Serializable {
 
-  private val CSV = "csv"
+    private val CSV = "csv"
 
   private def createS3Client(): AmazonS3 = {
     AmazonS3ClientBuilder
@@ -25,9 +25,6 @@ final case class AWSConnector(cloudConfig: CloudConfig,
   }
 
   private val s3io = S3IO(createS3Client())
-  override def saveToObjectStorage(path: String, data: String): Unit = {
-    s3io.writeToS3(path, data)
-  }
 
   override def readFromObjectStorage(path: String): String = {
     s3io.getData(path)
