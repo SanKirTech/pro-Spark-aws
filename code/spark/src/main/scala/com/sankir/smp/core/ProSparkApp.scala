@@ -84,6 +84,8 @@
               .getResourceAsStream("schema.ddl"))
           .mkString
 
+      val datasetSchema: StructType = StructType.fromDDL(ddlSchemaString)
+
       logInfo(s"Input file location: ${cloudConfig.inputLocation}")
       // Read the data from the input location into spark objects
       val sdfRecords = sparkSession.read.textFile(cloudConfig.inputLocation)
@@ -175,10 +177,9 @@
       logInfo(formatHeader("useCaseDF with retail Schema field types matched"))
 
       //Dataset useCaseDF is created from the validBusinessRecords JsonNode
-      val datasetSchema: StructType = StructType.fromDDL(ddlSchemaString)
       val useCaseDF = sparkSession.createDataFrame(
         validBusinessRecords
-          .map(_._2.toString)
+          .map(_._2)
           .rdd
           .map(convertToRow(_,datasetSchema)),
         datasetSchema
@@ -202,8 +203,7 @@
       ds.take(20).mkString("\n")
     }
 
-    private def convertToRow(jsonString: String, schema: StructType) : Row = {
-      val jsonNode = toJsonNode(jsonString)
+    private def convertToRow(jsonNode: JsonNode, schema: StructType) : Row = {
       Row.fromSeq(schema.fields.map( field => {
         val fieldValue = asStringProperty(jsonNode, field.name)
         field.dataType match {

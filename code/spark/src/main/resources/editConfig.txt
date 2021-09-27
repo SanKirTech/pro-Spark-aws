@@ -1,3 +1,0 @@
-
-#set the following in "Environment Variables"
-GOOGLE_APPLICATION_CREDENTIALS=<path of credential json>

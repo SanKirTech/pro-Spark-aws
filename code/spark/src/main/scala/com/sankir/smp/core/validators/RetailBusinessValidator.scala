@@ -62,9 +62,9 @@ object RetailBusinessValidator extends BusinessValidator {
       )
   }
 
-  def validStockCode(): Matcher[JsonNode] = {
+  private def validStockCode(): Matcher[JsonNode] = {
     val validStockCodes =
-      Resources.readAsStringIterator("validStockCode.txt").toSet
+      Resources.readAsStringIterator("retailBusinessValidator/validStockCode.txt").toSet
     new Matcher[JsonNode] {
       override def test(t: JsonNode): Boolean =
         Try(validStockCodes.contains(t.get("StockCode").asText()))
@@ -72,16 +72,16 @@ object RetailBusinessValidator extends BusinessValidator {
     }
   }
 
-  def validCountry(): Matcher[JsonNode] = {
+  private def validCountry(): Matcher[JsonNode] = {
     val validCountries =
-      Resources.readAsStringIterator("validCountryList.txt").toSet
+      Resources.readAsStringIterator("retailBusinessValidator/validCountryList.txt").toSet
     new Matcher[JsonNode] {
       override def test(t: JsonNode): Boolean =
         Try(validCountries.contains(t.get("Country").asText())).getOrElse(false)
     }
   }
 
-  def validInvoices(): Matcher[JsonNode] = {
+  private def validInvoices(): Matcher[JsonNode] = {
     new Matcher[JsonNode] {
       override def test(t: JsonNode): Boolean =
         Try({
@@ -91,28 +91,28 @@ object RetailBusinessValidator extends BusinessValidator {
     }
   }
 
-  def validQuantity(): Matcher[JsonNode] = {
+  private def validQuantity(): Matcher[JsonNode] = {
     new Matcher[JsonNode] {
       override def test(t: JsonNode): Boolean =
         Try(t.get("Quantity").asLong() > 0).getOrElse(false)
     }
   }
 
-  def validUnitPrice(): Matcher[JsonNode] = {
+  private def validUnitPrice(): Matcher[JsonNode] = {
     new Matcher[JsonNode] {
       override def test(t: JsonNode): Boolean =
         Try(t.get("UnitPrice").asDouble() > 0).getOrElse(false)
     }
   }
 
-  def validCustomerId(): Matcher[JsonNode] = {
+  private def validCustomerId(): Matcher[JsonNode] = {
     new Matcher[JsonNode] {
       override def test(t: JsonNode): Boolean =
         Try(!t.get("CustomerID").asText().isEmpty).getOrElse(false)
     }
   }
 
-  def validDate(): Matcher[JsonNode] = {
+  private def validDate(): Matcher[JsonNode] = {
     new Matcher[JsonNode] {
       val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
       override def test(t: JsonNode): Boolean =

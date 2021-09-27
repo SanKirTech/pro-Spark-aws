@@ -10,6 +10,7 @@ sparkConfig:
   fs.s3a.endpoint: "s3.us-east-2.amazonaws.com"
   fs.s3a.aws.credentials.provider: "com.amazonaws.auth.profile.ProfileCredentialsProvider"
 
+
 cloudType: aws
 aws:
   tempAWSBucket: sankir-storage-prospark
