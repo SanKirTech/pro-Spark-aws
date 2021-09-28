@@ -20,13 +20,3 @@ aws:
     ingress: s3a://retail-sankir/ingress/
     error: s3a://retail-sankir/errors/
     kpi: s3a://retail-sankir/kpi/
-
-gcp:
-  projectId: pro-Spark
-  tempGCSBucket: sankir-storage-prospark
-  serviceAccountPath: read_from_path
-  persistentStorage:
-    type: table
-    ingress: retail_bq.t_transaction
-    error: retail_bq.t_error
-    kpi:
