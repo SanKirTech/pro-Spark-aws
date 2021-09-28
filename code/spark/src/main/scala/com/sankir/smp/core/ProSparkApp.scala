@@ -174,7 +174,7 @@
       )
       logDebug(dataSetAsString(invalidBusinessRecords))
 
-      logInfo(formatHeader("useCaseDF with retail Schema field types matched"))
+      logInfo(formatHeader("useCaseDF with Schema field types matched"))
 
       //Dataset useCaseDF is created from the validBusinessRecords JsonNode
       val useCaseDF = sparkSession.createDataFrame(
@@ -188,9 +188,8 @@
       cloudConnector.saveIngress(useCaseDF)
 
       logInfo(formatLogger(useCaseDF.schema.treeString))
-      useCaseDF.show(20, false)
 
-      logInfo(formatHeader("Spark sql table retail_tbl"))
+      logInfo(formatHeader("Spark sql table "))
       useCaseDF.createOrReplaceGlobalTempView(cloudConfig.tempKPIViewName)
 
       val sparkTable = s"global_temp.${cloudConfig.tempKPIViewName}"

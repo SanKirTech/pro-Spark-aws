@@ -65,8 +65,9 @@ object Insight extends Logging {
     import sparkSession.implicits._
     val queryDS = sparkSession.read.json(kpiLocation).as[kpiSchema]
 
-    //val kpiIndices = List("k1a", "k1b", "k2", "k3", "k4", "k5", "k6", "k7")
-    val kpiIndices = List("k1a", "k1b")
+
+    val kpiIndices = queryDS
+      .select("kpiindex").as[String].collect()
 
     /**
       *
