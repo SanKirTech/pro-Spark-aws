@@ -32,14 +32,14 @@ import com.sankir.smp.utils.exceptions.BusinessValidationFailedException
 
 import scala.util.{Failure, Success, Try}
 
-object RetailBusinessValidator extends BusinessValidator {
+object RetailBusinessValidator extends GenericBusinessValidator {
 
   /***
     *
     * @param data JsonNode object which wraps the json string
     * @return - Success[JsonNode] or Failure message
     */
-  def validate(data: JsonNode): Try[JsonNode] = {
+  def validateBusiness(data: JsonNode): Try[JsonNode] = {
     if (Matchers
           .and(
             List(

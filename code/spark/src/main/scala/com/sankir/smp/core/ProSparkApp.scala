@@ -20,7 +20,7 @@
   import com.sankir.smp.cloud.common.{CloudConnector, CloudConverter}
   import com.sankir.smp.common.JsonUtils.convertToRow
   import com.sankir.smp.core.transformations.Insight
-  import com.sankir.smp.core.validators.BusinessValidator
+  import com.sankir.smp.core.validators.GetBusinessValidatorFromReflection
   import com.sankir.smp.core.validators.DataValidator.{businessValidator, jsonValidator, schemaValidator}
   import com.sankir.smp.utils.LogFormatter.{formatHeader, formatLogger}
   import com.sankir.smp.utils.encoders.CustomEncoders._
@@ -140,11 +140,11 @@
       logDebug(convertToString(invalidSchemaRecords))
 
       /* Schema Validation Ends */
-      val useCaseBusinessValidator =
-        BusinessValidator.getFromReflection(cloudConfig.businessValidatorClassName)
+      val useCaseBusinessValidatorObj =
+        GetBusinessValidatorFromReflection.apply(cloudConfig.businessValidatorClassName)
 
       val businessValidatedRecords: Dataset[(String, Try[JsonNode])] =
-        businessValidator(validSchemaRecords, useCaseBusinessValidator.validate)
+        businessValidator(validSchemaRecords, useCaseBusinessValidatorObj)
       logInfo(formatHeader("Business Validated Records"))
       logDebug(convertToString(businessValidatedRecords))
 

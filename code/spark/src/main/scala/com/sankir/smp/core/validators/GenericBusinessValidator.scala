@@ -5,16 +5,16 @@ import scala.reflect.runtime.{universe => ru}
 
 import scala.util.Try
 
-trait BusinessValidator extends Serializable {
-  def validate(data: JsonNode): Try[JsonNode]
+trait GenericBusinessValidator extends Serializable {
+  def validateBusiness(data: JsonNode): Try[JsonNode]
 }
 
-object BusinessValidator {
-  def getFromReflection(className: String): BusinessValidator = {
+object GetBusinessValidatorFromReflection {
+  def apply(className: String): GenericBusinessValidator = {
     val runtimeMirror = ru.runtimeMirror(getClass.getClassLoader)
     val module = runtimeMirror.staticModule(className)
     val obj = runtimeMirror.reflectModule(module)
-    obj.instance.asInstanceOf[BusinessValidator]
+    obj.instance.asInstanceOf[GenericBusinessValidator]
   }
 }
 
