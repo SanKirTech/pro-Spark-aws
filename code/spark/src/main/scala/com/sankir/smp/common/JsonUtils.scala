@@ -17,14 +17,11 @@ package com.sankir.smp.common
 
 import java.io.InputStream
 import java.time.ZonedDateTime
-
 import com.fasterxml.jackson.databind.node.{ArrayNode, ObjectNode}
-import com.fasterxml.jackson.databind.{
-  DeserializationFeature,
-  JsonNode,
-  ObjectMapper
-}
+import com.fasterxml.jackson.databind.{DeserializationFeature, JsonNode, ObjectMapper}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import org.apache.spark.sql.Row
+import org.apache.spark.sql.types.{DoubleType, LongType, StructType}
 
 import scala.util.Try
 
@@ -189,5 +186,16 @@ object JsonUtils {
   def emptyArray(): ArrayNode = MAPPER.createArrayNode()
 
   def emptyObject(): ObjectNode = MAPPER.createObjectNode()
+
+  def convertToRow(jsonNode: JsonNode, schema: StructType) : Row = {
+    Row.fromSeq(schema.fields.map( field => {
+      val fieldValue = asStringProperty(jsonNode, field.name)
+      field.dataType match {
+        case LongType => fieldValue.toLong
+        case DoubleType => fieldValue.toDouble
+        case _ => fieldValue
+      }
+    }))
+  }
 
 }

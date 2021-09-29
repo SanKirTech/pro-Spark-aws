@@ -23,6 +23,8 @@
 
 package com.sankir.smp.common
 
+import org.apache.spark.sql.Dataset
+
 import scala.util.Try
 
 object Converter {

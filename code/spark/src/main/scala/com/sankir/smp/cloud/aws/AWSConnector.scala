@@ -40,7 +40,7 @@ final case class AWSConnector(cloudConfig: CloudConfig,
   override def saveIngress[T](ds: Dataset[T]): Unit = {
     val ingress = asStringProperty(persistentStorageConfig, "ingress")
     if (isPersistentTypeObject) {
-      ds.write.format(CSV).mode(SaveMode.Overwrite).save(ingress)
+      ds.toDF.write.format(CSV).mode(SaveMode.Overwrite).save(ingress)
     }
   }
 

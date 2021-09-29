@@ -18,7 +18,7 @@
   import com.fasterxml.jackson.databind.JsonNode
   import com.sankir.smp.cloud.common.vos.CloudConfig
   import com.sankir.smp.cloud.common.{CloudConnector, CloudConverter}
-  import com.sankir.smp.common.JsonUtils.{asStringProperty, toJsonNode}
+  import com.sankir.smp.common.JsonUtils.convertToRow
   import com.sankir.smp.core.transformations.Insight
   import com.sankir.smp.core.validators.BusinessValidator
   import com.sankir.smp.core.validators.DataValidator.{businessValidator, jsonValidator, schemaValidator}
@@ -26,8 +26,8 @@
   import com.sankir.smp.utils.encoders.CustomEncoders._
   import com.sankir.smp.utils.enums.ErrorEnums.{INVALID_BIZ_DATA, INVALID_JSON, INVALID_SCHEMA}
   import org.apache.spark.internal.Logging
-  import org.apache.spark.sql.types.{DoubleType, LongType, StructType}
-  import org.apache.spark.sql.{Dataset, Row, SparkSession}
+  import org.apache.spark.sql.types.StructType
+  import org.apache.spark.sql.{Dataset, SparkSession}
 
   import scala.util.Try
 
@@ -93,7 +93,7 @@
       // Validate if it is proper data
       val jsonValidatedRecords = jsonValidator(sdfRecords)
       logInfo(formatHeader("JSON Validated Records"))
-      logDebug(dataSetAsString(jsonValidatedRecords))
+      logDebug(convertToString(jsonValidatedRecords))
 
       // get the content wrapped in Success  rec_._2.get does this
       val validJsonRecords = jsonValidatedRecords
@@ -101,7 +101,7 @@
         .map(rec => (rec._1, rec._2.get))
 
       logInfo(formatHeader(s" Valid JSON Records : ${validJsonRecords.count()} "))
-      logDebug(dataSetAsString(validJsonRecords))
+      logDebug(convertToString(validJsonRecords))
 
       val invalidJsonRecords = jsonValidatedRecords.filter(_._2.isFailure)
       import sparkSession.implicits._
@@ -114,7 +114,7 @@
       val schemaValidatedRecords: Dataset[(String, Try[JsonNode])] =
         schemaValidator(validJsonRecords, schema)
       logInfo(formatHeader("Schema Validated Records"))
-      logDebug(dataSetAsString(schemaValidatedRecords))
+      logDebug(convertToString(schemaValidatedRecords))
 
       val validSchemaRecords = schemaValidatedRecords
         .filter(_._2.isSuccess)
@@ -122,7 +122,7 @@
       logInfo(
         formatHeader(s"valid Schema Records: ${validSchemaRecords.count()}")
       )
-      logDebug(dataSetAsString(validSchemaRecords))
+      logDebug(convertToString(validSchemaRecords))
 
       val invalidSchemaRecords = schemaValidatedRecords.filter(_._2.isFailure)
       // Save invalid schema records to error Table
@@ -137,7 +137,7 @@
       logInfo(
         formatHeader(s"invalid Schema Records: ${invalidSchemaRecords.count()}")
       )
-      logDebug(dataSetAsString(invalidSchemaRecords))
+      logDebug(convertToString(invalidSchemaRecords))
 
       /* Schema Validation Ends */
       val useCaseBusinessValidator =
@@ -146,7 +146,7 @@
       val businessValidatedRecords: Dataset[(String, Try[JsonNode])] =
         businessValidator(validSchemaRecords, useCaseBusinessValidator.validate)
       logInfo(formatHeader("Business Validated Records"))
-      logDebug(dataSetAsString(businessValidatedRecords))
+      logDebug(convertToString(businessValidatedRecords))
 
       val validBusinessRecords = businessValidatedRecords
         .filter(_._2.isSuccess)
@@ -154,7 +154,7 @@
       logInfo(
         formatHeader(s"valid BizData Records: ${validBusinessRecords.count()}")
       )
-      logDebug(dataSetAsString(validBusinessRecords))
+      logDebug(convertToString(validBusinessRecords))
 
       val invalidBusinessRecords = businessValidatedRecords.filter(_._2.isFailure)
 
@@ -172,7 +172,7 @@
           s"invalid BizData Records: ${invalidBusinessRecords.count()}"
         )
       )
-      logDebug(dataSetAsString(invalidBusinessRecords))
+      logDebug(convertToString(invalidBusinessRecords))
 
       logInfo(formatHeader("useCaseDF with Schema field types matched"))
 
@@ -198,18 +198,9 @@
       Insight.runKPIQuery(sparkSession, sparkTable, cloudConfig.kpiLocation)
     }
 
-    private def dataSetAsString[T](ds: Dataset[T], num: Int = 20): String = {
+    private def convertToString[T](ds: Dataset[T], num: Int = 20): String = {
       ds.take(20).mkString("\n")
     }
 
-    private def convertToRow(jsonNode: JsonNode, schema: StructType) : Row = {
-      Row.fromSeq(schema.fields.map( field => {
-        val fieldValue = asStringProperty(jsonNode, field.name)
-        field.dataType match {
-          case LongType => fieldValue.toLong
-          case DoubleType => fieldValue.toDouble
-          case _ => fieldValue
-        }
-      }))
-    }
+
   }
