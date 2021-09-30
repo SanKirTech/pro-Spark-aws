@@ -140,11 +140,11 @@
       logDebug(convertToString(invalidSchemaRecords))
 
       /* Schema Validation Ends */
-      val useCaseBusinessValidatorObj =
+      val genBusinessValidatorObj =
         GetBusinessValidatorFromReflection.apply(cloudConfig.businessValidatorClassName)
 
       val businessValidatedRecords: Dataset[(String, Try[JsonNode])] =
-        businessValidator(validSchemaRecords, useCaseBusinessValidatorObj)
+        businessValidator(validSchemaRecords, genBusinessValidatorObj)
       logInfo(formatHeader("Business Validated Records"))
       logDebug(convertToString(businessValidatedRecords))
 
@@ -196,6 +196,17 @@
 
       Insight.initialize(cloudConnector)
       Insight.runKPIQuery(sparkSession, sparkTable, cloudConfig.kpiLocation)
+
+      logInfo(formatHeader(s" Total Records : ${sdfRecords.count()} "))
+      logInfo(formatHeader(s" Total Ingress Records : ${validBusinessRecords.count()} "))
+      logInfo(formatHeader(s" Total Error Records : ${invalidJsonRecords.count() + invalidSchemaRecords.count() + invalidBusinessRecords.count() } "))
+
+      logInfo(formatHeader(s" Valid JSON Records : ${validJsonRecords.count()} "))
+      logInfo(formatHeader(s" InValid JSON Records : ${invalidJsonRecords.count()} "))
+      logInfo(formatHeader(s" Valid Schema Records : ${validSchemaRecords.count()} "))
+      logInfo(formatHeader(s" InValid Schema Records : ${invalidSchemaRecords.count()} "))
+      logInfo(formatHeader(s" Valid Business Records : ${validBusinessRecords.count()} "))
+      logInfo(formatHeader(s" InValid Business Records : ${invalidBusinessRecords.count()} "))
     }
 
     private def convertToString[T](ds: Dataset[T], num: Int = 20): String = {
