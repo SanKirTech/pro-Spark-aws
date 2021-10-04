@@ -11,7 +11,7 @@ import com.sankir.smp.common.JsonUtils
 
 /**
  * `CloudInitializer` will help us in creating the cloud connectors and cloud configs
- * <br> It will read the <b>/resources/application.yaml</b> and will initialize the objects.
+ * <br> It will read the <b>/resources/application.yml</b> and will initialize the objects.
  *
  */
 object CloudInitializer {
@@ -20,11 +20,17 @@ object CloudInitializer {
   var cloudConfig: CloudConfig = _
 
   def initializeCloud(): Unit = {
-    val applicationYaml = getClass.getClassLoader.getResourceAsStream("application.yaml")
+    val applicationYaml = getClass.getClassLoader.getResourceAsStream("application.yml")
+    /**
+     * ObjectMapper helps to serialize and deseriliaze Java Objects to JSON and vice versa
+     */
     val MAPPER = new ObjectMapper(new YAMLFactory())
       .registerModule(DefaultScalaModule)
       .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
+    /**
+     * Here application.yml gets deseiralized to JsonNode java objects
+     */
     val result: JsonNode = MAPPER.readTree(applicationYaml)
     cloudConfig = MAPPER.treeToValue(result, classOf[CloudConfig])
 
