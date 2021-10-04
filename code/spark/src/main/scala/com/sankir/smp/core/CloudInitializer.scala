@@ -29,7 +29,11 @@ object CloudInitializer {
       .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
     /**
-     * Here application.yml gets deseiralized to JsonNode java objects
+     * Here application.yml gets deseiralized to JsonNode objects
+     * cloudConfig case class gets populated with yaml file contents.
+     * Based on the cloudType, it pattern matches using case statements with
+     * what is mentioned in yaml and invokes the respective connector. In this case,
+     * it invokes AWSConnector
      */
     val result: JsonNode = MAPPER.readTree(applicationYaml)
     cloudConfig = MAPPER.treeToValue(result, classOf[CloudConfig])
