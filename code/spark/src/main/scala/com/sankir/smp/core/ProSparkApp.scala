@@ -77,12 +77,11 @@
         s"${sparkSession.sparkContext.appName}-${sparkSession.sparkContext.applicationId}"
 
       val ddlSchemaString =
-        scala.io.Source
-          .fromInputStream(
-            getClass
-              .getClassLoader
-              .getResourceAsStream("schema.ddl"))
-          .mkString
+        scala.io.Source.
+          fromInputStream(getClass.
+            getClassLoader.
+            getResourceAsStream("schema.ddl")).
+          mkString
 
       val datasetSchema: StructType = StructType.fromDDL(ddlSchemaString)
 

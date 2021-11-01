@@ -1,15 +1,11 @@
-runLocal: true
+runLocal: false
 inputLocation: s3a://retail-sankir/processed-retail-data/q1/2011-01-04.json
 schemaLocation: s3a://retail-sankir/schemas/retail_schema.json
 businessValidatorClassName: com.sankir.smp.core.validators.RetailBusinessValidator
-kpiLocation: s3a://retail-sankir/input/kpiquery.json
+kpiLocation: s3a://retail-sankir/kpi/kpiquery.json
 tempKPIViewName: "retail_tbl"
 sparkConfig:
-  fs.s3a.awsAccessKeyId: awsAccessKeyId
-  fs.s3a.awsSecretAccessKey: awsAccessKeySecret
-  fs.s3a.endpoint: "s3.us-east-2.amazonaws.com"
-  fs.s3a.aws.credentials.provider: "com.amazonaws.auth.profile.ProfileCredentialsProvider"
-
+   fs.s3a.endpoint: "s3.us-east-2.amazonaws.com"
 
 cloudType: aws
 aws:
@@ -19,4 +15,4 @@ aws:
     type: object
     ingress: s3a://retail-sankir/ingress/
     error: s3a://retail-sankir/errors/
-    kpi: s3a://retail-sankir/kpi/
+    kpi: s3a://retail-sankir/retail_kpi/
