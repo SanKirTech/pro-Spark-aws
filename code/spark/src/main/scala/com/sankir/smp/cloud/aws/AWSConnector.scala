@@ -9,6 +9,12 @@ import com.sankir.smp.common.JsonUtils._
 import org.apache.spark.internal.Logging
 import org.apache.spark.sql.{DataFrame, Dataset, SaveMode}
 
+/**
+ * AWSConnecetor is the implementation of CloudConnector trait with AWS specific APIs.
+ * @param cloudConfig
+ * @param configuration
+ */
+
 final case class AWSConnector(cloudConfig: CloudConfig,
                               configuration: JsonNode)
   extends CloudConnector
