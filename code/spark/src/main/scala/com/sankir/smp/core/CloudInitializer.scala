@@ -11,7 +11,8 @@ import com.sankir.smp.common.JsonUtils
 
 /**
  * `CloudInitializer` will help us in creating the cloud connectors and cloud configs
- * <br> It will read the <b>/resources/application.yml</b> and will initialize the objects.
+ * <br> It will read the <b>/resources/application.yml</b> and populates the cloudConfig case class object.
+ * AWSConnector returns cloudConnector object by taking cloudConfig as parameter.<br>
  *
  */
 object CloudInitializer {

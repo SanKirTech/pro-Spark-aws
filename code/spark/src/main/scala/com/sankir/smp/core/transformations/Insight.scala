@@ -20,6 +20,19 @@ import com.sankir.smp.utils.LogFormatter.formatHeader
 import org.apache.spark.internal.Logging
 import org.apache.spark.sql.{Dataset, SparkSession}
 
+/**
+ * Insight
+ *
+ * @param kpiindex
+ * @param kpitable
+ * @param kpiquery
+ *
+ * Reads the SQl query defined in kpiquery.json and executes using Spark SQL.
+ * The results, which are transformed data are capture in a dataframe.
+ * The contents of the dataframe is stored in Amazon S3 by invoking saveKPI method in AWSConnector.
+ */
+
+
 object Insight extends Logging {
   private var cloudConnector : CloudConnector = _
   def initialize(cloudConnector: CloudConnector)  {
