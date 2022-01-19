@@ -56,7 +56,7 @@ object Insight extends Logging {
    * </pre>
    */
 
-  private case class kpiSchema(kpiindex: String, kpitable: String, kpiquery: String)
+  private case class kpiSchema(kpiindex: String, kpitable: String, kpidiscription: String, kpiquery: String)
 
   /**
     * method name: runKPIQuery
@@ -77,7 +77,6 @@ object Insight extends Logging {
 
     import sparkSession.implicits._
     val queryDS = sparkSession.read.json(kpiLocation).as[kpiSchema]
-
 
     val kpiIndices = queryDS
       .select("kpiindex").as[String].collect()

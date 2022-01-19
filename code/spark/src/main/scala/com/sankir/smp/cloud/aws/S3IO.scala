@@ -42,6 +42,5 @@ final case class S3IO(storageClient: AmazonS3) {
       case _                            => None
     }
   }
-
 }
 final case class BucketObject(bucketName: String, path: String)

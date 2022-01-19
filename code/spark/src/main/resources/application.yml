@@ -1,4 +1,4 @@
-runLocal: false
+runLocal: true
 inputLocation: s3a://retail-sankir/processed-retail-data/q1/2011-01-04.json
 schemaLocation: s3a://retail-sankir/schemas/retail_schema.json
 businessValidatorClassName: com.sankir.smp.core.validators.RetailBusinessValidator
